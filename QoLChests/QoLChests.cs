@@ -34,13 +34,10 @@ namespace Faust.QoLChests
         public const string PluginVersion = "1.1.0";
 
         //Configuration
-        public static ConfigEntry<bool> HideEmptyChests { get; set; }
-        public static ConfigEntry<bool> HideUsedShops { get; set; }
-        public static ConfigEntry<float> HideTime { get; set; }
-        public static ConfigEntry<bool> HighlightChests { get; set; }
-        public static ConfigEntry<bool> HighlightDrones { get; set; }
+        public static ConfigEntry<bool> HideEmptyChests, HideUsedShops, HighlightChests, HighlightShops, HighlightScrapper, HighlightDuplicator, HighlightDrones, HightlightTurrets;
+        public static ConfigEntry<float> HideTime;
 
-        // Chest resources
+        // Resource Paths
         public static string[] ChestResourcesPaths = new[]
         {
             "prefabs/networkedobjects/chest/Barrel1",
@@ -51,21 +48,33 @@ namespace Faust.QoLChests
             "prefabs/networkedobjects/chest/Chest1",
             "prefabs/networkedobjects/chest/Chest1StealthedVariant",
             "prefabs/networkedobjects/chest/Chest2",
-            "prefabs/networkedobjects/chest/Duplicator",
-            "prefabs/networkedobjects/chest/DuplicatorLarge",
-            "prefabs/networkedobjects/chest/DuplicatorMilitary",
-            "prefabs/networkedobjects/chest/DuplicatorWild",
             "prefabs/networkedobjects/chest/EquipmentBarrel",
             "prefabs/networkedobjects/chest/GoldChest",
             "prefabs/networkedobjects/chest/LunarChest",
+        };
+
+        public static string[] ShopResourcePaths = new[]
+        {
+            "prefabs/networkedobjects/chest/TripleShop",
+            "prefabs/networkedobjects/chest/TripleShopEquipment",
+            "prefabs/networkedobjects/chest/TripleShopLarge",
             "prefabs/networkedobjects/chest/LunarShopTerminal",
             "prefabs/networkedobjects/chest/MultiShopEquipmentTerminal",
             "prefabs/networkedobjects/chest/MultiShopLargeTerminal",
             "prefabs/networkedobjects/chest/MultiShopTerminal",
+        };
+
+        public static string[] ScrapperResourcePaths = new[]
+        {
             "prefabs/networkedobjects/chest/Scrapper",
-            "prefabs/networkedobjects/chest/TripleShop",
-            "prefabs/networkedobjects/chest/TripleShopEquipment",
-            "prefabs/networkedobjects/chest/TripleShopLarge",
+        };
+
+        public static string[] DuplicatorResourcesPaths = new[]
+        {
+            "prefabs/networkedobjects/chest/Duplicator",
+            "prefabs/networkedobjects/chest/DuplicatorLarge",
+            "prefabs/networkedobjects/chest/DuplicatorMilitary",
+            "prefabs/networkedobjects/chest/DuplicatorWild",            
         };
 
         public static string[] DroneResourcesPaths = new[]
@@ -77,6 +86,10 @@ namespace Faust.QoLChests
             "prefabs/networkedobjects/brokendrones/FlameDroneBroken",
             "prefabs/networkedobjects/brokendrones/MegaDroneBroken",
             "prefabs/networkedobjects/brokendrones/MissileDroneBroken",
+        };
+
+        public static string[] TurrentResourcePaths = new[]
+        {
             "prefabs/networkedobjects/brokendrones/Turret1Broken",
         };
 
@@ -92,32 +105,50 @@ namespace Faust.QoLChests
             HideEmptyChests = Config.Bind("Hide", "Chest", true, "Hides empty chests after a few seconds");
             HideUsedShops = Config.Bind("Hide", "Shops", true, "Hides used shops after a few seconds");
             HideTime = Config.Bind("Hide", "Time", 1f, "Time before stuff is hidden");
-            HighlightChests = Config.Bind("Highlight", "Chest", true, "Highlight chests (Chests, Shops, Scrappers, Barrels etc.)");
-            HighlightDrones = Config.Bind("Highlight", "Drones", true, "Highlight drones");
+
+            HighlightChests = Config.Bind("Highlight", "Chest", true, "Highlight Chests (Chests, Barrels etc.)");
+            HighlightDuplicator = Config.Bind("Highlight", "Duplicator", true, "Highlight Duplicators");
+            HighlightScrapper = Config.Bind("Highlight", "Scrapper", true, "Highlight Scrappers");
+            HighlightShops = Config.Bind("Highlight", "Shops", true, "Highlight Shops");
+            HighlightDrones = Config.Bind("Highlight", "Drones", true, "Highlight Drones");
+            HightlightTurrets = Config.Bind("Highlight", "Turrets", true, "Highlight Turrets");
 
             // Hooks
-            Opened.OnEnter += Opened_OnEnter;
+            Opened.OnEnter += Barrel_Opened;
             On.RoR2.MultiShopController.DisableAllTerminals += MultiShopController_DisableAllTerminals;
+            On.RoR2.RouletteChestController.Opened.OnEnter += Roulette_Opened;
+
 
             // Highlight Resources
-            if (HighlightChests.Value)
-            {
-                foreach (var chest in ChestResourcesPaths)
-                {
-                    Highlight.Add(Resources.Load<GameObject>(chest));
-                }
-            }
-
-            if (HighlightDrones.Value)
-            {
-                foreach (var drone in DroneResourcesPaths)
-                {
-                    Highlight.Add(Resources.Load<GameObject>(drone));
-                }
-            }
+            AddResourcesToHighlights(HighlightChests.Value, ChestResourcesPaths);
+            AddResourcesToHighlights(HighlightShops.Value, ShopResourcePaths);
+            AddResourcesToHighlights(HighlightScrapper.Value, ScrapperResourcePaths);
+            AddResourcesToHighlights(HighlightDuplicator.Value, DuplicatorResourcesPaths);
+            AddResourcesToHighlights(HighlightDrones.Value, DroneResourcesPaths);
+            AddResourcesToHighlights(HightlightTurrets.Value, TurrentResourcePaths);
 
             // This line of log will appear in the bepinex console when the Awake method is done.
             Log.LogInfo(nameof(Awake) + " done.");
+        }
+
+        private void AddResourcesToHighlights(bool isEnabled, string[] resources)
+        {
+            if (isEnabled)
+            {
+                foreach (var resource in resources)
+                {
+                    Highlight.Add(Resources.Load<GameObject>(resource));
+                }
+            }
+        }
+
+        private void Roulette_Opened(On.RoR2.RouletteChestController.Opened.orig_OnEnter orig, EntityStates.EntityState self)
+        {
+            orig.Invoke(self);
+            if (!HideEmptyChests.Value)
+                return;
+
+            Destroy(self.outer.gameObject, HideTime.Value);
         }
 
         private void MultiShopController_DisableAllTerminals(On.RoR2.MultiShopController.orig_DisableAllTerminals orig, MultiShopController self, Interactor interactor)
@@ -158,7 +189,7 @@ namespace Faust.QoLChests
             }
         }
 
-        private void Opened_OnEnter(Opened.orig_OnEnter orig, EntityStates.Barrel.Opened self)
+        private void Barrel_Opened(Opened.orig_OnEnter orig, EntityStates.Barrel.Opened self)
         {
             orig.Invoke(self);
             if (!HideEmptyChests.Value)
