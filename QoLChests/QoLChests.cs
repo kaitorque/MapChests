@@ -21,7 +21,7 @@ namespace Faust.QoLChests
 
     //We will be using 3 modules from R2API: ItemAPI to add our item, ItemDropAPI to have our item drop ingame, and LanguageAPI to add our language tokens.
     [R2APISubmoduleDependency()]
-
+    [NetworkCompatibility(CompatibilityLevel.NoNeedForSync, VersionStrictness.DifferentModVersionsAreOk)]
     //This is the main declaration of our plugin class. BepInEx searches for all classes inheriting from BaseUnityPlugin to initialize on startup.
     //BaseUnityPlugin itself inherits from MonoBehaviour, so you can use this as a reference for what you can declare and use in your plugin class: https://docs.unity3d.com/ScriptReference/MonoBehaviour.html
     public class QoLChests : BaseUnityPlugin
@@ -117,7 +117,6 @@ namespace Faust.QoLChests
             Opened.OnEnter += Barrel_Opened;
             On.RoR2.MultiShopController.DisableAllTerminals += MultiShopController_DisableAllTerminals;
             On.RoR2.RouletteChestController.Opened.OnEnter += Roulette_Opened;
-
 
             // Highlight Resources
             AddResourcesToHighlights(HighlightChests.Value, ChestResourcesPaths);
