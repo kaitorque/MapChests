@@ -31,10 +31,10 @@ namespace Faust.QoLChests
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "Faust";
         public const string PluginName = nameof(QoLChests);
-        public const string PluginVersion = "1.1.0";
+        public const string PluginVersion = "1.1.2";
 
         //Configuration
-        public static ConfigEntry<bool> HideEmptyChests, HideUsedShops, HighlightChests, HighlightShops, HighlightScrapper, HighlightDuplicator, HighlightDrones, HightlightTurrets;
+        public static ConfigEntry<bool> HideEmptyChests, HideUsedShops, HighlightChests, HighlightShops, HighlightScrapper, HighlightDuplicator, HighlightDrones, HightlightTurrets, RemoveHighlightFromUsed;
         public static ConfigEntry<float> HideTime;
 
         // Resource Paths
@@ -74,7 +74,7 @@ namespace Faust.QoLChests
             "prefabs/networkedobjects/chest/Duplicator",
             "prefabs/networkedobjects/chest/DuplicatorLarge",
             "prefabs/networkedobjects/chest/DuplicatorMilitary",
-            "prefabs/networkedobjects/chest/DuplicatorWild",            
+            "prefabs/networkedobjects/chest/DuplicatorWild",
         };
 
         public static string[] DroneResourcesPaths = new[]
@@ -106,6 +106,7 @@ namespace Faust.QoLChests
             HideUsedShops = Config.Bind("Hide", "Shops", true, "Hides used shops after a few seconds");
             HideTime = Config.Bind("Hide", "Time", 1f, "Time before stuff is hidden");
 
+            RemoveHighlightFromUsed = Config.Bind("Highlight", "RemoveWhenUsed", false, "Remove highlight when used");
             HighlightChests = Config.Bind("Highlight", "Chest", true, "Highlight Chests (Chests, Barrels etc.)");
             HighlightDuplicator = Config.Bind("Highlight", "Duplicator", true, "Highlight Duplicators");
             HighlightScrapper = Config.Bind("Highlight", "Scrapper", true, "Highlight Scrappers");
@@ -130,6 +131,11 @@ namespace Faust.QoLChests
             Log.LogInfo(nameof(Awake) + " done.");
         }
 
+        public void Update()
+        {
+            AddHighlights();
+        }
+
         private void AddResourcesToHighlights(bool isEnabled, string[] resources)
         {
             if (isEnabled)
@@ -144,24 +150,44 @@ namespace Faust.QoLChests
         private void Roulette_Opened(On.RoR2.RouletteChestController.Opened.orig_OnEnter orig, EntityStates.EntityState self)
         {
             orig.Invoke(self);
-            if (!HideEmptyChests.Value)
-                return;
+            if (HideEmptyChests.Value)
+            {
+                Destroy(self.outer.gameObject, HideTime.Value);
+            }
+            if (RemoveHighlightFromUsed.Value)
+            {
+                RemoveHighlight(self.gameObject);
+            }
 
-            Destroy(self.outer.gameObject, HideTime.Value);
+        }
+
+        private static void RemoveHighlight(GameObject self)
+        {
+            var highlight = self.GetComponent<Highlight>();
+            if (highlight)
+            {
+                Log.LogInfo($"Removing highlight from {highlight.name}");
+                highlight.isOn = false;
+            }
         }
 
         private void MultiShopController_DisableAllTerminals(On.RoR2.MultiShopController.orig_DisableAllTerminals orig, MultiShopController self, Interactor interactor)
         {
             orig.Invoke(self, interactor);
-            if (!HideUsedShops.Value)
-                return;
+            if (HideUsedShops.Value)
+            {
+                Destroy(self.gameObject, HideTime.Value);
+            }
 
-            Destroy(self.gameObject, HideTime.Value);
-        }
+            if (RemoveHighlightFromUsed.Value)
+            {
+                RemoveHighlight(self.gameObject);
+                foreach (var terminal in self.terminalGameObjects)
+                {
+                    RemoveHighlight(terminal);
+                }
+            }
 
-        public void Update()
-        {
-            AddHighlights();
         }
 
         private void AddHighlights()
@@ -180,10 +206,32 @@ namespace Faust.QoLChests
             if (gameObject == null)
                 return;
 
+            if (RemoveHighlightFromUsed.Value)
+            {
+                var multiShop = gameObject.GetComponent<MultiShopController>();
+                if (multiShop && !multiShop.enabled)
+                {
+                    return;
+                }
+
+                var barrel = gameObject.GetComponent<BarrelInteraction>();
+                if (barrel && barrel.opened)
+                {
+                    return;
+                }
+
+                var rouletteChestController = gameObject.GetComponent<RouletteChestController>();
+                if (rouletteChestController && !rouletteChestController.enabled)
+                {
+                    return;
+                }
+            }
+
             var component = gameObject.GetComponent<Highlight>();
             if (component != null)
             {
                 component.isOn = true;
+                component.enabled = true;
                 component.highlightColor = RoR2.Highlight.HighlightColor.interactive;
             }
         }
@@ -191,10 +239,15 @@ namespace Faust.QoLChests
         private void Barrel_Opened(Opened.orig_OnEnter orig, EntityStates.Barrel.Opened self)
         {
             orig.Invoke(self);
-            if (!HideEmptyChests.Value)
-                return;
+            if (HideEmptyChests.Value)
+            {
+                Destroy(self.outer.gameObject, HideTime.Value);
+            }
 
-            Destroy(self.outer.gameObject, HideTime.Value);
+            if (RemoveHighlightFromUsed.Value)
+            {
+                RemoveHighlight(self.gameObject);
+            }
         }
     }
 }
