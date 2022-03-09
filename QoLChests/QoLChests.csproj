@@ -13,7 +13,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
+    <PackageReference Include="BetterUnityPlugin" Version="1.0.3" />
+    <PackageReference Include="RiskOfRain2.GameLibs" Version="1.2.1-r.0" />
+    <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.Core" Version="5.4.18" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
+    <PackageReference Include="UnityEngine.Modules" Version="2019.4.26" IncludeAssets="compile" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MMHOOK_RoR2">
+      <HintPath>libs\MMHOOK_RoR2.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+    <!--<Reference Include="Assembly-CSharp">
       <HintPath>libs\Assembly-CSharp.dll</HintPath>
       <Private>false</Private>
     </Reference>
@@ -37,10 +50,7 @@
       <HintPath>libs\KdTreeLib.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="MMHOOK_Assembly-CSharp">
-      <HintPath>libs\MMHOOK_Assembly-CSharp.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
+  
     <Reference Include="Mono.Security">
       <HintPath>libs\Mono.Security.dll</HintPath>
       <Private>false</Private>
@@ -61,10 +71,7 @@
       <HintPath>libs\ProBuilderMeshOps.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="R2API">
-      <HintPath>libs\R2API.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
+
     <Reference Include="Rewired_Core">
       <HintPath>libs\Rewired_Core.dll</HintPath>
       <Private>false</Private>
@@ -361,6 +368,6 @@
       <HintPath>libs\Zio.dll</HintPath>
       <Private>false</Private>
     </Reference>
-  </ItemGroup>
+  </ItemGroup>-->
 
 </Project>
