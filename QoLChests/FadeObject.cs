@@ -1,4 +1,4 @@
-﻿using Faust.QoLChests;
+﻿using Faust.Shared;
 using RoR2;
 using System;
 using System.Collections;

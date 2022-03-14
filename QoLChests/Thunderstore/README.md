@@ -8,6 +8,10 @@ For feature suggestions or bug reports go [here](https://github.com/Faustvii/R2M
 
 ## Changelog
 
+**1.1.7**
+
+* Added Risk of options integration
+
 **1.1.6**
 
 * Added Fade instead of hide option (Based on FadeEmptyChest mod)

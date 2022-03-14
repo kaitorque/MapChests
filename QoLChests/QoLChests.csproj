@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="BetterUnityPlugin" Version="1.1.1" />
-    <PackageReference Include="RiskOfRain2.GameLibs" Version="1.2.1-r.1" />
+    <PackageReference Include="RiskOfRain2.GameLibs" Version="1.2.2-r.0" />
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.4.19" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
@@ -22,8 +22,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Faust.Shared\Faust.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="MMHOOK_RoR2">
       <HintPath>libs\MMHOOK_RoR2.dll</HintPath>
+    </Reference>
+    <Reference Include="RiskOfOptions">
+      <HintPath>libs\RiskOfOptions.dll</HintPath>
     </Reference>
   </ItemGroup>
   

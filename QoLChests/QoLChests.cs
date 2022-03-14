@@ -1,6 +1,8 @@
 using BepInEx;
 using BepInEx.Configuration;
 using BetterUnityPlugin;
+using Faust.Shared;
+using Faust.Shared.Compatability;
 using QoLChests;
 using RoR2;
 using System;
@@ -11,12 +13,13 @@ using UnityEngine;
 namespace Faust.QoLChests
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
+    [BepInDependency(RiskOfOptionsCompat.PluginGUID, BepInDependency.DependencyFlags.SoftDependency)]
     public class QoLChests : BetterUnityPlugin<QoLChests>
     {
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "Faust";
         public const string PluginName = nameof(QoLChests);
-        public const string PluginVersion = "1.1.6";
+        public const string PluginVersion = "1.1.7";
 
         //Configuration
         public static ConfigEntry<bool> HideEmptyChests, HideUsedShops, HighlightChests, HighlightShops, HighlightScrapper, HighlightDuplicator, HighlightDrones, HightlightTurrets, RemoveHighlightFromUsed, FadeInsteadOfHide;
@@ -105,11 +108,19 @@ namespace Faust.QoLChests
             HightlightTurrets = Config.Bind("Highlight", "Turrets", true, "Highlight Turrets");
             HighlightColor = Config.Bind("Highlight", "Color", ConfigHighlightColor.Yellow, string.Join(", ", Enum.GetNames(typeof(ConfigHighlightColor))));
 
+            //Softdependencies
+            if (RiskOfOptionsCompat.IsInstalled)
+            {
+                RiskOfOptionsCompat.SetModDescription($"Hides chests when they are empty.{Environment.NewLine}Hides used shop terminals.{Environment.NewLine}Highlights chests and interactables.");
+                RiskOfOptionsCompat.AddCheckboxOptions(restartRequired: false, HideEmptyChests, HideUsedShops, FadeInsteadOfHide, RemoveHighlightFromUsed, HighlightChests, HighlightDuplicator, HighlightScrapper, HighlightShops, HighlightDrones, HightlightTurrets);
+                RiskOfOptionsCompat.AddSliderNumberOptions(restartRequired: false, HideTime);
+            }
+
             // Hooks
             Hooks.Add<EntityStates.Barrel.Opened>(nameof(EntityStates.Barrel.Opened.OnEnter), BarrelOpened);
             On.RoR2.MultiShopController.OnPurchase += MultiShopController_OnPurchase;
             On.RoR2.RouletteChestController.Opened.OnEnter += Roulette_Opened;
-
+            Hooks.Add<CharacterMaster>(nameof(CharacterMaster.GetDeployableSameSlotLimit), Test);
             // Highlight Resources
             AddResourcesToHighlights(HighlightChests.Value, ChestResourcesPaths);
             AddResourcesToHighlights(HighlightShops.Value, ShopResourcePaths);
@@ -118,8 +129,15 @@ namespace Faust.QoLChests
             AddResourcesToHighlights(HighlightDrones.Value, DroneResourcesPaths);
             AddResourcesToHighlights(HightlightTurrets.Value, TurrentResourcePaths);
 
+
             // This line of log will appear in the bepinex console when the Awake method is done.
             Log.LogInfo(nameof(Awake) + " done.");
+        }
+
+        static void Test(Action<CharacterMaster> orig, CharacterMaster self)
+        {
+            orig(self);
+            Log.LogInfo("Hello world");
         }
 
         static void BarrelOpened(Action<EntityStates.Barrel.Opened> orig, EntityStates.Barrel.Opened self)
