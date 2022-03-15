@@ -96,7 +96,7 @@ namespace Faust.QoLChests
             //Configuration
             HideEmptyChests = Config.Bind("Hide", "Chest", true, "Hides empty chests after a few seconds");
             HideUsedShops = Config.Bind("Hide", "Shops", true, "Hides used shops after a few seconds");
-            HideTime = Config.Bind("Hide", "Time", 1f, "Time before stuff is hidden");
+            HideTime = Config.Bind("Hide", "Time", 1f, "Time before stuff is hidden/faded");
             FadeInsteadOfHide = Config.Bind("Hide", "Fade", false, "Fade instead of hiding");
 
             RemoveHighlightFromUsed = Config.Bind("Highlight", "RemoveWhenUsed", false, "Remove highlight when used");
@@ -113,14 +113,15 @@ namespace Faust.QoLChests
             {
                 RiskOfOptionsCompat.SetModDescription($"Hides chests when they are empty.{Environment.NewLine}Hides used shop terminals.{Environment.NewLine}Highlights chests and interactables.");
                 RiskOfOptionsCompat.AddCheckboxOptions(restartRequired: false, HideEmptyChests, HideUsedShops, FadeInsteadOfHide, RemoveHighlightFromUsed, HighlightChests, HighlightDuplicator, HighlightScrapper, HighlightShops, HighlightDrones, HightlightTurrets);
-                RiskOfOptionsCompat.AddSliderNumberOptions(restartRequired: false, HideTime);
+                RiskOfOptionsCompat.AddSliderNumberOptions(restartRequired: false, 0.1f, 5f, HideTime);
+                RiskOfOptionsCompat.AddDropdownOptions(false, HighlightColor);
             }
 
             // Hooks
             Hooks.Add<EntityStates.Barrel.Opened>(nameof(EntityStates.Barrel.Opened.OnEnter), BarrelOpened);
             On.RoR2.MultiShopController.OnPurchase += MultiShopController_OnPurchase;
             On.RoR2.RouletteChestController.Opened.OnEnter += Roulette_Opened;
-            Hooks.Add<CharacterMaster>(nameof(CharacterMaster.GetDeployableSameSlotLimit), Test);
+
             // Highlight Resources
             AddResourcesToHighlights(HighlightChests.Value, ChestResourcesPaths);
             AddResourcesToHighlights(HighlightShops.Value, ShopResourcePaths);
@@ -132,12 +133,6 @@ namespace Faust.QoLChests
 
             // This line of log will appear in the bepinex console when the Awake method is done.
             Log.LogInfo(nameof(Awake) + " done.");
-        }
-
-        static void Test(Action<CharacterMaster> orig, CharacterMaster self)
-        {
-            orig(self);
-            Log.LogInfo("Hello world");
         }
 
         static void BarrelOpened(Action<EntityStates.Barrel.Opened> orig, EntityStates.Barrel.Opened self)
@@ -236,7 +231,6 @@ namespace Faust.QoLChests
             var highlight = self.GetComponent<Highlight>();
             if (highlight)
             {
-                Log.LogDebug($"Removing highlight from {self.name}");
                 highlight.isOn = false;
                 highlight.enabled = false;
             }

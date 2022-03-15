@@ -11,6 +11,7 @@ For feature suggestions or bug reports go [here](https://github.com/Faustvii/R2M
 **1.1.7**
 
 * Added Risk of options integration
+* Fade out time is now affected by configuration.
 
 **1.1.6**
 

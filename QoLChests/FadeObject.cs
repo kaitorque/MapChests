@@ -1,5 +1,4 @@
-﻿using Faust.Shared;
-using RoR2;
+﻿using RoR2;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,12 +11,12 @@ namespace QoLChests
     {
         private float TargetFade => 0.25f;
         private float TargetBrightness => 0.5f;
-        private float FadeOutTime => 1f;
+        private float FadeOutTime => Faust.QoLChests.QoLChests.HideTime.Value;
 
         // specialized chests have two renderers
         private Renderer[] renderers;
         private MaterialPropertyBlock propertyStorage;
-        private List<Color> originalColors = new List<Color>();
+        private readonly List<Color> _originalColors = new();
 
         private float currentFade = 1f;
         private float currentBrightness = 1f;
@@ -28,30 +27,26 @@ namespace QoLChests
             renderers = gameObject.GetComponentsInChildren<Renderer>();
             StartCoroutine(LerpBrightnessAndFade());
             StartCoroutine(WaitUntilVisible());
-            Log.LogDebug($"Object name: {gameObject.name}");
         }
 
         private void RefreshRenderers()
         {
             renderers = gameObject.GetComponentsInChildren<Renderer>();
-            originalColors.Clear();
-            foreach (Renderer renderer in renderers)
+            _originalColors.Clear();
+            foreach (var renderer in renderers)
             {
-                originalColors.Add(renderer.material.color);
+                _originalColors.Add(renderer.material.color);
             }
         }
 
         private bool RenderersAreVisible()
         {
             bool result = true;
-            foreach (Renderer renderer in renderers)
+            foreach (var renderer in renderers)
             {
                 if (renderer == null)
                 {
-                    // epic 1
                     RefreshRenderers();
-                    //Log.LogWarning(
-                    //    $"Renderers became null, refreshing reference to renderers - methodName: {methodName}");
                     result = false;
                     break;
                 }
@@ -66,7 +61,7 @@ namespace QoLChests
 
         private IEnumerator LerpBrightnessAndFade()
         {
-            float currentLerp = 0f;
+            var currentLerp = 0f;
             while (currentLerp <= 1f)
             {
                 currentFade = Mathf.Lerp(1f, TargetFade, currentLerp);
@@ -81,7 +76,7 @@ namespace QoLChests
         {
             // delay until container is on-screen or else things break
             // also WaitUntil throws NRE when isVisible becomes true?
-            bool ready = false;
+            var ready = false;
             while (!ready)
             {
                 yield return new WaitForEndOfFrame();
@@ -96,10 +91,10 @@ namespace QoLChests
 
         private void OnSceneCameraPreRender(SceneCamera _)
         {
-            for (int i = 0; i < renderers.Length; i++)
+            for (var i = 0; i < renderers.Length; i++)
             {
-                Renderer renderer = renderers[i];
-                Color color = originalColors[i];
+                var renderer = renderers[i];
+                var color = _originalColors[i];
                 ChangeColor(renderer, color);
                 ChangeFade(renderer);
             }
@@ -113,9 +108,6 @@ namespace QoLChests
             }
             catch (NullReferenceException)
             {
-                // epic 2
-                Log.LogWarning(
-                    "Setting color failed, refreshing reference to renderers");
                 RefreshRenderers();
                 return;
             }
@@ -129,9 +121,6 @@ namespace QoLChests
             }
             catch (NullReferenceException)
             {
-                // epic 3
-                Log.LogWarning(
-                    "GetPropertyBlock failed, refreshing reference to renderers");
                 RefreshRenderers();
                 return;
             }
@@ -141,7 +130,7 @@ namespace QoLChests
             }
             else
             {
-                float oldFade = propertyStorage.GetFloat("_Fade");
+                var oldFade = propertyStorage.GetFloat("_Fade");
                 propertyStorage.SetFloat("_Fade", oldFade * currentFade);
             }
             renderer.SetPropertyBlock(propertyStorage);

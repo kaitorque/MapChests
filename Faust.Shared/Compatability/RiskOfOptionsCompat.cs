@@ -15,6 +15,11 @@ namespace Faust.Shared.Compatability
             ModSettingsManager.SetModDescription(description);
         }
 
+        public static void AddCheckboxOptions(params ConfigEntry<bool>[] configEntries)
+        {
+            AddCheckboxOptions(restartRequired: false, configEntries);
+        }
+
         public static void AddCheckboxOptions(bool restartRequired = false, params ConfigEntry<bool>[] configEntries)
         {
             foreach (var config in configEntries)
@@ -23,12 +28,22 @@ namespace Faust.Shared.Compatability
             }
         }
 
-        public static void AddSliderNumberOptions(bool restartRequired = false, params ConfigEntry<float>[] configEntries)
+        public static void AddSliderNumberOptions(params ConfigEntry<float>[] configEntries)
+        {
+            AddSliderNumberOptions(restartRequired: false, 0f, 100f, configEntries);
+        }
+
+        public static void AddSliderNumberOptions(bool restartRequired = false, float min = 0f, float max = 100, params ConfigEntry<float>[] configEntries)
         {
             foreach (var config in configEntries)
             {
-                ModSettingsManager.AddOption(new SliderOption(config, new SliderConfig { min = 0.5f, max = 5f, formatString = "{0:0.#}", restartRequired = restartRequired }));
+                ModSettingsManager.AddOption(new SliderOption(config, new SliderConfig { min = min, max = max, formatString = "{0:0.#}", restartRequired = restartRequired }));
             }
+        }
+
+        public static void AddSliderToPercentageOptionsDecimal(params ConfigEntry<float>[] configEntries)
+        {
+            AddSliderToPercentageOptionsDecimal(false, configEntries);
         }
 
         public static void AddSliderToPercentageOptionsDecimal(bool restartRequired = false, params ConfigEntry<float>[] configEntries)
