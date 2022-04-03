@@ -8,6 +8,11 @@ For feature suggestions or bug reports go [here](https://github.com/Faustvii/R2M
 
 ## Changelog
 
+**1.1.8**
+
+* Added option to toggle highlight of cloaked chests off.
+* You can now change highlight color through Risk Of Options as well.
+
 **1.1.7**
 
 * Added Risk of options integration

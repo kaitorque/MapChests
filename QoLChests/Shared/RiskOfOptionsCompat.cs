@@ -58,7 +58,7 @@ namespace Faust.Shared.Compatability
         {
             foreach (var config in configEntries)
             {
-
+                ModSettingsManager.AddOption(new ChoiceOption(config, new ChoiceConfig { restartRequired = restartRequired }));
             }
         }
 

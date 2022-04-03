@@ -19,10 +19,10 @@ namespace Faust.QoLChests
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "Faust";
         public const string PluginName = nameof(QoLChests);
-        public const string PluginVersion = "1.1.7";
+        public const string PluginVersion = "1.1.8";
 
         //Configuration
-        public static ConfigEntry<bool> HideEmptyChests, HideUsedShops, HighlightChests, HighlightShops, HighlightScrapper, HighlightDuplicator, HighlightDrones, HightlightTurrets, RemoveHighlightFromUsed, FadeInsteadOfHide;
+        public static ConfigEntry<bool> HideEmptyChests, HideUsedShops, HighlightChests, HighlightShops, HighlightScrapper, HighlightDuplicator, HighlightDrones, HightlightTurrets, RemoveHighlightFromUsed, FadeInsteadOfHide, HighlightStealthedChests;
         public static ConfigEntry<float> HideTime;
         public static ConfigEntry<ConfigHighlightColor> HighlightColor;
 
@@ -35,11 +35,15 @@ namespace Faust.QoLChests
             "prefabs/networkedobjects/chest/CategoryChestHealing",
             "prefabs/networkedobjects/chest/CategoryChestUtility",
             "prefabs/networkedobjects/chest/Chest1",
-            "prefabs/networkedobjects/chest/Chest1StealthedVariant",
             "prefabs/networkedobjects/chest/Chest2",
             "prefabs/networkedobjects/chest/EquipmentBarrel",
             "prefabs/networkedobjects/chest/GoldChest",
             "prefabs/networkedobjects/chest/LunarChest",
+        };
+
+        public static string[] StealthedChestResourcePaths = new[]
+        {
+            "prefabs/networkedobjects/chest/Chest1StealthedVariant",
         };
 
         public static string[] ShopResourcePaths = new[]
@@ -101,6 +105,7 @@ namespace Faust.QoLChests
 
             RemoveHighlightFromUsed = Config.Bind("Highlight", "RemoveWhenUsed", false, "Remove highlight when used");
             HighlightChests = Config.Bind("Highlight", "Chest", true, "Highlight Chests (Chests, Barrels etc.)");
+            HighlightStealthedChests = Config.Bind("Highlight", "Stealthed Chests", true, "Highlight stealthed chests");
             HighlightDuplicator = Config.Bind("Highlight", "Duplicator", true, "Highlight Duplicators");
             HighlightScrapper = Config.Bind("Highlight", "Scrapper", true, "Highlight Scrappers");
             HighlightShops = Config.Bind("Highlight", "Shops", true, "Highlight Shops");
@@ -112,7 +117,7 @@ namespace Faust.QoLChests
             if (RiskOfOptionsCompat.IsInstalled)
             {
                 RiskOfOptionsCompat.SetModDescription($"Hides chests when they are empty.{Environment.NewLine}Hides used shop terminals.{Environment.NewLine}Highlights chests and interactables.");
-                RiskOfOptionsCompat.AddCheckboxOptions(restartRequired: false, HideEmptyChests, HideUsedShops, FadeInsteadOfHide, RemoveHighlightFromUsed, HighlightChests, HighlightDuplicator, HighlightScrapper, HighlightShops, HighlightDrones, HightlightTurrets);
+                RiskOfOptionsCompat.AddCheckboxOptions(restartRequired: false, HideEmptyChests, HideUsedShops, FadeInsteadOfHide, RemoveHighlightFromUsed, HighlightChests, HighlightDuplicator, HighlightScrapper, HighlightShops, HighlightDrones, HightlightTurrets, HighlightStealthedChests);
                 RiskOfOptionsCompat.AddSliderNumberOptions(restartRequired: false, 0.1f, 5f, HideTime);
                 RiskOfOptionsCompat.AddDropdownOptions(false, HighlightColor);
             }
@@ -124,6 +129,7 @@ namespace Faust.QoLChests
 
             // Highlight Resources
             AddResourcesToHighlights(HighlightChests.Value, ChestResourcesPaths);
+            AddResourcesToHighlights(HighlightStealthedChests.Value, StealthedChestResourcePaths);
             AddResourcesToHighlights(HighlightShops.Value, ShopResourcePaths);
             AddResourcesToHighlights(HighlightScrapper.Value, ScrapperResourcePaths);
             AddResourcesToHighlights(HighlightDuplicator.Value, DuplicatorResourcesPaths);
