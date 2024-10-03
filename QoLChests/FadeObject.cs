@@ -11,7 +11,7 @@ namespace QoLChests
     {
         private float TargetFade => 0.25f;
         private float TargetBrightness => 0.5f;
-        private float FadeOutTime => Faust.QoLChests.QoLChests.HideTime.Value;
+        private float FadeOutTime => 1;//Faust.QoLChests.QoLChests.HideTime.Value;
 
         // specialized chests have two renderers
         private Renderer[] renderers;

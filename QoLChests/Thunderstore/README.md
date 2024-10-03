@@ -8,6 +8,12 @@ For feature suggestions or bug reports go [here](https://github.com/Faustvii/R2M
 
 ## Changelog
 
+**1.1.9**
+
+* Fixed issues with Artifact of delusion
+* Highlighting of Lemurian eggs (Artifact of devotion)
+* Added highlighting of void cradles
+
 **1.1.8**
 
 * Added option to toggle highlight of cloaked chests off.
