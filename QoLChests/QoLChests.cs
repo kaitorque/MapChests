@@ -1,29 +1,43 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
-using BetterUnityPlugin;
 using Faust.Shared;
 using Faust.Shared.Compatability;
 using QoLChests;
 using RoR2;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Faust.QoLChests
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
-    [BepInDependency(RiskOfOptionsCompat.PluginGUID, BepInDependency.DependencyFlags.SoftDependency)]
-    public class QoLChests : BetterUnityPlugin<QoLChests>
+    [BepInDependency(
+        RiskOfOptionsCompat.PluginGUID,
+        BepInDependency.DependencyFlags.SoftDependency
+    )]
+    public class QoLChests : BaseUnityPlugin
     {
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "Faust";
         public const string PluginName = nameof(QoLChests);
-        public const string PluginVersion = "1.1.8";
+        public const string PluginVersion = "1.1.9";
 
         //Configuration
-        public static ConfigEntry<bool> HideEmptyChests, HideUsedShops, HighlightChests, HighlightShops, HighlightScrapper, HighlightDuplicator, HighlightDrones, HightlightTurrets, RemoveHighlightFromUsed, FadeInsteadOfHide, HighlightStealthedChests;
-        public static ConfigEntry<float> HideTime;
+        public static ConfigEntry<bool> HideEmptyChests,
+            HideUsedShops,
+            HighlightChests,
+            HighlightShops,
+            HighlightScrapper,
+            HighlightDuplicator,
+            HighlightDrones,
+            HightlightTurrets,
+            RemoveHighlightFromUsed,
+            // FadeInsteadOfHide,
+            HighlightStealthedChests;
+
+        // public static ConfigEntry<float> HideTime;
         public static ConfigEntry<ConfigHighlightColor> HighlightColor;
 
         // Resource Paths
@@ -86,46 +100,112 @@ namespace Faust.QoLChests
             "prefabs/networkedobjects/brokendrones/Turret1Broken",
         };
 
+        public static string[] ArtifactOfDevotionResourcePaths = new[]
+        {
+            "RoR2/CU8/LemurianEgg/LemurianEgg.prefab"
+        };
+
+        public static string[] DLCChests =
+        [
+            "RoR2/DLC1/CategoryChest2/CategoryChest2Damage Variant.prefab",
+            "RoR2/DLC1/CategoryChest2/CategoryChest2Healing Variant.prefab",
+            "RoR2/DLC1/CategoryChest2/CategoryChest2Utility Variant.prefab",
+            "RoR2/DLC1/VoidChest/VoidChest.prefab"
+        ];
+
         private List<GameObject> Highlight { get; set; } = new List<GameObject>();
 
-        public override BaseUnityPlugin typeReference => throw new System.NotImplementedException();
-
         //The Awake() method is run at the very start when the game is initialized.
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
             //Init our logging class so that we can properly log for debugging
             Log.Init(Logger);
 
             //Configuration
-            HideEmptyChests = Config.Bind("Hide", "Chest", true, "Hides empty chests after a few seconds");
-            HideUsedShops = Config.Bind("Hide", "Shops", true, "Hides used shops after a few seconds");
-            HideTime = Config.Bind("Hide", "Time", 1f, "Time before stuff is hidden/faded");
-            FadeInsteadOfHide = Config.Bind("Hide", "Fade", false, "Fade instead of hiding");
+            HideEmptyChests = Config.Bind(
+                "Hide",
+                "Chest",
+                true,
+                "Hides empty chests after a few seconds"
+            );
+            HideUsedShops = Config.Bind(
+                "Hide",
+                "Shops",
+                true,
+                "Hides used shops after a few seconds"
+            );
+            // HideTime = Config.Bind("Hide", "Time", 1f, "Time before stuff is hidden/faded");
+            // FadeInsteadOfHide = Config.Bind("Hide", "Fade", false, "Fade instead of hiding");
 
-            RemoveHighlightFromUsed = Config.Bind("Highlight", "RemoveWhenUsed", false, "Remove highlight when used");
-            HighlightChests = Config.Bind("Highlight", "Chest", true, "Highlight Chests (Chests, Barrels etc.)");
-            HighlightStealthedChests = Config.Bind("Highlight", "Stealthed Chests", true, "Highlight stealthed chests");
-            HighlightDuplicator = Config.Bind("Highlight", "Duplicator", true, "Highlight Duplicators");
+            RemoveHighlightFromUsed = Config.Bind(
+                "Highlight",
+                "RemoveWhenUsed",
+                false,
+                "Remove highlight when used"
+            );
+            HighlightChests = Config.Bind(
+                "Highlight",
+                "Chest",
+                true,
+                "Highlight Chests (Chests, Barrels etc.)"
+            );
+            HighlightStealthedChests = Config.Bind(
+                "Highlight",
+                "Stealthed Chests",
+                true,
+                "Highlight stealthed chests"
+            );
+            HighlightDuplicator = Config.Bind(
+                "Highlight",
+                "Duplicator",
+                true,
+                "Highlight Duplicators"
+            );
             HighlightScrapper = Config.Bind("Highlight", "Scrapper", true, "Highlight Scrappers");
             HighlightShops = Config.Bind("Highlight", "Shops", true, "Highlight Shops");
             HighlightDrones = Config.Bind("Highlight", "Drones", true, "Highlight Drones");
             HightlightTurrets = Config.Bind("Highlight", "Turrets", true, "Highlight Turrets");
-            HighlightColor = Config.Bind("Highlight", "Color", ConfigHighlightColor.Yellow, string.Join(", ", Enum.GetNames(typeof(ConfigHighlightColor))));
+            HighlightColor = Config.Bind(
+                "Highlight",
+                "Color",
+                ConfigHighlightColor.Yellow,
+                string.Join(", ", Enum.GetNames(typeof(ConfigHighlightColor)))
+            );
 
             //Softdependencies
             if (RiskOfOptionsCompat.IsInstalled)
             {
-                RiskOfOptionsCompat.SetModDescription($"Hides chests when they are empty.{Environment.NewLine}Hides used shop terminals.{Environment.NewLine}Highlights chests and interactables.");
-                RiskOfOptionsCompat.AddCheckboxOptions(restartRequired: false, HideEmptyChests, HideUsedShops, FadeInsteadOfHide, RemoveHighlightFromUsed, HighlightChests, HighlightDuplicator, HighlightScrapper, HighlightShops, HighlightDrones, HightlightTurrets, HighlightStealthedChests);
-                RiskOfOptionsCompat.AddSliderNumberOptions(restartRequired: false, 0.1f, 5f, HideTime);
+                RiskOfOptionsCompat.SetModDescription(
+                    $"Hides chests when they are empty.{Environment.NewLine}Hides used shop terminals.{Environment.NewLine}Highlights chests and interactables."
+                );
+                RiskOfOptionsCompat.AddCheckboxOptions(
+                    restartRequired: false,
+                    HideEmptyChests,
+                    HideUsedShops,
+                    // FadeInsteadOfHide,
+                    RemoveHighlightFromUsed,
+                    HighlightChests,
+                    HighlightDuplicator,
+                    HighlightScrapper,
+                    HighlightShops,
+                    HighlightDrones,
+                    HightlightTurrets,
+                    HighlightStealthedChests
+                );
+                // RiskOfOptionsCompat.AddSliderNumberOptions(
+                //     restartRequired: false,
+                //     0.1f,
+                //     5f,
+                //     HideTime
+                // );
                 RiskOfOptionsCompat.AddDropdownOptions(false, HighlightColor);
             }
 
-            // Hooks
-            Hooks.Add<EntityStates.Barrel.Opened>(nameof(EntityStates.Barrel.Opened.OnEnter), BarrelOpened);
+            On.EntityStates.Barrel.Opened.OnEnter += BarrelOpened;
             On.RoR2.MultiShopController.OnPurchase += MultiShopController_OnPurchase;
             On.RoR2.RouletteChestController.Opened.OnEnter += Roulette_Opened;
+            On.RoR2.DelusionChestController.ResetChestForDelusion +=
+                On_DelusionChestController_ResetChestForDelusion;
 
             // Highlight Resources
             AddResourcesToHighlights(HighlightChests.Value, ChestResourcesPaths);
@@ -135,18 +215,30 @@ namespace Faust.QoLChests
             AddResourcesToHighlights(HighlightDuplicator.Value, DuplicatorResourcesPaths);
             AddResourcesToHighlights(HighlightDrones.Value, DroneResourcesPaths);
             AddResourcesToHighlights(HightlightTurrets.Value, TurrentResourcePaths);
-
+            AddResourcesToHighlights(HightlightTurrets.Value || HighlightDrones.Value, ArtifactOfDevotionResourcePaths, false);
+            AddResourcesToHighlights(HighlightChests.Value, DLCChests, false);
 
             // This line of log will appear in the bepinex console when the Awake method is done.
             Log.LogInfo(nameof(Awake) + " done.");
         }
 
-        static void BarrelOpened(Action<EntityStates.Barrel.Opened> orig, EntityStates.Barrel.Opened self)
+        protected void Update()
+        {
+            AddHighlights();
+        }
+
+        private void BarrelOpened(
+            On.EntityStates.Barrel.Opened.orig_OnEnter orig,
+            EntityStates.Barrel.Opened self
+        )
         {
             orig.Invoke(self);
             if (HideEmptyChests.Value)
             {
-                DestroyOrFade(self.outer.gameObject, HideTime.Value, self.outer.commonComponents.modelLocator.modelTransform.gameObject);
+                HideOrFade(
+                    self.outer.gameObject,
+                    self.outer.commonComponents.modelLocator.modelTransform.gameObject
+                );
             }
 
             if (RemoveHighlightFromUsed.Value)
@@ -155,7 +247,32 @@ namespace Faust.QoLChests
             }
         }
 
-        private void MultiShopController_OnPurchase(On.RoR2.MultiShopController.orig_OnPurchase orig, MultiShopController self, Interactor interactor, PurchaseInteraction purchaseInteraction)
+        private void On_DelusionChestController_ResetChestForDelusion(
+            On.RoR2.DelusionChestController.orig_ResetChestForDelusion orig,
+            DelusionChestController self
+        )
+        {
+            orig.Invoke(self);
+            var renderers = self
+                .gameObject.GetComponent<ModelLocator>()
+                .modelTransform.GetComponentsInChildren<Renderer>();
+
+            foreach (var rend in renderers)
+            {
+                rend.enabled = true;
+            }
+            if (HighlightChests.Value)
+            {
+                HighlightValues(self.gameObject);
+            }
+        }
+
+        private void MultiShopController_OnPurchase(
+            On.RoR2.MultiShopController.orig_OnPurchase orig,
+            MultiShopController self,
+            Interactor interactor,
+            PurchaseInteraction purchaseInteraction
+        )
         {
             orig.Invoke(self, interactor, purchaseInteraction);
 
@@ -164,8 +281,11 @@ namespace Faust.QoLChests
 
             if (HideUsedShops.Value)
             {
-                var terminalObjects = self.terminalGameObjects.Select(x => x).Concat(new[] { self.gameObject }).ToArray();
-                DestroyOrFade(self.gameObject, HideTime.Value, terminalObjects);
+                var terminalObjects = self
+                    .terminalGameObjects.Select(x => x)
+                    .Concat(new[] { self.gameObject })
+                    .ToArray();
+                HideOrFade(self.gameObject, terminalObjects);
             }
 
             if (RemoveHighlightFromUsed.Value)
@@ -178,43 +298,52 @@ namespace Faust.QoLChests
             }
         }
 
-
-        private void Roulette_Opened(On.RoR2.RouletteChestController.Opened.orig_OnEnter orig, EntityStates.EntityState self)
+        private void Roulette_Opened(
+            On.RoR2.RouletteChestController.Opened.orig_OnEnter orig,
+            EntityStates.EntityState self
+        )
         {
             orig.Invoke(self);
             if (HideEmptyChests.Value)
             {
-                Destroy(self.outer.gameObject, HideTime.Value);
+                HideOrFade(self.outer.gameObject, self.outer.gameObject);
             }
 
             if (RemoveHighlightFromUsed.Value)
             {
                 RemoveHighlight(self.outer.gameObject);
             }
-
         }
 
-        protected override void Update()
+        private static void HideOrFade(GameObject gameObject, params GameObject[] fadeObjects)
         {
-            AddHighlights();
+            var allObjects = new List<GameObject> { gameObject }
+                .Concat(fadeObjects)
+                .ToArray();
+            var renderers = allObjects
+                .SelectMany(x => x.GetComponentsInChildren<Renderer>())
+                .ToArray();
+
+            Log.LogDebug(
+                $"HideOrFade {gameObject.name} - allObjects: {allObjects.Length} - renderers: {renderers.Length}"
+            );
+
+            foreach (var rend in renderers)
+            {
+                rend.enabled = false;
+            }
+
+            foreach (var gameObj in allObjects)
+            {
+                RemoveHighlight(gameObj);
+            }
         }
 
-        private static void DestroyOrFade(GameObject gameObject, float time, params GameObject[] fadeObjects)
-        {
-            if (FadeInsteadOfHide.Value)
-            {
-                foreach (var fadeObject in fadeObjects)
-                {
-                    fadeObject.AddComponent<FadeObject>();
-                }
-            }
-            else
-            {
-                Destroy(gameObject, time);
-            }
-        }
-
-        private void AddResourcesToHighlights(bool isEnabled, string[] resources, bool useLegacy = true)
+        private void AddResourcesToHighlights(
+            bool isEnabled,
+            string[] resources,
+            bool useLegacy = true
+        )
         {
             if (isEnabled)
             {
@@ -226,7 +355,11 @@ namespace Faust.QoLChests
                     }
                     else
                     {
-                        Highlight.Add(Resources.Load<GameObject>(resource));
+                        var addressable = Addressables
+                            .LoadAssetAsync<GameObject>(resource)
+                            .WaitForCompletion();
+                        if (addressable)
+                            Highlight.Add(addressable);
                     }
                 }
             }
@@ -282,9 +415,10 @@ namespace Faust.QoLChests
             }
 
             var component = gameObject.GetComponent<Highlight>();
-            if (component != null)
+            if (component)
             {
                 component.isOn = true;
+                component.enabled = true;
                 component.highlightColor = (Highlight.HighlightColor)(int)HighlightColor.Value;
             }
         }
