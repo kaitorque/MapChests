@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
-using BetterUnityPlugin;
 using Faust.Shared;
 using Faust.Shared.Compatability;
 using QoLChests;
@@ -18,7 +17,7 @@ namespace Faust.QoLChests
         RiskOfOptionsCompat.PluginGUID,
         BepInDependency.DependencyFlags.SoftDependency
     )]
-    public class QoLChests : BetterUnityPlugin<QoLChests>
+    public class QoLChests : BaseUnityPlugin
     {
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "Faust";
@@ -116,12 +115,9 @@ namespace Faust.QoLChests
 
         private List<GameObject> Highlight { get; set; } = new List<GameObject>();
 
-        public override BaseUnityPlugin typeReference => throw new System.NotImplementedException();
-
         //The Awake() method is run at the very start when the game is initialized.
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
             //Init our logging class so that we can properly log for debugging
             Log.Init(Logger);
 
@@ -226,7 +222,7 @@ namespace Faust.QoLChests
             Log.LogInfo(nameof(Awake) + " done.");
         }
 
-        protected override void Update()
+        protected void Update()
         {
             AddHighlights();
         }

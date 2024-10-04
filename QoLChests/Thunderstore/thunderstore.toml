@@ -4,14 +4,14 @@ schemaVersion = "0.0.1"
 [package]
 namespace = "Faustvii"
 name = "QoLChests"
-versionNumber = "1.1.8"
+versionNumber = "1.1.9"
 description = "Quality of life changes to chests, terminals, scrapper, duplicator, turrets and drones. - Hide when empty and highlighting."
 websiteUrl = "https://github.com/Faustvii/R2Mods"
 containsNsfwContent = false
 
 [package.dependencies]
-bbepis-BepInExPack = "5.4.1902"
-RiskofThunder-HookGenPatcher = "1.2.3"
+bbepis-BepInExPack = "5.4.2117"
+RiskofThunder-HookGenPatcher = "1.2.5"
 
 [build]
 icon = "./icon.png"
@@ -19,12 +19,8 @@ readme = "./README.md"
 outdir = "../zip"
 
 [[build.copy]]
-source = "../bin/Release/netstandard2.0/QoLChests.dll"
+source = "../bin/Release/netstandard2.1/QoLChests.dll"
 target = "QoLChests.dll"
-
-[[build.copy]]
-source = "../bin/Release/netstandard2.0/publish/BetterUnityPlugin.dll"
-target = "BetterUnityPlugin.dll"
 
 [publish]
 repository = "https://thunderstore.io"
