@@ -8,7 +8,7 @@ namespace Faust.Shared
 
         public static void Init(ManualLogSource logSource)
         {
-            _logSource = logSource;//test123
+            _logSource = logSource;
         }
 
         public static void LogDebug(object data) => _logSource.LogDebug(data);
