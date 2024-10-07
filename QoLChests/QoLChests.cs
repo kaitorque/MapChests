@@ -23,7 +23,7 @@ namespace Faust.QoLChests
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "Faust";
         public const string PluginName = nameof(QoLChests);
-        public const string PluginVersion = "1.1.10";
+        public const string PluginVersion = "1.1.11";
 
         //Configuration
         public static ConfigEntry<bool> HideEmptyChests,
@@ -176,6 +176,11 @@ namespace Faust.QoLChests
                 On_DelusionChestController_ResetChestForDelusion;
 
             RoR2Application.onLoad += ConfigureHighlights;
+            Config.SettingChanged += (sender, args) =>
+            {
+                InteractablesToHighlight.Clear();
+                ConfigureHighlights();
+            };
 
             stopwatch.Stop();
 

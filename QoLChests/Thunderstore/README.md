@@ -8,6 +8,10 @@ For feature suggestions or bug reports go [here](https://github.com/Faustvii/R2M
 
 ## Changelog
 
+### 1.1.11
+
+- Forgot to add a hook for setting updates
+
 ### 1.1.10
 
 - Added back fading (It is super hacky though, but kind of works)
