@@ -2,7 +2,7 @@ using System.Collections;
 using RoR2;
 using UnityEngine;
 
-namespace Faust.QoLChests;
+namespace Faust.QoLChests.Components;
 
 /// <summary>
 /// Attach this to a interactable component to "fade" it after a specified delay.
@@ -10,6 +10,9 @@ namespace Faust.QoLChests;
 /// <param name="Delay"></param>
 public class FadeWithDelay(float Delay = 1f) : MonoBehaviour
 {
+    private Collider[] colliders;
+    private Renderer[] renderers;
+
     public void DisableRendererAfterDelay()
     {
         StartCoroutine(DisableRendererCoroutine());
@@ -25,16 +28,10 @@ public class FadeWithDelay(float Delay = 1f) : MonoBehaviour
     {
         // Wait for the specified delay
         yield return new WaitForSeconds(Delay);
-        var baseRenderer = GetComponent<Renderer>();
-        var childRenderer = GetComponentInChildren<Renderer>();
-        Renderer[] allRenderers = [baseRenderer, childRenderer];
-        foreach (var renderer in allRenderers)
-        {
-            if (renderer)
-            {
-                renderer.enabled = false;
-            }
-        }
+
+        renderers = Utils.DisableRenderers(gameObject);
+        colliders = Utils.DisableColliders(gameObject);
+        Utils.DisableCommonVisualEffects(gameObject);
         // For some reason when the renderer is disabled but it has a highlight on it will look faded instead of hidden.
         var highlight = GetComponent<Highlight>();
         if (highlight)
@@ -44,6 +41,19 @@ public class FadeWithDelay(float Delay = 1f) : MonoBehaviour
             highlight.CustomColor = new Color32(128, 128, 128, 64);
             highlight.highlightColor = Highlight.HighlightColor.custom;
         }
-        Destroy(this);
+    }
+
+    public void OnDestroy()
+    {
+        foreach (var collider in colliders)
+        {
+            if (collider)
+                collider.enabled = true;
+        }
+        foreach (var renderer in renderers)
+        {
+            if (renderer)
+                renderer.enabled = true;
+        }
     }
 }

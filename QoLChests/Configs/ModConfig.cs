@@ -6,6 +6,26 @@ namespace Faust.QoLChests.Configs;
 
 public class ModConfig
 {
+    private static ModConfig instance = null;
+    public static ModConfig Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                throw new InvalidOperationException(
+                    "ModConfig is not initialized. Call Init() first."
+                );
+            }
+            return instance;
+        }
+    }
+
+    public static void Init(ConfigFile config)
+    {
+        instance ??= new ModConfig(config);
+    }
+
     public ConfigEntry<bool> HideEmptyChests,
         HideUsedShops,
         RemoveHighlightFromUsed,
@@ -27,7 +47,7 @@ public class ModConfig
         HighlightDronesColor,
         HighlightTurretsColor;
 
-    public ModConfig(ConfigFile config)
+    private ModConfig(ConfigFile config)
     {
         HideEmptyChests = config.Bind(
             "Hide",
@@ -161,7 +181,7 @@ public class ModConfig
         };
     }
 
-    internal bool IsCategoryEnabled(InteractableCategory category)
+    internal bool IsCategoryHighlightEnabled(InteractableCategory category)
     {
         return category switch
         {
@@ -173,6 +193,17 @@ public class ModConfig
             InteractableCategory.Turret => HightlightTurrets.Value,
             InteractableCategory.StealthedChest => HighlightStealthedChests.Value,
             InteractableCategory.Shrine => false,
+            _ => false
+        };
+    }
+
+    internal bool IsCategoryHideEnabled(InteractableCategory category)
+    {
+        return category switch
+        {
+            InteractableCategory.Chest => HideEmptyChests.Value,
+            InteractableCategory.StealthedChest => HideEmptyChests.Value,
+            InteractableCategory.Shop => HideUsedShops.Value,
             _ => false
         };
     }
