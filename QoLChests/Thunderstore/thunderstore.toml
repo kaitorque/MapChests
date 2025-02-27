@@ -4,7 +4,7 @@ schemaVersion = "0.0.1"
 [package]
 namespace = "Faustvii"
 name = "QoLChests"
-versionNumber = "1.2.0"
+versionNumber = "1.2.1"
 description = "Quality of life changes to chests, terminals, scrapper, duplicator, turrets and drones. - Hide when empty and highlighting."
 websiteUrl = "https://github.com/Faustvii/R2Mods"
 containsNsfwContent = false

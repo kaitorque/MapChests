@@ -1,6 +1,7 @@
 using Faust.QoLChests.Components;
 using Faust.QoLChests.Configs;
 using Faust.QoLChests.Handlers;
+using Faust.Shared;
 using RoR2;
 
 namespace Faust.QoLChests.Hooks;
@@ -20,6 +21,9 @@ public static class ChestHooks
     )
     {
         orig(self);
+        if (InteractableRegistry.IsBlackListed(self.outer.gameObject.name))
+            return;
+
         self.outer.gameObject.AddComponent<InteractableUsed>();
         if (ModConfig.Instance.HideEmptyChests.Value)
         {
@@ -40,6 +44,9 @@ public static class ChestHooks
     )
     {
         orig(self);
+        if (InteractableRegistry.IsBlackListed(self.outer.gameObject.name))
+            return;
+
         self.outer.gameObject.AddComponent<InteractableUsed>();
         if (ModConfig.Instance.HideEmptyChests.Value)
         {

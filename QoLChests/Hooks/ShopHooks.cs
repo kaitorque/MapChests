@@ -28,6 +28,9 @@ public static class ShopHooks
     )
     {
         orig(self, interactor, purchaseInteraction);
+        if (InteractableRegistry.IsBlackListed(self.gameObject.name))
+            return;
+
         Log.LogDebug(
             $"MultiShopController_OnPurchase - "
                 + $"Available: {self.available} NetworkAvailable: {self.Networkavailable} "
@@ -60,6 +63,8 @@ public static class ShopHooks
     )
     {
         orig(self, newHasBeenPurchased);
+        if (InteractableRegistry.IsBlackListed(self.gameObject.name))
+            return;
 
         var multiShopControllerForTerminal = FindMultiShopControllerForTerminal(self);
         if (!multiShopControllerForTerminal)
