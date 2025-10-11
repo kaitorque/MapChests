@@ -8,6 +8,16 @@ For feature suggestions or bug reports go [here](https://github.com/Faustvii/R2M
 
 ## Changelog
 
+### 1.2.4
+
+- Fix uploaded version (1.2.3 did not contain the updated changes)
+
+### 1.2.3
+
+- Fixed stealthed chests being put into normal chest config category
+- Added separate option for lockbox highlighting
+- Fixed spelling mistake in config entry (Turrent highlight color might need to be reset)
+
 ### 1.2.2
 
 - Fixed Gilded Coast not having highlights

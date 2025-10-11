@@ -24,5 +24,6 @@ public enum InteractableCategory
     Drone = 4,
     Turret = 5,
     StealthedChest = 6,
-    Shrine = 7
+    Shrine = 7,
+    Lockbox = 8
 }

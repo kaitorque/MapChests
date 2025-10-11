@@ -35,8 +35,9 @@ public class ModConfig
         HighlightScrapper,
         HighlightDuplicator,
         HighlightDrones,
-        HightlightTurrets,
-        HighlightStealthedChests;
+        HighlightTurrets,
+        HighlightStealthedChests,
+        HighlightLockboxes;
 
     public ConfigEntry<float> HideTime;
     public ConfigEntry<ConfigHighlightColor> HighlightColor,
@@ -45,7 +46,9 @@ public class ModConfig
         HighlightScrapperColor,
         HighlightDuplicatorColor,
         HighlightDronesColor,
-        HighlightTurretsColor;
+        HighlightTurretsColor,
+        HighlightStealthedChestsColor,
+        HighlightLockboxesColor;
 
     private ModConfig(ConfigFile config)
     {
@@ -77,11 +80,17 @@ public class ModConfig
             true,
             "Highlight stealthed chests"
         );
+        HighlightLockboxes = config.Bind(
+            "Highlight",
+            "Lockboxes",
+            true,
+            "Highlight Lockboxes"
+        );
         HighlightDuplicator = config.Bind("Highlight", "Duplicator", true, "Highlight Duplicators");
         HighlightScrapper = config.Bind("Highlight", "Scrapper", true, "Highlight Scrappers");
         HighlightShops = config.Bind("Highlight", "Shops", true, "Highlight Shops");
         HighlightDrones = config.Bind("Highlight", "Drones", true, "Highlight Drones");
-        HightlightTurrets = config.Bind("Highlight", "Turrets", true, "Highlight Turrets");
+        HighlightTurrets = config.Bind("Highlight", "Turrets", true, "Highlight Turrets");
 
         HighlightColor = config.Bind(
             "Highlight",
@@ -125,6 +134,19 @@ public class ModConfig
             HighlightColor.Value,
             "Highlight color for turrets"
         );
+        HighlightStealthedChestsColor = config.Bind(
+            "Highlight",
+            "StealthedChestsColor",
+            HighlightColor.Value,
+            "Highlight color for stealthed chests"
+        );
+
+        HighlightLockboxesColor = config.Bind(
+            "Highlight",
+            "LockboxesColor",
+            HighlightColor.Value,
+            "Highlight color for lockboxes"
+        );
 
         //Softdependencies
         if (RiskOfOptionsCompat.IsInstalled)
@@ -146,8 +168,9 @@ public class ModConfig
                 HighlightScrapper,
                 HighlightShops,
                 HighlightDrones,
-                HightlightTurrets,
-                HighlightStealthedChests
+                HighlightTurrets,
+                HighlightStealthedChests,
+                HighlightLockboxes
             );
             RiskOfOptionsCompat.AddSliderNumberOptions(restartRequired: false, 0.1f, 5f, HideTime);
             RiskOfOptionsCompat.AddDropdownOptions(
@@ -158,7 +181,9 @@ public class ModConfig
                 HighlightScrapperColor,
                 HighlightDuplicatorColor,
                 HighlightDronesColor,
-                HighlightTurretsColor
+                HighlightTurretsColor,
+                HighlightStealthedChestsColor,
+                HighlightLockboxesColor
             );
         }
     }
@@ -175,7 +200,8 @@ public class ModConfig
             InteractableCategory.Duplicator => HighlightDuplicatorColor,
             InteractableCategory.Drone => HighlightDronesColor,
             InteractableCategory.Turret => HighlightTurretsColor,
-            InteractableCategory.StealthedChest => HighlightChestColor,
+            InteractableCategory.StealthedChest => HighlightStealthedChestsColor,
+            InteractableCategory.Lockbox => HighlightLockboxesColor,
             InteractableCategory.Shrine => HighlightColor,
             _ => HighlightColor
         };
@@ -190,8 +216,9 @@ public class ModConfig
             InteractableCategory.Scrapper => HighlightScrapper.Value,
             InteractableCategory.Duplicator => HighlightDuplicator.Value,
             InteractableCategory.Drone => HighlightDrones.Value,
-            InteractableCategory.Turret => HightlightTurrets.Value,
+            InteractableCategory.Turret => HighlightTurrets.Value,
             InteractableCategory.StealthedChest => HighlightStealthedChests.Value,
+            InteractableCategory.Lockbox => HighlightLockboxes.Value,
             InteractableCategory.Shrine => false,
             _ => false
         };

@@ -17,7 +17,7 @@ public static class InteractableStateHandler
     public static void Reset()
     {
         // Remove highlights from tracked resources
-        HighlightHandler.Disable([.. InteractablesToHighlight]);
+        HighlightHandler.Disable([.. InteractablesToHighlight, ..TrackedSceneInteractables, ..TrackedInteractables]);
 
         TrackedSceneInteractables.Clear();
         InteractablesToHighlight.Clear();

@@ -34,15 +34,15 @@ public static class Constants
 
     public static HighlightableResource[] LockboxResourcesPaths =
     [
-        new("RoR2/Base/TreasureCache/Lockbox.prefab", InteractableCategory.Chest),
-        new("RoR2/DLC1/TreasureCacheVoid/LockboxVoid.prefab", InteractableCategory.Chest),
+        new("RoR2/Base/TreasureCache/Lockbox.prefab", InteractableCategory.Lockbox),
+        new("RoR2/DLC1/TreasureCacheVoid/LockboxVoid.prefab", InteractableCategory.Lockbox),
     ];
 
     public static HighlightableResource[] StealthedChestResourcePaths =
     [
         new(
             "RoR2/Base/Chest1StealthedVariant/Chest1StealthedVariant.prefab",
-            InteractableCategory.Chest
+            InteractableCategory.StealthedChest
         ),
     ];
 
