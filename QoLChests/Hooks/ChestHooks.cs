@@ -1,7 +1,6 @@
 using Faust.QoLChests.Components;
 using Faust.QoLChests.Configs;
 using Faust.QoLChests.Handlers;
-using Faust.Shared;
 using RoR2;
 
 namespace Faust.QoLChests.Hooks;
@@ -40,7 +39,7 @@ public static class ChestHooks
 
     private static void RouletteOpened(
         On.RoR2.RouletteChestController.Opened.orig_OnEnter orig,
-        EntityStates.EntityState self
+        RouletteChestController.Opened self
     )
     {
         orig(self);

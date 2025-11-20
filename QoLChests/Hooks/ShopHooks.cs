@@ -23,11 +23,11 @@ public static class ShopHooks
     private static void MultiShopControllerOnPurchase(
         On.RoR2.MultiShopController.orig_OnPurchase orig,
         MultiShopController self,
-        Interactor interactor,
-        PurchaseInteraction purchaseInteraction
+        CostTypeDef.PayCostContext payCostContext,
+        CostTypeDef.PayCostResults payCostResult
     )
     {
-        orig(self, interactor, purchaseInteraction);
+        orig(self, payCostContext, payCostResult);
         if (InteractableRegistry.IsBlackListed(self.gameObject.name))
             return;
 

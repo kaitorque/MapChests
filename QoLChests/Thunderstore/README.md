@@ -8,6 +8,10 @@ For feature suggestions or bug reports go [here](https://github.com/Faustvii/R2M
 
 ## Changelog
 
+### 1.3.0
+
+- Update to the new Alloy Collective update.
+
 ### 1.2.4
 
 - Fix uploaded version (1.2.3 did not contain the updated changes)
