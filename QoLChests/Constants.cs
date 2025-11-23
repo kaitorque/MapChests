@@ -63,10 +63,14 @@ public static class Constants
             "RoR2/DLC1/FreeChestTerminalShippingDrone/FreeChestTerminalShippingDrone.prefab",
             InteractableCategory.Shop
         ),
+        new("RoR2/DLC3/TripleDroneShopTerminal/TripleDroneShopTerminal.prefab", InteractableCategory.Shop),
+        new("RoR2/DLC3/TemporaryItemsDistributor/TemporaryItemsShopTerminal.prefab", InteractableCategory.Shop),
     ];
+
     public static HighlightableResource[] ScrapperResourcePaths =
     [
         new("RoR2/Base/Scrapper/Scrapper.prefab", InteractableCategory.Scrapper),
+        new("RoR2/DLC3/DroneScrapper/DroneScrapper.prefab", InteractableCategory.Scrapper),
     ];
 
     public static HighlightableResource[] DuplicatorResourcesPaths =
@@ -89,6 +93,15 @@ public static class Constants
         new("RoR2/Base/Drones/FlameDroneBroken.prefab", InteractableCategory.Drone),
         new("RoR2/Base/Drones/MegaDroneBroken.prefab", InteractableCategory.Drone),
         new("RoR2/Base/Drones/MissileDroneBroken.prefab", InteractableCategory.Drone),
+        new("RoR2/DLC3/Drones/BombardmentDroneBroken.prefab", InteractableCategory.Drone),
+        new("RoR2/DLC3/Drones/CleanupDroneBroken.prefab", InteractableCategory.Drone),
+        new("RoR2/DLC3/Drones/CopycatDroneBroken.prefab", InteractableCategory.Drone),
+        new("RoR2/DLC3/Drones/HaulerDroneBroken.prefab", InteractableCategory.Drone),
+        new("RoR2/DLC3/Drones/JailerDroneBroken.prefab", InteractableCategory.Drone),
+        new("RoR2/DLC3/Drones/JunkDroneBroken.prefab", InteractableCategory.Drone),
+        new("RoR2/DLC3/Drones/RechargeDroneBroken.prefab", InteractableCategory.Drone),
+        new("RoR2/DLC3/DroneCombinerStation/DroneCombinerStation.prefab", InteractableCategory.Drone),
+        new("RoR2/DLC3/DroneAssemblyStation/DroneAssemblyStation.prefab", InteractableCategory.Drone),
     ];
 
     public static HighlightableResource[] TurrentResourcePaths =
