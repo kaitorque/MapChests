@@ -37,7 +37,8 @@ public class ModConfig
         HighlightDrones,
         HighlightTurrets,
         HighlightStealthedChests,
-        HighlightLockboxes;
+        HighlightLockboxes,
+        DoNotHideAsDrifter;
 
     public ConfigEntry<float> HideTime;
     public ConfigEntry<ConfigHighlightColor> HighlightColor,
@@ -68,6 +69,14 @@ public class ModConfig
             false,
             "Remove highlight when used"
         );
+
+        DoNotHideAsDrifter = config.Bind(
+            "Highlight",
+            "DoNotHideAsDrifter",
+            false,
+            "Do not hide used chests as Drifter"
+        );
+
         HighlightChests = config.Bind(
             "Highlight",
             "Chest",
@@ -159,7 +168,8 @@ public class ModConfig
                 HideEmptyChests,
                 HideUsedShops,
                 FadeInsteadOfHide,
-                RemoveHighlightFromUsed
+                RemoveHighlightFromUsed,
+                DoNotHideAsDrifter
             );
             RiskOfOptionsCompat.AddCheckboxOptions(
                 restartRequired: false,

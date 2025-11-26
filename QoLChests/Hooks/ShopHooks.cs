@@ -14,10 +14,101 @@ public static class ShopHooks
     public static void Register()
     {
         On.RoR2.ShopTerminalBehavior.SetHasBeenPurchased += SetHasBeenPurchased;
+        On.RoR2.PurchaseInteraction.OnInteractionBegin += PurchaseInteractionOnInteractionBegin;
 
         #region Host only hooks
         On.RoR2.MultiShopController.OnPurchase += MultiShopControllerOnPurchase;
         #endregion
+    }
+
+    private static void PurchaseInteractionOnInteractionBegin(On.RoR2.PurchaseInteraction.orig_OnInteractionBegin orig, PurchaseInteraction self, Interactor activator)
+    {
+        orig(self, activator);
+        Log.LogDebug("PurchaseInteraction_OnInteractionBegin called");
+        if (InteractableRegistry.IsBlackListed(self.gameObject.name))
+            return;
+
+        Log.LogDebug(
+            $"PurchaseInteraction_OnInteractionBegin - {self.gameObject.name} - Cost: {self.cost} - NetworkAvailable: {self.Networkavailable}"
+        );
+
+        if (self.Networkavailable)
+            return;
+
+        var interactableCategoryMarker = self.GetComponent<InteractableHighlightCategoryMarker>();
+        if (!interactableCategoryMarker)
+            return;
+
+        Log.LogDebug(
+                 $"PurchaseInteraction_OnInteractionBegin - Hiding interactable of category: {interactableCategoryMarker.Category}"
+        );
+
+        if (interactableCategoryMarker.Category == InteractableCategory.Shop && self.gameObject.name.Contains("TripleDroneShopTerminal"))
+        {
+            var droneController = FindDroneMultishopController(self);
+            if (!droneController)
+                return;
+
+            var controllerModelLocator = droneController.GetComponent<ModelLocator>();
+            if (!controllerModelLocator)
+                return;
+
+            droneController.gameObject.AddComponent<InteractableUsed>();
+            VisibilityHandler.Hide(
+                interactableCategoryMarker.Category,
+                self.gameObject,
+                droneController.gameObject,
+                controllerModelLocator.modelTransform.gameObject
+            );
+        }
+
+        VisibilityHandler.Hide(interactableCategoryMarker.Category, self.gameObject);
+        if (!self.gameObject.GetComponent<InteractableUsed>())
+            self.gameObject.AddComponent<InteractableUsed>();
+
+        if (ModConfig.Instance.RemoveHighlightFromUsed.Value)
+        {
+            Log.LogDebug(
+                $"PurchaseInteraction_OnInteractionBegin - Removing highlight from used interactable: {self.gameObject.name}"
+            );
+            var disabledHighlights = HighlightHandler.Disable(self.gameObject);
+            Log.LogDebug(
+                $"PurchaseInteraction_OnInteractionBegin - Disabled {disabledHighlights.Length} highlights"
+            );
+        }
+    }
+
+    private static DroneVendorMultiShopController FindDroneMultishopController(PurchaseInteraction terminalBehavior)
+    {
+        DroneVendorMultiShopController[] allControllers = Object.FindObjectsOfType<DroneVendorMultiShopController>();
+
+        DroneVendorMultiShopController closestController = null;
+        float minDistance = float.MaxValue;
+        float maxDistance = 4.3f; // This seems to be max distance between terminal and controller
+
+        foreach (var controller in allControllers)
+        {
+            Log.LogDebug(
+                $"Checking DroneVendorMultiShopController: {controller.gameObject.name} - Available: {controller.available} - NetworkAvailable: {controller.Networkavailable}"
+            );
+
+            var distance = Vector3.Distance(
+                terminalBehavior.transform.position,
+                controller.transform.position
+            );
+
+            // If the distance is within the max distance and less than the current min distance, update the closest controller
+            if (distance < maxDistance && distance < minDistance)
+            {
+                minDistance = distance;
+                closestController = controller;
+            }
+        }
+        Log.LogDebug(
+            $"Found closest DroneVendorMultiShopController: {closestController?.gameObject.name} - Distance: {minDistance}"
+        );
+        // Return the closest controller within range, or null if none are found
+        return closestController;
     }
 
     private static void MultiShopControllerOnPurchase(

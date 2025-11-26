@@ -8,6 +8,13 @@ For feature suggestions or bug reports go [here](https://github.com/Faustvii/R2M
 
 ## Changelog
 
+### 1.3.1
+
+This release might have unexpected bugs or issues when playing as drifter. (Hopefully better than the current state though)
+
+- Added missing Alloy Collective interactables to be highlighted
+- Added a setting to stop hide of used interactbles from happening when playing as drifter. (First iteration)
+
 ### 1.3.0
 
 - Update to the new Alloy Collective update.

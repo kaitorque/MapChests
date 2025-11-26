@@ -24,14 +24,14 @@ public static class ChestHooks
             return;
 
         self.outer.gameObject.AddComponent<InteractableUsed>();
-        if (ModConfig.Instance.HideEmptyChests.Value)
-        {
-            VisibilityHandler.Hide(
-                self.outer.gameObject,
-                self.outer.commonComponents.modelLocator.modelTransform.gameObject
-            );
-        }
-        else if (ModConfig.Instance.RemoveHighlightFromUsed.Value)
+
+        VisibilityHandler.Hide(
+            InteractableCategory.Chest,
+            self.outer.gameObject,
+            self.outer.commonComponents.modelLocator.modelTransform.gameObject
+        );
+
+        if (ModConfig.Instance.RemoveHighlightFromUsed.Value)
         {
             HighlightHandler.Disable(self.outer.gameObject);
         }
@@ -47,11 +47,9 @@ public static class ChestHooks
             return;
 
         self.outer.gameObject.AddComponent<InteractableUsed>();
-        if (ModConfig.Instance.HideEmptyChests.Value)
-        {
-            VisibilityHandler.Hide(self.outer.gameObject);
-        }
-        else if (ModConfig.Instance.RemoveHighlightFromUsed.Value)
+        VisibilityHandler.Hide(InteractableCategory.Chest, self.outer.gameObject);
+
+        if (ModConfig.Instance.RemoveHighlightFromUsed.Value)
         {
             HighlightHandler.Disable(self.outer.gameObject);
         }

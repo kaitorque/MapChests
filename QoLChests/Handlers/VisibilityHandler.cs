@@ -1,5 +1,6 @@
 using Faust.QoLChests.Components;
 using Faust.QoLChests.Configs;
+using Faust.Shared;
 using RoR2;
 using UnityEngine;
 
@@ -9,13 +10,17 @@ public static class VisibilityHandler
 {
     public static void Hide(InteractableCategory category, params GameObject[] gameObjects)
     {
-        if (ModConfig.Instance.IsCategoryHideEnabled(category))
+        var doNotHideAsDrifter = ModConfig.Instance.DoNotHideAsDrifter.Value && CharacterStateHandler.IsDrifter;
+        Log.LogDebug(
+            $"VisibilityHandler.Hide - Category: {category} - DoNotHideAsDrifter: {doNotHideAsDrifter} - IsDrifter: {CharacterStateHandler.IsDrifter}"
+        );
+        if (ModConfig.Instance.IsCategoryHideEnabled(category) && !doNotHideAsDrifter)
         {
             Hide(gameObjects);
         }
     }
 
-    public static void Hide(params GameObject[] gameObjects)
+    private static void Hide(params GameObject[] gameObjects)
     {
         if (ModConfig.Instance.FadeInsteadOfHide.Value)
         {
