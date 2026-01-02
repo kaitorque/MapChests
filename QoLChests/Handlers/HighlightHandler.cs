@@ -54,6 +54,10 @@ public static class HighlightHandler
         highlight.enabled = true;
         highlight.highlightColor = Highlight.HighlightColor.custom;
         highlight.CustomColor = Constants.GetColor(highlightConfigColor);
+        if (highlight.targetRenderer == null)
+        {
+            Log.LogWarning($"Highlight on {interactable.name} has null targetRenderer - highlight probably won't work");
+        }
     }
 
     public static Highlight[] Disable(GameObject[] gameObject)

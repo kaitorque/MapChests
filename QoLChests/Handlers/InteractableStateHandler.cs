@@ -86,6 +86,7 @@ public static class InteractableStateHandler
     {
         // Load highlightable resources
         AddResourcesToHighlights(Constants.ChestResourcesPaths);
+        AddResourcesToHighlights(Constants.BarrelResourcesPaths);
         AddResourcesToHighlights(Constants.LockboxResourcesPaths);
         AddResourcesToHighlights(Constants.StealthedChestResourcePaths);
         AddResourcesToHighlights(Constants.ShopResourcePaths);
@@ -94,6 +95,7 @@ public static class InteractableStateHandler
         AddResourcesToHighlights(Constants.DroneResourcesPaths);
         AddResourcesToHighlights(Constants.TurrentResourcePaths);
         AddResourcesToHighlights(Constants.ArtifactOfDevotionResourcePaths);
+        AddResourcesToHighlights(Constants.ShrineResourcePaths);
     }
 
     private static void AddResourcesToHighlights(HighlightableResource[] resources)

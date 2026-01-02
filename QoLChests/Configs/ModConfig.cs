@@ -28,9 +28,13 @@ public class ModConfig
 
     public ConfigEntry<bool> HideEmptyChests,
         HideUsedShops,
+        HideUsedChests,
+        HideUsedBarrels,
         RemoveHighlightFromUsed,
         FadeInsteadOfHide,
-        HighlightChests,
+        DoNotHideAsDrifter;
+
+    public ConfigEntry<bool> HighlightChests,
         HighlightShops,
         HighlightScrapper,
         HighlightDuplicator,
@@ -38,7 +42,10 @@ public class ModConfig
         HighlightTurrets,
         HighlightStealthedChests,
         HighlightLockboxes,
-        DoNotHideAsDrifter;
+        HighlightBarrels,
+        HighlightPressurePlates,
+        HighlightNewtStatues,
+        HighlightShrines;
 
     public ConfigEntry<float> HideTime;
     public ConfigEntry<ConfigHighlightColor> HighlightColor,
@@ -49,57 +56,35 @@ public class ModConfig
         HighlightDronesColor,
         HighlightTurretsColor,
         HighlightStealthedChestsColor,
-        HighlightLockboxesColor;
+        HighlightLockboxesColor,
+        HighlightBarrelColor,
+        HighlightNewtStatueColor,
+        HighlightPressurePlateColor,
+        HighlightShrineColor;
 
     private ModConfig(ConfigFile config)
     {
-        HideEmptyChests = config.Bind(
-            "Hide",
-            "Chest",
-            true,
-            "Hides empty chests after a few seconds"
-        );
+        HideEmptyChests = config.Bind("Hide", "Chest", true, "Hides empty chests after a few seconds");
         HideUsedShops = config.Bind("Hide", "Shops", true, "Hides used shops after a few seconds");
-        HideTime = config.Bind("Hide", "Time", 1f, "Time before stuff is hidden");
+        HideUsedBarrels = config.Bind("Hide", "Barrels", true, "Hides used barrels after a few seconds");
+
+        RemoveHighlightFromUsed = config.Bind("Highlight", "RemoveWhenUsed", false, "Remove highlight when used");
+        DoNotHideAsDrifter = config.Bind("Highlight", "DoNotHideAsDrifter", false, "Do not hide used chests as Drifter");
         FadeInsteadOfHide = config.Bind("Hide", "Fade", false, "Fade instead of hiding");
+        HideTime = config.Bind("Hide", "Time", 1f, "Time before stuff is hidden");
 
-        RemoveHighlightFromUsed = config.Bind(
-            "Highlight",
-            "RemoveWhenUsed",
-            false,
-            "Remove highlight when used"
-        );
-
-        DoNotHideAsDrifter = config.Bind(
-            "Highlight",
-            "DoNotHideAsDrifter",
-            false,
-            "Do not hide used chests as Drifter"
-        );
-
-        HighlightChests = config.Bind(
-            "Highlight",
-            "Chest",
-            true,
-            "Highlight Chests (Chests, Barrels etc.)"
-        );
-        HighlightStealthedChests = config.Bind(
-            "Highlight",
-            "Stealthed Chests",
-            true,
-            "Highlight stealthed chests"
-        );
-        HighlightLockboxes = config.Bind(
-            "Highlight",
-            "Lockboxes",
-            true,
-            "Highlight Lockboxes"
-        );
+        HighlightChests = config.Bind("Highlight", "Chest", true, "Highlight Chests");
+        HighlightStealthedChests = config.Bind("Highlight", "Stealthed Chests", true, "Highlight stealthed chests");
+        HighlightLockboxes = config.Bind("Highlight", "Lockboxes", true, "Highlight Lockboxes");
         HighlightDuplicator = config.Bind("Highlight", "Duplicator", true, "Highlight Duplicators");
         HighlightScrapper = config.Bind("Highlight", "Scrapper", true, "Highlight Scrappers");
         HighlightShops = config.Bind("Highlight", "Shops", true, "Highlight Shops");
         HighlightDrones = config.Bind("Highlight", "Drones", true, "Highlight Drones");
         HighlightTurrets = config.Bind("Highlight", "Turrets", true, "Highlight Turrets");
+        HighlightBarrels = config.Bind("Highlight", "Barrels", true, "Highlight Barrels");
+        HighlightNewtStatues = config.Bind("Highlight", "Newt Statues", true, "Highlight Newt Statues");
+        HighlightPressurePlates = config.Bind("Highlight", "Pressure Plates", true, "Highlight Pressure Plates");
+        HighlightShrines = config.Bind("Highlight", "Shrines", false, "Highlight Shrines");
 
         HighlightColor = config.Bind(
             "Highlight",
@@ -107,6 +92,7 @@ public class ModConfig
             ConfigHighlightColor.Yellow,
             "Highlight color for interactables (Only used for backwards compatibility)"
         );
+
         HighlightChestColor = config.Bind(
             "Highlight",
             "ChestColor",
@@ -157,6 +143,34 @@ public class ModConfig
             "Highlight color for lockboxes"
         );
 
+        HighlightBarrelColor = config.Bind(
+            "Highlight",
+            "BarrelColor",
+            HighlightColor.Value,
+            "Highlight color for barrels"
+        );
+
+        HighlightNewtStatueColor = config.Bind(
+            "Highlight",
+            "NewtStatueColor",
+            HighlightColor.Value,
+            "Highlight color for Newt Statues"
+        );
+
+        HighlightPressurePlateColor = config.Bind(
+            "Highlight",
+            "PressurePlateColor",
+            HighlightColor.Value,
+            "Highlight color for Pressure Plates"
+        );
+
+        HighlightShrineColor = config.Bind(
+            "Highlight",
+            "ShrineColor",
+            HighlightColor.Value,
+            "Highlight color for Shrines"
+        );
+
         //Softdependencies
         if (RiskOfOptionsCompat.IsInstalled)
         {
@@ -167,10 +181,12 @@ public class ModConfig
                 restartRequired: false,
                 HideEmptyChests,
                 HideUsedShops,
+                HideUsedBarrels,
                 FadeInsteadOfHide,
                 RemoveHighlightFromUsed,
                 DoNotHideAsDrifter
             );
+
             RiskOfOptionsCompat.AddCheckboxOptions(
                 restartRequired: false,
                 HighlightChests,
@@ -180,8 +196,13 @@ public class ModConfig
                 HighlightDrones,
                 HighlightTurrets,
                 HighlightStealthedChests,
-                HighlightLockboxes
+                HighlightLockboxes,
+                HighlightBarrels,
+                HighlightNewtStatues,
+                HighlightPressurePlates,
+                HighlightShrines
             );
+
             RiskOfOptionsCompat.AddSliderNumberOptions(restartRequired: false, 0.1f, 5f, HideTime);
             RiskOfOptionsCompat.AddDropdownOptions(
                 false,
@@ -193,7 +214,11 @@ public class ModConfig
                 HighlightDronesColor,
                 HighlightTurretsColor,
                 HighlightStealthedChestsColor,
-                HighlightLockboxesColor
+                HighlightLockboxesColor,
+                HighlightBarrelColor,
+                HighlightNewtStatueColor,
+                HighlightPressurePlateColor,
+                HighlightShrineColor
             );
         }
     }
@@ -212,7 +237,10 @@ public class ModConfig
             InteractableCategory.Turret => HighlightTurretsColor,
             InteractableCategory.StealthedChest => HighlightStealthedChestsColor,
             InteractableCategory.Lockbox => HighlightLockboxesColor,
-            InteractableCategory.Shrine => HighlightColor,
+            InteractableCategory.Barrel => HighlightBarrelColor,
+            InteractableCategory.NewtStatue => HighlightNewtStatueColor,
+            InteractableCategory.PressurePlate => HighlightPressurePlateColor,
+            InteractableCategory.Shrine => HighlightShrineColor,
             _ => HighlightColor
         };
     }
@@ -229,7 +257,10 @@ public class ModConfig
             InteractableCategory.Turret => HighlightTurrets.Value,
             InteractableCategory.StealthedChest => HighlightStealthedChests.Value,
             InteractableCategory.Lockbox => HighlightLockboxes.Value,
-            InteractableCategory.Shrine => false,
+            InteractableCategory.Barrel => HighlightBarrels.Value,
+            InteractableCategory.NewtStatue => HighlightNewtStatues.Value,
+            InteractableCategory.PressurePlate => HighlightPressurePlates.Value,
+            InteractableCategory.Shrine => HighlightShrines.Value,
             _ => false
         };
     }
@@ -241,6 +272,7 @@ public class ModConfig
             InteractableCategory.Chest => HideEmptyChests.Value,
             InteractableCategory.StealthedChest => HideEmptyChests.Value,
             InteractableCategory.Shop => HideUsedShops.Value,
+            InteractableCategory.Barrel => HideUsedBarrels.Value,
             _ => false
         };
     }

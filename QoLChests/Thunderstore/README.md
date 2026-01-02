@@ -8,6 +8,14 @@ For feature suggestions or bug reports go [here](https://github.com/Faustvii/R2M
 
 ## Changelog
 
+### 1.3.2
+
+- Added highlights to newt statues
+- Added highlights to pressure plates
+- Moved barrels into their own category
+- Fixed a null pointer happening sometimes in interactable spawn hooks.
+- Better handling of drifter detection (It might actually work now..)
+
 ### 1.3.1
 
 This release might have unexpected bugs or issues when playing as drifter. (Hopefully better than the current state though)

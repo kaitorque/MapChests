@@ -7,14 +7,12 @@ public static class Constants
 {
     public static HighlightableResource[] ChestResourcesPaths =
     [
-        new("RoR2/Base/Barrel1/Barrel1.prefab", InteractableCategory.Chest),
         new("RoR2/Base/CasinoChest/CasinoChest.prefab", InteractableCategory.Chest),
         new("RoR2/Base/CategoryChest/CategoryChestDamage.prefab", InteractableCategory.Chest),
         new("RoR2/Base/CategoryChest/CategoryChestHealing.prefab", InteractableCategory.Chest),
         new("RoR2/Base/CategoryChest/CategoryChestUtility.prefab", InteractableCategory.Chest),
         new("RoR2/Base/Chest1/Chest1.prefab", InteractableCategory.Chest),
         new("RoR2/Base/Chest2/Chest2.prefab", InteractableCategory.Chest),
-        new("RoR2/Base/EquipmentBarrel/EquipmentBarrel.prefab", InteractableCategory.Chest),
         new("RoR2/Base/GoldChest/GoldChest.prefab", InteractableCategory.Chest),
         new("RoR2/Base/LunarChest/LunarChest.prefab", InteractableCategory.Chest),
         new(
@@ -30,6 +28,12 @@ public static class Constants
             InteractableCategory.Chest
         ),
         new("RoR2/DLC1/VoidChest/VoidChest.prefab", InteractableCategory.Chest),
+    ];
+
+    public static HighlightableResource[] BarrelResourcesPaths =
+    [
+        new("RoR2/Base/Barrel1/Barrel1.prefab", InteractableCategory.Barrel),
+        new("RoR2/Base/EquipmentBarrel/EquipmentBarrel.prefab", InteractableCategory.Barrel),
     ];
 
     public static HighlightableResource[] LockboxResourcesPaths =
@@ -112,6 +116,36 @@ public static class Constants
     public static HighlightableResource[] ArtifactOfDevotionResourcePaths =
     [
         new("RoR2/CU8/LemurianEgg/LemurianEgg.prefab", InteractableCategory.Drone)
+    ];
+
+    public static HighlightableResource[] ShrineResourcePaths =
+    [
+        new("RoR2/Base/ShrineBlood/ShrineBlood.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineBlood/ShrineBloodSandy Variant.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineBlood/ShrineBloodSnowy Variant.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineBoss/ShrineBoss.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineBoss/ShrineBossSandy Variant.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineBoss/ShrineBossSnowy Variant.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineChance/ShrineChance.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineChance/ShrineChanceSandy Variant.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineChance/ShrineChanceSnowy Variant.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineCleanse/ShrineCleanse.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineCleanse/ShrineCleanseSandy Variant.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineCleanse/ShrineCleanseSnowy Variant.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineCombat/ShrineCombat.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineCombat/ShrineCombatSandy Variant.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineCombat/ShrineCombatSnowy Variant.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineGoldshoresAccess/ShrineGoldshoresAccess.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineHealing/ShrineHealing.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineRestack/ShrineRestack.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineRestack/ShrineRestackSandy Variant.prefab", InteractableCategory.Shrine),
+        new("RoR2/Base/ShrineRestack/ShrineRestackSnowy Variant.prefab", InteractableCategory.Shrine),
+
+        new("RoR2/DLC2/ShrineHalcyonite.prefab", InteractableCategory.Shrine),
+        new("RoR2/DLC2/ShrineColossusAccess.prefab", InteractableCategory.Shrine),
+        new("RoR2/DLC2/ShrineRebirth.prefab", InteractableCategory.Shrine),
+
+        new("RoR2/DLC3/ShrineCombatCollective.prefab", InteractableCategory.Shrine),
     ];
 
     public static Color32 GetColor(ConfigHighlightColor color) =>

@@ -14,11 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="RiskOfRain2.GameLibs" Version="1.4.0-r.0" />
+    <PackageReference Include="RiskOfRain2.GameLibs" Version="1.4.1-r.0" />
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
-    <PackageReference Include="BepInEx.Core" Version="5.4.19" />
+    <PackageReference Include="BepInEx.Core" Version="5.4.21" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
-    <PackageReference Include="MMHOOK.RoR2" Version="2025.11.19" />
+    <PackageReference Include="MMHOOK.RoR2" Version="2025.12.9" />
     <PackageReference Include="UnityEngine.Modules" Version="2021.3.33" />
   </ItemGroup>
 

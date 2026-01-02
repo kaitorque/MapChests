@@ -1,7 +1,7 @@
-using System.Linq;
 using Faust.QoLChests.Handlers;
-using Faust.Shared;
 using RoR2;
+
+namespace Faust.QoLChests.Hooks;
 
 public static class CharacterHooks
 {
@@ -9,44 +9,26 @@ public static class CharacterHooks
 
     public static void Register()
     {
-        CharacterBody.onBodyStartGlobal += IsPlayingAsDrifter;
+        On.RoR2.Run.Start += OnRunStart;
+        On.RoR2.Run.OnDestroy += OnRunOnDestroy;
+        On.RoR2.Run.BeginGameOver += OnRunBeginGameOver;
     }
 
-    private static void IsPlayingAsDrifter(CharacterBody body)
+    private static void OnRunBeginGameOver(On.RoR2.Run.orig_BeginGameOver orig, Run self, GameEndingDef gameEndingDef)
     {
-        if (!body.isPlayerControlled)
-            return;
+        orig(self, gameEndingDef);
+        CharacterStateHandler.OnRunBeginGameOver();
+    }
 
-        var master = body.master;
-        if (!master)
-            return;
+    private static void OnRunOnDestroy(On.RoR2.Run.orig_OnDestroy orig, Run self)
+    {
+        orig(self);
+        CharacterStateHandler.OnRunOnDestroy();
+    }
 
-        var pcmc = master.playerCharacterMasterController;
-        if (!pcmc)
-            return;
-
-        var networkUser = pcmc.networkUser;
-        if (!networkUser)
-            return;
-
-        var isLocalUser = LocalUserManager.readOnlyLocalUsersList.Any(lu => lu.currentNetworkUser == networkUser);
-
-        if (!isLocalUser)
-        {
-            Log.LogDebug(
-                $"CharacterBody.onBodyStartGlobal - Not the local player - Skipping Drifter check - isClient: {body.isClient} - isServer: {body.isServer}"
-            );
-            return;
-        }
-
-        var survivorIndex = SurvivorCatalog.GetSurvivorIndexFromBodyIndex(body.bodyIndex);
-
-        if ((int)survivorIndex == DrifterSurvivorIndex)
-        {
-            CharacterStateHandler.SetIsDrifter(true);
-            Log.LogDebug(
-                $"CharacterBody.onBodyStartGlobal - Drifter run detected - localPlayer: {body.isLocalPlayer} - isClient: {body.isClient} - isServer: {body.isServer}"
-            );
-        }
+    private static void OnRunStart(On.RoR2.Run.orig_Start orig, Run self)
+    {
+        orig(self);
+        CharacterStateHandler.OnRunStart();
     }
 }

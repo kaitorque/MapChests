@@ -17,7 +17,7 @@ namespace Faust.QoLChests
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "Faust";
         public const string PluginName = nameof(QoLChests);
-        public const string PluginVersion = "1.3.1";
+        public const string PluginVersion = "1.3.2";
 
         protected void Awake()
         {
@@ -30,6 +30,7 @@ namespace Faust.QoLChests
             ShopHooks.Register();
             SceneHooks.Register();
             InteractableSpawnHooks.Register();
+            CharacterHooks.Register();
 
             StarStorm2CompatHandler.Register();
             HunkCompatHandler.Register();

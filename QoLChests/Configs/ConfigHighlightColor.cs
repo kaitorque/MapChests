@@ -25,5 +25,8 @@ public enum InteractableCategory
     Turret = 5,
     StealthedChest = 6,
     Shrine = 7,
-    Lockbox = 8
+    Lockbox = 8,
+    Barrel = 9,
+    NewtStatue = 10,
+    PressurePlate = 11
 }

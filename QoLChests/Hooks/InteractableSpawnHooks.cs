@@ -4,6 +4,8 @@ using Faust.QoLChests.Handlers;
 using Faust.Shared;
 using RoR2;
 
+namespace Faust.QoLChests.Hooks;
+
 public static class InteractableSpawnHooks
 {
     public static void Register()
@@ -16,11 +18,28 @@ public static class InteractableSpawnHooks
         ClassicStageInfo self
     )
     {
+        Log.LogDebug("ClassicStageInfo.Start Hooked");
         orig(self);
+        Log.LogDebug("ClassicStageInfo.Start Original Complete");
+
+        Log.LogDebug("Processing InteractableSpawnCards for registered interactables");
+        if (!self.interactableDccsPool)
+        {
+            Log.LogWarning("interactableDccsPool null, skipping processing - highlights might not be working as intended");
+            return;
+        }
+        if (self.interactableDccsPool.poolCategories == null)
+        {
+            Log.LogWarning("interactableDccsPool.poolCategories null, skipping processing - highlights might not be working as intended");
+            return;
+        }
 
         var poolCategories = self.interactableDccsPool.poolCategories;
         var enabledDirectorCardSelections = poolCategories.SelectMany(x =>
             x.alwaysIncluded.Select(x => x.dccs)
+        );
+        Log.LogDebug(
+            $"Found {enabledDirectorCardSelections.Count()} always included DirectorCardSelections"
         );
         var anyIncludedIfCondtionsMet = false;
         foreach (var poolCategory in poolCategories.Select(x => x.includedIfConditionsMet))
@@ -36,12 +55,18 @@ public static class InteractableSpawnHooks
                 anyIncludedIfCondtionsMet = true;
             }
         }
+        Log.LogDebug(
+            $"After evaluating includedIfConditionsMet, found {enabledDirectorCardSelections.Count()} enabled DirectorCardSelections"
+        );
         if (!anyIncludedIfCondtionsMet)
         {
             enabledDirectorCardSelections = enabledDirectorCardSelections.Concat(
                 poolCategories.SelectMany(x => x.includedIfNoConditionsMet.Select(x => x.dccs))
             );
         }
+        Log.LogDebug(
+            $"After evaluating includedIfNoConditionsMet, found {enabledDirectorCardSelections.Count()} enabled DirectorCardSelections"
+        );
 
         var interactableSpawnCards = enabledDirectorCardSelections
             .SelectMany(x => x.categories)
@@ -50,6 +75,9 @@ public static class InteractableSpawnHooks
             .Where(x => x is InteractableSpawnCard)
             .Cast<InteractableSpawnCard>()
             .ToHashSet();
+        Log.LogDebug(
+            $"Total unique InteractableSpawnCards found in enabled DirectorCardSelections: {interactableSpawnCards.Count}"
+        );
 
         foreach (var isc in interactableSpawnCards)
         {
@@ -69,5 +97,6 @@ public static class InteractableSpawnHooks
                 }
             }
         }
+        Log.LogDebug("Finished processing InteractableSpawnCards");
     }
 }
