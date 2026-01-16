@@ -8,6 +8,11 @@ For feature suggestions or bug reports go [here](https://github.com/Faustvii/R2M
 
 ## Changelog
 
+### 1.3.3
+
+- Added support for interactables from Quality(Goorakh)
+- Added support for interactables from Sandswept
+
 ### 1.3.2
 
 - Added highlights to newt statues

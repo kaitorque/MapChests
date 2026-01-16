@@ -1,4 +1,5 @@
 using BepInEx.Configuration;
+using Faust.QoLChests.Handlers;
 using RoR2;
 
 namespace Faust.QoLChests.Hooks;

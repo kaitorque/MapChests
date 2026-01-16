@@ -25,7 +25,7 @@
   <Target Name="CopyFiles" BeforeTargets="Compile">
     <ItemGroup>
       <!-- This copies .cs files from Faust.Shared into Shared folder in the project, this makes it so we only have 1 dll and doesn't confuse compatability mods like RiskOfRain that tries to read mod guid from the calling Assembly which would've been Faust.Shared which doesn't have a mod -->
-      <MySourceFiles Include="$(SolutionDir)\Faust.Shared\Compatability\RiskOfOptionsCompat.cs;$(SolutionDir)\Faust.Shared\Compatability\StarStorm2Compat.cs;$(SolutionDir)\Faust.Shared\Compatability\HunkCompat.cs;$(SolutionDir)\Faust.Shared\Log.cs" />
+      <MySourceFiles Include="$(SolutionDir)\Faust.Shared\Compatability\RiskOfOptionsCompat.cs;$(SolutionDir)\Faust.Shared\Compatability\StarStorm2Compat.cs;$(SolutionDir)\Faust.Shared\Compatability\HunkCompat.cs;$(SolutionDir)\Faust.Shared\Log.cs;$(SolutionDir)\Faust.Shared\Compatability\QualityCompat.cs;$(SolutionDir)\Faust.Shared\Compatability\SandSweptCompat.cs;" />
     </ItemGroup>
 
     <Copy SourceFiles="@(MySourceFiles)" DestinationFiles="$(ProjectDir)\Shared\%(RecursiveDir)%(Filename)%(Extension)" UseHardlinksIfPossible="true" />

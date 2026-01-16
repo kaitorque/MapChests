@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Faust.QoLChests.Components;
 using Faust.QoLChests.Configs;
+using Faust.QoLChests.Handlers;
 using Faust.Shared;
 using RoR2;
 using UnityEngine;
