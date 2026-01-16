@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using BepInEx;
+using Faust.QoLChests.Compatability;
 using Faust.QoLChests.Configs;
 using Faust.QoLChests.Hooks;
 using Faust.Shared;
@@ -32,6 +33,7 @@ namespace Faust.QoLChests
             InteractableSpawnHooks.Register();
             CharacterHooks.Register();
 
+            QualityCompatHandler.Register();
             StarStorm2CompatHandler.Register();
             HunkCompatHandler.Register();
 

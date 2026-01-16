@@ -5,6 +5,7 @@ using Faust.QoLChests.Components;
 using Faust.QoLChests.Configs;
 using Faust.QoLChests.Handlers;
 using Faust.Shared;
+using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -17,7 +18,7 @@ public static class InteractableStateHandler
     public static void Reset()
     {
         // Remove highlights from tracked resources
-        HighlightHandler.Disable([.. InteractablesToHighlight, ..TrackedSceneInteractables, ..TrackedInteractables]);
+        HighlightHandler.Disable([.. InteractablesToHighlight, .. TrackedSceneInteractables, .. TrackedInteractables]);
 
         TrackedSceneInteractables.Clear();
         InteractablesToHighlight.Clear();
@@ -28,6 +29,37 @@ public static class InteractableStateHandler
     public static void Init()
     {
         LoadHighlightableResources();
+    }
+
+    public static void PostInit()
+    {
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        foreach (var assetBundle in AssetBundle.GetAllLoadedAssetBundles())
+        {
+            if (!AssetBundleRegistry.IsRegistered(assetBundle.name))
+                continue;
+
+            Log.LogDebug($"Processing AssetBundle: {assetBundle.name} ");
+            var assetSpawnCards = assetBundle.LoadAllAssets<SpawnCard>();
+            foreach (var spawnCard in assetSpawnCards)
+            {
+                Log.LogDebug($"Processing SpawnCard: {spawnCard.name} ");
+                if (InteractableRegistry.IsRegistered(spawnCard.prefab.name, out var category))
+                {
+                    if (!spawnCard.prefab.GetComponent<InteractableHighlightCategoryMarker>())
+                    {
+                        spawnCard.prefab.AddComponent<InteractableHighlightCategoryMarker>()
+                            .SetCategory(category);
+
+                        Log.LogDebug(
+                            $"Added category marker for registered modded interactable - {spawnCard.prefab.name} - Category: ({category})"
+                        );
+                    }
+                }
+            }
+        }
+        stopwatch.Stop();
+        Log.LogDebug($"{nameof(PostInit)} processing AssetBundles took {stopwatch.ElapsedMilliseconds}ms");
     }
 
     private static void TrackInteractables()
