@@ -10,8 +10,24 @@ For feature suggestions or bug reports go [here](https://github.com/Faustvii/R2M
 
 ### 1.3.3
 
+- **Breaking config change:** split Chest and Barrel settings into category-specific settings. Review the migration notes above after updating.
+- Added independent highlight, color, and hide settings for Equipment Barrels, Lunar Pods, and Void Cradles, plus separate hide behavior for Stealthed Chests.
+- Fixed Equipment Barrel hide behavior and Quality interactable classification.
 - Added support for interactables from Quality(Goorakh)
 - Added support for interactables from Sandswept
+
+#### Breaking configuration change in 1.3.3
+
+**This release splits chest and barrel categories and intentionally changes configuration entries. Review your QoLChests config after updating.**
+
+| Previous setting | Replacement / new behavior |
+| ---------------- | -------------------------- |
+| `Hide → Chest` | Still controls standard chests; use `Hide → Stealthed Chests`, `Hide → Lunar Pod`, and `Hide → Void Cradle` for those categories. |
+| `Hide → Barrels` | Still controls standard barrels; `Hide → Equipment Barrel` controls equipment barrels. |
+| `Highlight → Chest` | Still controls standard chests; use `Highlight → Lunar Pod` and `Highlight → Void Cradle` for those categories. |
+| `Highlight → Barrels` | Still controls standard barrels; `Highlight → Equipment Barrel` controls equipment barrels. |
+| `Highlight → ChestColor` | Still controls standard chests; use `Highlight → Lunar Pod Color` and `Highlight → Void Cradle Color` for those categories. |
+| `Highlight → BarrelColor` | Still controls standard barrels; use `Highlight → Equipment Barrel Color` for equipment barrels. |
 
 ### 1.3.2
 

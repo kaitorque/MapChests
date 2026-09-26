@@ -17,11 +17,11 @@ internal static class QualityCompatHandler
 
         InteractableRegistry.Register("QualityChest1", InteractableCategory.Chest);
         InteractableRegistry.Register("QualityChest2", InteractableCategory.Chest);
-        InteractableRegistry.Register("QualityEquipmentBarrel", InteractableCategory.Barrel);
+        InteractableRegistry.Register("QualityEquipmentBarrel", InteractableCategory.EquipmentBarrel);
 
         InteractableRegistry.Register("QualityDuplicator", InteractableCategory.Duplicator);
-        InteractableRegistry.Register("QualityDuplicatorLarge", InteractableCategory.Barrel);
-        InteractableRegistry.Register("QualityDuplicatorMilitary", InteractableCategory.Barrel);
-        InteractableRegistry.Register("QualityDuplicatorWild", InteractableCategory.Barrel);
+        InteractableRegistry.Register("QualityDuplicatorLarge", InteractableCategory.Duplicator);
+        InteractableRegistry.Register("QualityDuplicatorMilitary", InteractableCategory.Duplicator);
+        InteractableRegistry.Register("QualityDuplicatorWild", InteractableCategory.Duplicator);
     }
 }

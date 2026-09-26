@@ -28,8 +28,11 @@ public class ModConfig
 
     public ConfigEntry<bool> HideEmptyChests,
         HideUsedShops,
-        HideUsedChests,
         HideUsedBarrels,
+        HideUsedEquipmentBarrels,
+        HideUsedStealthedChests,
+        HideUsedLunarPods,
+        HideUsedVoidCradles,
         RemoveHighlightFromUsed,
         FadeInsteadOfHide,
         DoNotHideAsDrifter;
@@ -43,6 +46,9 @@ public class ModConfig
         HighlightStealthedChests,
         HighlightLockboxes,
         HighlightBarrels,
+        HighlightEquipmentBarrel,
+        HighlightLunarPod,
+        HighlightVoidCradle,
         HighlightPressurePlates,
         HighlightNewtStatues,
         HighlightShrines;
@@ -58,6 +64,9 @@ public class ModConfig
         HighlightStealthedChestsColor,
         HighlightLockboxesColor,
         HighlightBarrelColor,
+        HighlightEquipmentBarrelColor,
+        HighlightLunarPodColor,
+        HighlightVoidCradleColor,
         HighlightNewtStatueColor,
         HighlightPressurePlateColor,
         HighlightShrineColor;
@@ -67,6 +76,31 @@ public class ModConfig
         HideEmptyChests = config.Bind("Hide", "Chest", true, "Hides empty chests after a few seconds");
         HideUsedShops = config.Bind("Hide", "Shops", true, "Hides used shops after a few seconds");
         HideUsedBarrels = config.Bind("Hide", "Barrels", true, "Hides used barrels after a few seconds");
+        // New category defaults inherit the previous shared settings for existing configs.
+        HideUsedEquipmentBarrels = config.Bind(
+            "Hide",
+            "Equipment Barrel",
+            HideUsedBarrels.Value,
+            "Hides used equipment barrels after a few seconds"
+        );
+        HideUsedStealthedChests = config.Bind(
+            "Hide",
+            "Stealthed Chests",
+            HideEmptyChests.Value,
+            "Hides used stealthed chests after a few seconds"
+        );
+        HideUsedLunarPods = config.Bind(
+            "Hide",
+            "Lunar Pod",
+            HideEmptyChests.Value,
+            "Hides used lunar pods after a few seconds"
+        );
+        HideUsedVoidCradles = config.Bind(
+            "Hide",
+            "Void Cradle",
+            HideEmptyChests.Value,
+            "Hides used void cradles after a few seconds"
+        );
 
         RemoveHighlightFromUsed = config.Bind("Highlight", "RemoveWhenUsed", false, "Remove highlight when used");
         DoNotHideAsDrifter = config.Bind("Highlight", "DoNotHideAsDrifter", false, "Do not hide used chests as Drifter");
@@ -74,7 +108,12 @@ public class ModConfig
         HideTime = config.Bind("Hide", "Time", 1f, "Time before stuff is hidden");
 
         HighlightChests = config.Bind("Highlight", "Chest", true, "Highlight Chests");
-        HighlightStealthedChests = config.Bind("Highlight", "Stealthed Chests", true, "Highlight stealthed chests");
+        HighlightStealthedChests = config.Bind(
+            "Highlight",
+            "Stealthed Chests",
+            true,
+            "Highlight stealthed chests"
+        );
         HighlightLockboxes = config.Bind("Highlight", "Lockboxes", true, "Highlight Lockboxes");
         HighlightDuplicator = config.Bind("Highlight", "Duplicator", true, "Highlight Duplicators");
         HighlightScrapper = config.Bind("Highlight", "Scrapper", true, "Highlight Scrappers");
@@ -82,6 +121,24 @@ public class ModConfig
         HighlightDrones = config.Bind("Highlight", "Drones", true, "Highlight Drones");
         HighlightTurrets = config.Bind("Highlight", "Turrets", true, "Highlight Turrets");
         HighlightBarrels = config.Bind("Highlight", "Barrels", true, "Highlight Barrels");
+        HighlightEquipmentBarrel = config.Bind(
+            "Highlight",
+            "Equipment Barrel",
+            HighlightBarrels.Value,
+            "Highlight equipment barrels"
+        );
+        HighlightLunarPod = config.Bind(
+            "Highlight",
+            "Lunar Pod",
+            HighlightChests.Value,
+            "Highlight lunar pods"
+        );
+        HighlightVoidCradle = config.Bind(
+            "Highlight",
+            "Void Cradle",
+            HighlightChests.Value,
+            "Highlight void cradles"
+        );
         HighlightNewtStatues = config.Bind("Highlight", "Newt Statues", true, "Highlight Newt Statues");
         HighlightPressurePlates = config.Bind("Highlight", "Pressure Plates", true, "Highlight Pressure Plates");
         HighlightShrines = config.Bind("Highlight", "Shrines", false, "Highlight Shrines");
@@ -150,6 +207,27 @@ public class ModConfig
             "Highlight color for barrels"
         );
 
+        HighlightEquipmentBarrelColor = config.Bind(
+            "Highlight",
+            "EquipmentBarrelColor",
+            HighlightBarrelColor.Value,
+            "Highlight color for equipment barrels"
+        );
+
+        HighlightLunarPodColor = config.Bind(
+            "Highlight",
+            "LunarPodColor",
+            HighlightChestColor.Value,
+            "Highlight color for lunar pods"
+        );
+
+        HighlightVoidCradleColor = config.Bind(
+            "Highlight",
+            "VoidCradleColor",
+            HighlightChestColor.Value,
+            "Highlight color for void cradles"
+        );
+
         HighlightNewtStatueColor = config.Bind(
             "Highlight",
             "NewtStatueColor",
@@ -182,6 +260,10 @@ public class ModConfig
                 HideEmptyChests,
                 HideUsedShops,
                 HideUsedBarrels,
+                HideUsedEquipmentBarrels,
+                HideUsedStealthedChests,
+                HideUsedLunarPods,
+                HideUsedVoidCradles,
                 FadeInsteadOfHide,
                 RemoveHighlightFromUsed,
                 DoNotHideAsDrifter
@@ -198,6 +280,9 @@ public class ModConfig
                 HighlightStealthedChests,
                 HighlightLockboxes,
                 HighlightBarrels,
+                HighlightEquipmentBarrel,
+                HighlightLunarPod,
+                HighlightVoidCradle,
                 HighlightNewtStatues,
                 HighlightPressurePlates,
                 HighlightShrines
@@ -216,6 +301,9 @@ public class ModConfig
                 HighlightStealthedChestsColor,
                 HighlightLockboxesColor,
                 HighlightBarrelColor,
+                HighlightEquipmentBarrelColor,
+                HighlightLunarPodColor,
+                HighlightVoidCradleColor,
                 HighlightNewtStatueColor,
                 HighlightPressurePlateColor,
                 HighlightShrineColor
@@ -238,6 +326,9 @@ public class ModConfig
             InteractableCategory.StealthedChest => HighlightStealthedChestsColor,
             InteractableCategory.Lockbox => HighlightLockboxesColor,
             InteractableCategory.Barrel => HighlightBarrelColor,
+            InteractableCategory.EquipmentBarrel => HighlightEquipmentBarrelColor,
+            InteractableCategory.LunarPod => HighlightLunarPodColor,
+            InteractableCategory.VoidCradle => HighlightVoidCradleColor,
             InteractableCategory.NewtStatue => HighlightNewtStatueColor,
             InteractableCategory.PressurePlate => HighlightPressurePlateColor,
             InteractableCategory.Shrine => HighlightShrineColor,
@@ -258,6 +349,9 @@ public class ModConfig
             InteractableCategory.StealthedChest => HighlightStealthedChests.Value,
             InteractableCategory.Lockbox => HighlightLockboxes.Value,
             InteractableCategory.Barrel => HighlightBarrels.Value,
+            InteractableCategory.EquipmentBarrel => HighlightEquipmentBarrel.Value,
+            InteractableCategory.LunarPod => HighlightLunarPod.Value,
+            InteractableCategory.VoidCradle => HighlightVoidCradle.Value,
             InteractableCategory.NewtStatue => HighlightNewtStatues.Value,
             InteractableCategory.PressurePlate => HighlightPressurePlates.Value,
             InteractableCategory.Shrine => HighlightShrines.Value,
@@ -270,9 +364,12 @@ public class ModConfig
         return category switch
         {
             InteractableCategory.Chest => HideEmptyChests.Value,
-            InteractableCategory.StealthedChest => HideEmptyChests.Value,
+            InteractableCategory.StealthedChest => HideUsedStealthedChests.Value,
             InteractableCategory.Shop => HideUsedShops.Value,
             InteractableCategory.Barrel => HideUsedBarrels.Value,
+            InteractableCategory.EquipmentBarrel => HideUsedEquipmentBarrels.Value,
+            InteractableCategory.LunarPod => HideUsedLunarPods.Value,
+            InteractableCategory.VoidCradle => HideUsedVoidCradles.Value,
             _ => false
         };
     }

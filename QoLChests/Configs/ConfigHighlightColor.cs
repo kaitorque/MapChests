@@ -28,5 +28,8 @@ public enum InteractableCategory
     Lockbox = 8,
     Barrel = 9,
     NewtStatue = 10,
-    PressurePlate = 11
+    PressurePlate = 11,
+    EquipmentBarrel = 12,
+    LunarPod = 13,
+    VoidCradle = 14
 }

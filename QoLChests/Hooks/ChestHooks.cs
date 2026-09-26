@@ -1,6 +1,7 @@
 using Faust.QoLChests.Components;
 using Faust.QoLChests.Configs;
 using Faust.QoLChests.Handlers;
+using Faust.Shared;
 using RoR2;
 
 namespace Faust.QoLChests.Hooks;
@@ -25,11 +26,22 @@ public static class ChestHooks
 
         self.outer.gameObject.AddComponent<InteractableUsed>();
 
-        VisibilityHandler.Hide(
-            InteractableCategory.Chest,
-            self.outer.gameObject,
-            self.outer.commonComponents.modelLocator.modelTransform.gameObject
-        );
+        var categoryMarker =
+            self.outer.gameObject.GetComponent<InteractableHighlightCategoryMarker>();
+        if (categoryMarker)
+        {
+            VisibilityHandler.Hide(
+                categoryMarker.Category,
+                self.outer.gameObject,
+                self.outer.commonComponents.modelLocator.modelTransform.gameObject
+            );
+        }
+        else
+        {
+            Log.LogWarning(
+                $"Opened barrel {self.outer.gameObject.name} has no interactable category marker; skipping hide"
+            );
+        }
 
         if (ModConfig.Instance.RemoveHighlightFromUsed.Value)
         {

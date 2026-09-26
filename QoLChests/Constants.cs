@@ -14,7 +14,7 @@ public static class Constants
         new("RoR2/Base/Chest1/Chest1.prefab", InteractableCategory.Chest),
         new("RoR2/Base/Chest2/Chest2.prefab", InteractableCategory.Chest),
         new("RoR2/Base/GoldChest/GoldChest.prefab", InteractableCategory.Chest),
-        new("RoR2/Base/LunarChest/LunarChest.prefab", InteractableCategory.Chest),
+        new("RoR2/Base/LunarChest/LunarChest.prefab", InteractableCategory.LunarPod),
         new(
             "RoR2/DLC1/CategoryChest2/CategoryChest2Damage Variant.prefab",
             InteractableCategory.Chest
@@ -27,13 +27,16 @@ public static class Constants
             "RoR2/DLC1/CategoryChest2/CategoryChest2Utility Variant.prefab",
             InteractableCategory.Chest
         ),
-        new("RoR2/DLC1/VoidChest/VoidChest.prefab", InteractableCategory.Chest),
+        new("RoR2/DLC1/VoidChest/VoidChest.prefab", InteractableCategory.VoidCradle),
     ];
 
     public static HighlightableResource[] BarrelResourcesPaths =
     [
         new("RoR2/Base/Barrel1/Barrel1.prefab", InteractableCategory.Barrel),
-        new("RoR2/Base/EquipmentBarrel/EquipmentBarrel.prefab", InteractableCategory.Barrel),
+        new(
+            "RoR2/Base/EquipmentBarrel/EquipmentBarrel.prefab",
+            InteractableCategory.EquipmentBarrel
+        ),
     ];
 
     public static HighlightableResource[] LockboxResourcesPaths =
