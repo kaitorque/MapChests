@@ -25,4 +25,4 @@ target = "QoLChests.dll"
 [publish]
 repository = "https://thunderstore.io"
 communities = ["riskofrain2"]
-categories = ["mods", "tweaks", "client-side", "seekers-of-the-storm"]
+categories = ["mods", "tweaks", "client-side", "alloyed-collective"]
