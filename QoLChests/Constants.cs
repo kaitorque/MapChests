@@ -28,6 +28,12 @@ public static class Constants
             InteractableCategory.Chest
         ),
         new("RoR2/DLC1/VoidChest/VoidChest.prefab", InteractableCategory.VoidCradle),
+        new("RoR2/DLC4/HollowChest/HollowChestFree.prefab", InteractableCategory.Chest),
+        new("RoR2/DLC4/Chest1SadObjective.prefab", InteractableCategory.Chest),
+        new("RoR2/DLC4/TrialCategoryChestDamage.prefab", InteractableCategory.Chest),
+        new("RoR2/DLC4/TrialCategoryChest2Damage.prefab", InteractableCategory.Chest),
+        new("RoR2/DLC4/GoldChestSad.prefab", InteractableCategory.Chest),
+        new("RoR2/DLC4/NkuhanaChest.prefab", InteractableCategory.Chest),
     ];
 
     public static HighlightableResource[] BarrelResourcesPaths =
@@ -43,6 +49,8 @@ public static class Constants
     [
         new("RoR2/Base/TreasureCache/Lockbox.prefab", InteractableCategory.Lockbox),
         new("RoR2/DLC1/TreasureCacheVoid/LockboxVoid.prefab", InteractableCategory.Lockbox),
+        new("RoR2/DLC4/LockboxSoulObjective.prefab", InteractableCategory.Lockbox),
+        new("RoR2/DLC4/LockboxTrial.prefab", InteractableCategory.Lockbox),
     ];
 
     public static HighlightableResource[] StealthedChestResourcePaths =
@@ -72,6 +80,10 @@ public static class Constants
         ),
         new("RoR2/DLC3/TripleDroneShopTerminal/TripleDroneShopTerminal.prefab", InteractableCategory.Shop),
         new("RoR2/DLC3/TemporaryItemsDistributor/TemporaryItemsShopTerminal.prefab", InteractableCategory.Shop),
+        new("RoR2/DLC4/TrialMultiShopTerminal.prefab", InteractableCategory.Shop),
+        new("RoR2/DLC4/TrialTripleShop.prefab", InteractableCategory.Shop),
+        new("RoR2/DLC4/TrialTripleShopLarge.prefab", InteractableCategory.Shop),
+        new("RoR2/DLC4/ShrineCompulsion/HauntedVendingMachine.prefab", InteractableCategory.Shop),
     ];
 
     public static HighlightableResource[] ScrapperResourcePaths =
@@ -149,6 +161,14 @@ public static class Constants
         new("RoR2/DLC2/ShrineRebirth.prefab", InteractableCategory.Shrine),
 
         new("RoR2/DLC3/ShrineCombatCollective.prefab", InteractableCategory.Shrine),
+
+        new("RoR2/DLC4/ShrineCatastrophe/ShrineCatastrophe.prefab", InteractableCategory.Shrine),
+        new("RoR2/DLC4/ShrineCombatPoison.prefab", InteractableCategory.Shrine),
+        new("RoR2/DLC4/BetterHallowingShrineBase.prefab", InteractableCategory.Shrine),
+        new("RoR2/DLC4/HallowingShrineBase.prefab", InteractableCategory.Shrine),
+        new("RoR2/DLC4/ShrineCompulsion/ShrineCompulsion.prefab", InteractableCategory.Shrine),
+        new("RoR2/DLC4/ShrineDeath/ShrineDeath.prefab", InteractableCategory.Shrine),
+        new("RoR2/DLC4/ShrineDread/ShrineDread.prefab", InteractableCategory.Shrine),
     ];
 
     public static Color32 GetColor(ConfigHighlightColor color) =>

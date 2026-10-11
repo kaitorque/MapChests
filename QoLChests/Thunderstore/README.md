@@ -8,6 +8,10 @@ For feature suggestions or bug reports go [here](https://github.com/Faustvii/R2M
 
 ## Changelog
 
+### 1.3.4
+
+- Added support for highlight the new interactables from Hallowed concepts
+
 ### 1.3.3
 
 - **Breaking config change:** split Chest and Barrel settings into category-specific settings. Review the migration notes above after updating.

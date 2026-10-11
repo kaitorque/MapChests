@@ -18,7 +18,7 @@ namespace Faust.QoLChests
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "Faust";
         public const string PluginName = nameof(QoLChests);
-        public const string PluginVersion = "1.3.3";
+        public const string PluginVersion = "1.3.4";
 
         protected void Awake()
         {
