@@ -1,59 +1,59 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using RoR2;
 using UnityEngine;
 
 namespace Faust.QoLChests.Components;
 
-/// <summary>
-/// Attach this to a interactable component to "fade" it after a specified delay.
-/// </summary>
-/// <param name="Delay"></param>
-public class FadeWithDelay(float Delay = 1f) : MonoBehaviour
+public class FadeWithDelay : MonoBehaviour
 {
-    private Collider[] colliders;
-    private Renderer[] renderers;
+    private const float TargetFade = 0.25f;
+    private float delay = 1f;
+    private Action restore;
 
-    public void DisableRendererAfterDelay()
+    public FadeWithDelay SetDelay(float value)
     {
-        StartCoroutine(DisableRendererCoroutine());
-    }
-
-    public FadeWithDelay SetDelay(float delay)
-    {
-        Delay = delay;
+        delay = value;
         return this;
     }
 
-    private IEnumerator DisableRendererCoroutine()
-    {
-        // Wait for the specified delay
-        yield return new WaitForSeconds(Delay);
+    public void DisableRendererAfterDelay() => StartCoroutine(FadeAfterDelay());
 
-        renderers = Utils.DisableRenderers(gameObject);
-        colliders = Utils.DisableColliders(gameObject);
-        Utils.DisableCommonVisualEffects(gameObject);
-        // For some reason when the renderer is disabled but it has a highlight on it will look faded instead of hidden.
-        var highlight = GetComponent<Highlight>();
-        if (highlight)
+    private IEnumerator FadeAfterDelay()
+    {
+        yield return new WaitForSeconds(delay);
+        if (restore != null)
+            yield break;
+
+        // Keep model renderers enabled; the game's shaders dither their _Fade property.
+        var restoreVisuals = restore = Utils.DisableUsedVisuals(gameObject, fade: true);
+        var restoreBlocks = new List<Action>();
+        foreach (var renderer in Utils.GetRenderers(gameObject))
         {
-            highlight.isOn = true;
-            highlight.enabled = true;
-            highlight.CustomColor = new Color32(128, 128, 128, 64);
-            highlight.highlightColor = Highlight.HighlightColor.custom;
+            if (!renderer || !renderer.enabled
+                || renderer is not MeshRenderer and not SkinnedMeshRenderer)
+                continue;
+
+            var original = new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(original);
+            var faded = new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(faded);
+            faded.SetFloat(CommonShaderProperties._Fade, TargetFade);
+            renderer.SetPropertyBlock(faded);
+            restoreBlocks.Add(() =>
+            {
+                if (renderer) renderer.SetPropertyBlock(original);
+            });
         }
+
+        restore = () =>
+        {
+            foreach (var undo in restoreBlocks)
+                undo();
+            restoreVisuals();
+        };
     }
 
-    public void OnDestroy()
-    {
-        foreach (var collider in colliders)
-        {
-            if (collider)
-                collider.enabled = true;
-        }
-        foreach (var renderer in renderers)
-        {
-            if (renderer)
-                renderer.enabled = true;
-        }
-    }
+    public void OnDestroy() => restore?.Invoke();
 }

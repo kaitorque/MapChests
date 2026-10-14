@@ -49,22 +49,19 @@ public static class ShopHooks
             if (!droneController)
                 return;
 
-            var controllerModelLocator = droneController.GetComponent<ModelLocator>();
-            if (!controllerModelLocator)
+            if (!droneController.GetComponent<ModelLocator>())
                 return;
 
-            droneController.gameObject.AddComponent<InteractableUsed>();
+            InteractableUsed.Mark(droneController.gameObject);
             VisibilityHandler.Hide(
                 interactableCategoryMarker.Category,
                 self.gameObject,
-                droneController.gameObject,
-                controllerModelLocator.modelTransform.gameObject
+                droneController.gameObject
             );
         }
 
         VisibilityHandler.Hide(interactableCategoryMarker.Category, self.gameObject);
-        if (!self.gameObject.GetComponent<InteractableUsed>())
-            self.gameObject.AddComponent<InteractableUsed>();
+        InteractableUsed.Mark(self.gameObject);
 
         if (ModConfig.Instance.RemoveHighlightFromUsed.Value)
         {
@@ -139,7 +136,7 @@ public static class ShopHooks
         VisibilityHandler.Hide(InteractableCategory.Shop, shopObjects);
         foreach (var shopObject in shopObjects)
         {
-            shopObject.AddComponent<InteractableUsed>();
+            InteractableUsed.Mark(shopObject);
         }
         if (ModConfig.Instance.RemoveHighlightFromUsed.Value)
         {

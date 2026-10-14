@@ -24,7 +24,7 @@ public static class ChestHooks
         if (InteractableRegistry.IsBlackListed(self.outer.gameObject.name))
             return;
 
-        self.outer.gameObject.AddComponent<InteractableUsed>();
+        InteractableUsed.Mark(self.outer.gameObject);
 
         var categoryMarker =
             self.outer.gameObject.GetComponent<InteractableHighlightCategoryMarker>();
@@ -32,8 +32,7 @@ public static class ChestHooks
         {
             VisibilityHandler.Hide(
                 categoryMarker.Category,
-                self.outer.gameObject,
-                self.outer.commonComponents.modelLocator.modelTransform.gameObject
+                self.outer.gameObject
             );
         }
         else
@@ -58,7 +57,7 @@ public static class ChestHooks
         if (InteractableRegistry.IsBlackListed(self.outer.gameObject.name))
             return;
 
-        self.outer.gameObject.AddComponent<InteractableUsed>();
+        InteractableUsed.Mark(self.outer.gameObject);
         VisibilityHandler.Hide(InteractableCategory.Chest, self.outer.gameObject);
 
         if (ModConfig.Instance.RemoveHighlightFromUsed.Value)

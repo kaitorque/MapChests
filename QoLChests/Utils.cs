@@ -9,25 +9,18 @@ public static class Utils
 {
     public static Renderer[] GetRenderers(GameObject gameObject)
     {
-        var modelLocator = gameObject.GetComponent<ModelLocator>();
-        var childRenderers =
-            modelLocator?.modelTransform?.GetComponentsInChildren<Renderer>()
-            ?? gameObject.GetComponentsInChildren<Renderer>();
-        var baseRenderers =
-            modelLocator?.modelTransform?.GetComponents<Renderer>()
-            ?? gameObject.GetComponents<Renderer>();
-        Renderer[] allRenderers = [.. baseRenderers, .. childRenderers];
-
-        return allRenderers;
+        var model = gameObject.GetComponent<ModelLocator>()?.modelTransform;
+        return model ? model.GetComponentsInChildren<Renderer>() : gameObject.GetComponentsInChildren<Renderer>();
     }
 
-    public static Renderer[] DisableRenderers(GameObject gameObject)
+    public static Renderer[] DisableRenderers(GameObject gameObject, bool includeModels = true)
     {
         var allRenderers = GetRenderers(gameObject);
         var disabledRenderes = new List<Renderer>(allRenderers.Length);
         foreach (var renderer in allRenderers)
         {
-            if (renderer)
+            if (renderer && renderer.enabled
+                && (includeModels || renderer is not MeshRenderer and not SkinnedMeshRenderer))
             {
                 Log.LogDebug($"Disabling renderer {renderer.name}");
                 renderer.enabled = false;
@@ -43,7 +36,7 @@ public static class Utils
         var disabledColliders = new List<Collider>(allColliders.Length);
         foreach (var collider in allColliders)
         {
-            if (collider)
+            if (collider && collider.enabled)
             {
                 Log.LogDebug($"Disabling collider {collider.name}");
                 collider.enabled = false;
@@ -53,44 +46,69 @@ public static class Utils
         return [.. disabledColliders];
     }
 
-    public static void DisableCommonVisualEffects(GameObject gameObject)
+    public static System.Action DisableUsedVisuals(GameObject gameObject, bool fade)
     {
-        SetParticleSystem(gameObject, active: false);
-        SetTrailRenderer(gameObject, enabled: false);
-        SetLights(gameObject, enabled: false);
+        var renderers = DisableRenderers(gameObject, includeModels: !fade);
+        var colliders = DisableColliders(gameObject);
+        var restoreEffects = DisableCommonVisualEffects(gameObject, deactivateParticleObjects: !fade);
+        return () =>
+        {
+            restoreEffects();
+            foreach (var collider in colliders)
+                if (collider) collider.enabled = true;
+            foreach (var renderer in renderers)
+                if (renderer) renderer.enabled = true;
+        };
     }
 
-    private static ParticleSystem[] SetParticleSystem(GameObject gameObject, bool active)
+    public static System.Action DisableCommonVisualEffects(GameObject gameObject, bool deactivateParticleObjects = true)
     {
-        ParticleSystem[] particleSystems = gameObject.GetComponentsInChildren<ParticleSystem>();
-        foreach (ParticleSystem ps in particleSystems)
+        var restore = new List<System.Action>();
+        var reactivate = new List<GameObject>();
+        foreach (var particle in gameObject.GetComponentsInChildren<ParticleSystem>())
         {
-            Log.LogDebug($"Disabling particle system {ps.name}");
-            ps.Stop(); // Stop the particle system
-            ps.gameObject.SetActive(active); // Or disable it completely
+            if (!particle)
+                continue;
+            var wasPlaying = particle.isPlaying;
+            Log.LogDebug($"Disabling particle system {particle.name}");
+            particle.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
+            if (wasPlaying)
+                restore.Add(() => { if (particle) particle.Play(false); });
+            if (deactivateParticleObjects)
+            {
+                var particleObject = particle.gameObject;
+                if (particleObject.activeSelf)
+                {
+                    particleObject.SetActive(false);
+                    reactivate.Add(particleObject);
+                }
+            }
         }
-        return particleSystems;
-    }
 
-    private static TrailRenderer[] SetTrailRenderer(GameObject gameObject, bool enabled)
-    {
-        TrailRenderer[] trailRenderers = gameObject.GetComponentsInChildren<TrailRenderer>();
-        foreach (TrailRenderer trail in trailRenderers)
+        foreach (var trail in gameObject.GetComponentsInChildren<TrailRenderer>())
         {
+            if (!trail || !trail.enabled)
+                continue;
             Log.LogDebug($"Disabling trail renderer {trail.name}");
-            trail.enabled = enabled;
+            trail.enabled = false;
+            restore.Add(() => { if (trail) trail.enabled = true; });
         }
-        return trailRenderers;
-    }
 
-    private static Light[] SetLights(GameObject gameObject, bool enabled)
-    {
-        Light[] lights = gameObject.GetComponentsInChildren<Light>();
-        foreach (Light light in lights)
+        foreach (var light in gameObject.GetComponentsInChildren<Light>())
         {
+            if (!light || !light.enabled)
+                continue;
             Log.LogDebug($"Disabling light {light.name}");
-            light.enabled = enabled;
+            light.enabled = false;
+            restore.Add(() => { if (light) light.enabled = true; });
         }
-        return lights;
+
+        return () =>
+        {
+            foreach (var obj in reactivate)
+                if (obj) obj.SetActive(true);
+            for (var i = restore.Count - 1; i >= 0; i--)
+                restore[i]();
+        };
     }
 }

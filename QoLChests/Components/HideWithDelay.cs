@@ -1,52 +1,31 @@
+using System;
 using System.Collections;
 using Faust.QoLChests.Handlers;
 using UnityEngine;
 
 namespace Faust.QoLChests.Components;
 
-/// <summary>
-/// Attach this to a Renderer component to disable it after a specified delay.
-/// </summary>
-/// <param name="Delay"></param>
-public class HideWithDelay(float Delay = 1f) : MonoBehaviour
+public class HideWithDelay : MonoBehaviour
 {
-    private Collider[] colliders;
-    private Renderer[] renderers;
+    private float delay = 1f;
+    private Action restore;
 
-    public void DisableRendererAfterDelay()
+    public HideWithDelay SetDelay(float value)
     {
-        StartCoroutine(DisableRendererCoroutine());
-    }
-
-    public HideWithDelay SetDelay(float delay)
-    {
-        Delay = delay;
+        delay = value;
         return this;
     }
 
-    private IEnumerator DisableRendererCoroutine()
-    {
-        // Wait for the specified delay
-        yield return new WaitForSeconds(Delay);
+    public void DisableRendererAfterDelay() => StartCoroutine(HideAfterDelay());
 
-        renderers = Utils.DisableRenderers(gameObject);
-        colliders = Utils.DisableColliders(gameObject);
+    private IEnumerator HideAfterDelay()
+    {
+        yield return new WaitForSeconds(delay);
+        if (restore != null)
+            yield break;
+        restore = Utils.DisableUsedVisuals(gameObject, fade: false);
         HighlightHandler.Disable(gameObject);
-
-        Utils.DisableCommonVisualEffects(gameObject);
     }
 
-    public void OnDestroy()
-    {
-        foreach (var collider in colliders)
-        {
-            if (collider)
-                collider.enabled = true;
-        }
-        foreach (var renderer in renderers)
-        {
-            if (renderer)
-                renderer.enabled = true;
-        }
-    }
+    public void OnDestroy() => restore?.Invoke();
 }
