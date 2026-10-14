@@ -8,6 +8,11 @@ For feature suggestions or bug reports go [here](https://github.com/Faustvii/R2M
 
 ## Changelog
 
+### 1.3.5
+
+- Fixed broken fade
+- Fixed missing highlight on some new shrines.
+
 ### 1.3.4
 
 - Added support for highlight the new interactables from Hallowed concepts
