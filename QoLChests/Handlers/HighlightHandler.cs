@@ -50,14 +50,20 @@ public static class HighlightHandler
             .Instance.GetCategoryHighlightColorConfig(highlightCategory.Category)
             .Value;
 
+        if (!highlight.highlightTargetValid)
+        {
+            var modelRenderers = new List<Renderer>();
+            foreach (var renderer in interactable.GetComponentsInChildren<Renderer>())
+                if (renderer is MeshRenderer or SkinnedMeshRenderer)
+                    modelRenderers.Add(renderer);
+            if (modelRenderers.Count > 0)
+                highlight.SetTargetRendererList(modelRenderers);
+        }
+
         highlight.isOn = true;
         highlight.enabled = true;
         highlight.highlightColor = Highlight.HighlightColor.custom;
         highlight.CustomColor = Constants.GetColor(highlightConfigColor);
-        if (highlight.targetRenderer == null)
-        {
-            Log.LogWarning($"Highlight on {interactable.name} has null targetRenderer - highlight probably won't work");
-        }
     }
 
     public static Highlight[] Disable(GameObject[] gameObject)
