@@ -8,6 +8,12 @@ For feature suggestions or bug reports go [here](https://github.com/Faustvii/R2M
 
 ## Changelog
 
+### 1.3.6
+
+- Added missing highlights for Quality(Goorakh)
+- Added an API so other mods can easily register interactables
+    - This should help with mods that change vanilla hook behaviour.
+
 ### 1.3.5
 
 - Fixed broken fade
