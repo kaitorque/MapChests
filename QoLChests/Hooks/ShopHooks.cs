@@ -1,3 +1,4 @@
+using Faust.QoLChests.Api;
 using System.Collections.Generic;
 using System.Linq;
 using Faust.QoLChests.Components;
@@ -25,9 +26,6 @@ public static class ShopHooks
     {
         orig(self, activator);
         Log.LogDebug("PurchaseInteraction_OnInteractionBegin called");
-        if (InteractableRegistry.IsBlackListed(self.gameObject.name))
-            return;
-
         Log.LogDebug(
             $"PurchaseInteraction_OnInteractionBegin - {self.gameObject.name} - Cost: {self.cost} - NetworkAvailable: {self.Networkavailable}"
         );
@@ -52,27 +50,13 @@ public static class ShopHooks
             if (!droneController.GetComponent<ModelLocator>())
                 return;
 
-            InteractableUsed.Mark(droneController.gameObject);
-            VisibilityHandler.Hide(
+            InteractableUsedHandler.MarkUsed(
                 interactableCategoryMarker.Category,
-                self.gameObject,
                 droneController.gameObject
             );
         }
 
-        VisibilityHandler.Hide(interactableCategoryMarker.Category, self.gameObject);
-        InteractableUsed.Mark(self.gameObject);
-
-        if (ModConfig.Instance.RemoveHighlightFromUsed.Value)
-        {
-            Log.LogDebug(
-                $"PurchaseInteraction_OnInteractionBegin - Removing highlight from used interactable: {self.gameObject.name}"
-            );
-            var disabledHighlights = HighlightHandler.Disable(self.gameObject);
-            Log.LogDebug(
-                $"PurchaseInteraction_OnInteractionBegin - Disabled {disabledHighlights.Length} highlights"
-            );
-        }
+        InteractableUsedHandler.MarkUsed(interactableCategoryMarker.Category, self.gameObject);
     }
 
     private static DroneVendorMultiShopController FindDroneMultishopController(PurchaseInteraction terminalBehavior)
@@ -116,9 +100,6 @@ public static class ShopHooks
     )
     {
         orig(self, payCostContext, payCostResult);
-        if (InteractableRegistry.IsBlackListed(self.gameObject.name))
-            return;
-
         Log.LogDebug(
             $"MultiShopController_OnPurchase - "
                 + $"Available: {self.available} NetworkAvailable: {self.Networkavailable} "
@@ -133,15 +114,7 @@ public static class ShopHooks
             .Concat([self.gameObject])
             .ToArray();
 
-        VisibilityHandler.Hide(InteractableCategory.Shop, shopObjects);
-        foreach (var shopObject in shopObjects)
-        {
-            InteractableUsed.Mark(shopObject);
-        }
-        if (ModConfig.Instance.RemoveHighlightFromUsed.Value)
-        {
-            HighlightHandler.Disable(shopObjects);
-        }
+        InteractableUsedHandler.MarkUsed(InteractableCategory.Shop, shopObjects);
     }
 
     private static void SetHasBeenPurchased(
@@ -151,9 +124,6 @@ public static class ShopHooks
     )
     {
         orig(self, newHasBeenPurchased);
-        if (InteractableRegistry.IsBlackListed(self.gameObject.name))
-            return;
-
         var multiShopControllerForTerminal = FindMultiShopControllerForTerminal(self);
         if (!multiShopControllerForTerminal)
             return;
@@ -168,10 +138,6 @@ public static class ShopHooks
                 .SetTerminalObjects(
                     [.. otherShopTerminals.Select(x => x.gameObject), self.gameObject]
                 );
-            if (ModConfig.Instance.RemoveHighlightFromUsed.Value)
-            {
-                recheckShop.RemoveHighlightAfterDelay();
-            }
             recheckShop.RecheckShopAvailabilityAfterDelay();
             return;
         }
@@ -183,11 +149,7 @@ public static class ShopHooks
             multiShopControllerForTerminal.gameObject
         ];
 
-        VisibilityHandler.Hide(InteractableCategory.Shop, shopObjects);
-        if (ModConfig.Instance.RemoveHighlightFromUsed.Value)
-        {
-            HighlightHandler.Disable(shopObjects);
-        }
+        InteractableUsedHandler.MarkUsed(InteractableCategory.Shop, shopObjects);
     }
 
     private static MultiShopController FindMultiShopControllerForTerminal(

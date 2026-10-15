@@ -14,22 +14,3 @@ public enum ConfigHighlightColor
     Gray = 9,
     White = 10
 }
-
-public enum InteractableCategory
-{
-    Chest = 0,
-    Shop = 1,
-    Scrapper = 2,
-    Duplicator = 3,
-    Drone = 4,
-    Turret = 5,
-    StealthedChest = 6,
-    Shrine = 7,
-    Lockbox = 8,
-    Barrel = 9,
-    NewtStatue = 10,
-    PressurePlate = 11,
-    EquipmentBarrel = 12,
-    LunarPod = 13,
-    VoidCradle = 14
-}

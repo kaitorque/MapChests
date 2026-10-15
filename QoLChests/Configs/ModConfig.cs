@@ -1,3 +1,4 @@
+using Faust.QoLChests.Api;
 using System;
 using BepInEx.Configuration;
 using Faust.Shared.Compatability;

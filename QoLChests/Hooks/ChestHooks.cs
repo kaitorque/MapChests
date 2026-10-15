@@ -1,3 +1,4 @@
+using Faust.QoLChests.Api;
 using Faust.QoLChests.Components;
 using Faust.QoLChests.Configs;
 using Faust.QoLChests.Handlers;
@@ -21,31 +22,7 @@ public static class ChestHooks
     )
     {
         orig(self);
-        if (InteractableRegistry.IsBlackListed(self.outer.gameObject.name))
-            return;
-
-        InteractableUsed.Mark(self.outer.gameObject);
-
-        var categoryMarker =
-            self.outer.gameObject.GetComponent<InteractableHighlightCategoryMarker>();
-        if (categoryMarker)
-        {
-            VisibilityHandler.Hide(
-                categoryMarker.Category,
-                self.outer.gameObject
-            );
-        }
-        else
-        {
-            Log.LogWarning(
-                $"Opened barrel {self.outer.gameObject.name} has no interactable category marker; skipping hide"
-            );
-        }
-
-        if (ModConfig.Instance.RemoveHighlightFromUsed.Value)
-        {
-            HighlightHandler.Disable(self.outer.gameObject);
-        }
+        InteractableUsedHandler.MarkUsed(self.outer.gameObject);
     }
 
     private static void RouletteOpened(
@@ -54,16 +31,7 @@ public static class ChestHooks
     )
     {
         orig(self);
-        if (InteractableRegistry.IsBlackListed(self.outer.gameObject.name))
-            return;
-
-        InteractableUsed.Mark(self.outer.gameObject);
-        VisibilityHandler.Hide(InteractableCategory.Chest, self.outer.gameObject);
-
-        if (ModConfig.Instance.RemoveHighlightFromUsed.Value)
-        {
-            HighlightHandler.Disable(self.outer.gameObject);
-        }
+        InteractableUsedHandler.MarkUsed(InteractableCategory.Chest, self.outer.gameObject);
     }
 
     private static void ResetChestForDelusion(
@@ -72,12 +40,6 @@ public static class ChestHooks
     )
     {
         orig(self);
-
-        VisibilityHandler.Show(self.gameObject);
-
-        if (ModConfig.Instance.HighlightChests.Value)
-        {
-            HighlightHandler.Enable(self.gameObject, ignoreUsed: true);
-        }
+        InteractableUsedHandler.MarkAvailable(self.gameObject);
     }
 }

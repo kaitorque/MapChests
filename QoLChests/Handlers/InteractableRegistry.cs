@@ -1,3 +1,4 @@
+using Faust.QoLChests.Api;
 using System.Collections.Generic;
 using Faust.QoLChests.Configs;
 

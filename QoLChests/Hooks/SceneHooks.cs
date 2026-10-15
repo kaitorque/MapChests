@@ -1,3 +1,4 @@
+using Faust.QoLChests.Api;
 using System;
 using System.Linq;
 using Faust.QoLChests.Components;

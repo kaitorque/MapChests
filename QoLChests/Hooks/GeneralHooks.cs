@@ -10,6 +10,8 @@ public static class GeneralHooks
     {
         RoR2Application.onLoad += InteractableStateHandler.Init;
         RoR2Application.onLoadFinished += InteractableStateHandler.PostInit;
+        // RoR2Application.onLoadFinished += AddressableDumper.DumpAddressables;
+
         config.SettingChanged += (sender, args) =>
         {
             InteractableStateHandler.Reset();

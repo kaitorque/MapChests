@@ -1,3 +1,4 @@
+using Faust.QoLChests.Api;
 using Faust.QoLChests.Configs;
 using Faust.QoLChests.Handlers;
 using Faust.Shared.Compatability;
