@@ -4,6 +4,7 @@ using Faust.QoLChests.Components;
 using Faust.QoLChests.Configs;
 using Faust.Shared;
 using RoR2;
+using RoR2.ContentManagement;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -45,46 +46,35 @@ public static class InteractableStateHandler
 
             foreach (var asset in assets)
             {
-                if (asset is GameObject go && InteractableRegistry.IsRegistered(go.name, out var category))
-                {
-                    if (!go.GetComponent<InteractableHighlightCategoryMarker>())
-                    {
-                        go.AddComponent<InteractableHighlightCategoryMarker>()
-                            .SetCategory(category);
-
-                        Log.LogDebug(
-                            $"Added category marker for registered modded interactable - {go.name} - Category: ({category})"
-                        );
-                    }
-                }
-                else if (asset is InteractableSpawnCard isc && InteractableRegistry.IsRegistered(isc.prefab.name, out var iscCategory))
-                {
-                    if (!isc.prefab.GetComponent<InteractableHighlightCategoryMarker>())
-                    {
-                        isc.prefab.AddComponent<InteractableHighlightCategoryMarker>()
-                            .SetCategory(iscCategory);
-
-                        Log.LogDebug(
-                            $"Added category marker for registered modded interactable - {isc.prefab.name} - Category: ({iscCategory})"
-                        );
-                    }
-                }
-                else if (asset is SpawnCard sc && InteractableRegistry.IsRegistered(sc.prefab.name, out var scCategory))
-                {
-                    if (!sc.prefab.GetComponent<InteractableHighlightCategoryMarker>())
-                    {
-                        sc.prefab.AddComponent<InteractableHighlightCategoryMarker>()
-                            .SetCategory(scCategory);
-
-                        Log.LogDebug(
-                            $"Added category marker for registered modded interactable - {sc.prefab.name} - Category: ({scCategory})"
-                        );
-                    }
-                }
+                if (asset is GameObject go)
+                    TagRegisteredPrefab(go);
+                else if (asset is SpawnCard sc)
+                    TagRegisteredPrefab(sc.prefab);
             }
         }
+
+        // Prefabs created at runtime (e.g. PrefabAPI.InstantiateClone) are in no asset bundle or director pool
+        foreach (var prefab in ContentManager.networkedObjectPrefabs)
+        {
+            TagRegisteredPrefab(prefab);
+        }
+
         stopwatch.Stop();
-        Log.LogDebug($"{nameof(PostInit)} processing AssetBundles took {stopwatch.ElapsedMilliseconds}ms");
+        Log.LogDebug($"{nameof(PostInit)} processing AssetBundles and content packs took {stopwatch.ElapsedMilliseconds}ms");
+    }
+
+    private static void TagRegisteredPrefab(GameObject prefab)
+    {
+        if (!prefab || !InteractableRegistry.IsRegistered(prefab.name, out var category))
+            return;
+
+        if (prefab.GetComponent<InteractableHighlightCategoryMarker>())
+            return;
+
+        prefab.AddComponent<InteractableHighlightCategoryMarker>().SetCategory(category);
+        Log.LogDebug(
+            $"Added category marker for registered modded interactable - {prefab.name} - Category: ({category})"
+        );
     }
 
     private static void TrackInteractables()

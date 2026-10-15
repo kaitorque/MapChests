@@ -1,5 +1,4 @@
 using Faust.QoLChests.Api;
-using Faust.QoLChests.Configs;
 using Faust.QoLChests.Handlers;
 using Faust.Shared.Compatability;
 
@@ -18,7 +17,12 @@ internal static class QualityCompatHandler
 
         InteractableRegistry.Register("QualityChest1", InteractableCategory.Chest);
         InteractableRegistry.Register("QualityChest2", InteractableCategory.Chest);
+
         InteractableRegistry.Register("QualityEquipmentBarrel", InteractableCategory.EquipmentBarrel);
+
+        InteractableRegistry.Register("Chest2StealthedVariant", InteractableCategory.StealthedChest);
+
+        InteractableRegistry.Register("SpeedOnPickupBarrel", InteractableCategory.Barrel);
 
         InteractableRegistry.Register("QualityDuplicator", InteractableCategory.Duplicator);
         InteractableRegistry.Register("QualityDuplicatorLarge", InteractableCategory.Duplicator);
