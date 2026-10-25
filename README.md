@@ -1,4 +1,19 @@
-﻿# Mini Map Mod
+﻿# MapChests
+
+A Risk of Rain 2 mod combining MiniMapMod and QoLChests into a single plugin. Work in progress; not published.
+
+## Credits
+
+This project is a fork of two mods, with their full commit histories preserved:
+
+- [MiniMapMod](https://github.com/DekuDesu/MiniMapMod) by Arty Redd / DekuDesu, with contributions from Arcafanetiz and Ultimeit.
+- [QoLChests](https://github.com/Faustvii/R2Mods) by Faustvii (`QoLChests/` and `Faust.Shared/` from the R2Mods repository).
+
+All credit for the original work goes to its authors.
+
+---
+
+# Mini Map Mod
 Adds a contemporary Minimap to the game.
 
 ### Features
