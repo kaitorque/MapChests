@@ -1,0 +1,45 @@
+using Faust.QoLChests.Api;
+using Faust.QoLChests.Components;
+using Faust.QoLChests.Configs;
+using Faust.QoLChests.Handlers;
+using Faust.Shared;
+using RoR2;
+
+namespace Faust.QoLChests.Hooks;
+
+public static class ChestHooks
+{
+    public static void Register()
+    {
+        On.EntityStates.Barrel.Opened.OnEnter += BarrelOpened;
+        On.RoR2.RouletteChestController.Opened.OnEnter += RouletteOpened;
+        On.RoR2.DelusionChestController.ResetChestForDelusion += ResetChestForDelusion;
+    }
+
+    private static void BarrelOpened(
+        On.EntityStates.Barrel.Opened.orig_OnEnter orig,
+        EntityStates.Barrel.Opened self
+    )
+    {
+        orig(self);
+        InteractableUsedHandler.MarkUsed(self.outer.gameObject);
+    }
+
+    private static void RouletteOpened(
+        On.RoR2.RouletteChestController.Opened.orig_OnEnter orig,
+        RouletteChestController.Opened self
+    )
+    {
+        orig(self);
+        InteractableUsedHandler.MarkUsed(InteractableCategory.Chest, self.outer.gameObject);
+    }
+
+    private static void ResetChestForDelusion(
+        On.RoR2.DelusionChestController.orig_ResetChestForDelusion orig,
+        DelusionChestController self
+    )
+    {
+        orig(self);
+        InteractableUsedHandler.MarkAvailable(self.gameObject);
+    }
+}
