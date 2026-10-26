@@ -216,7 +216,7 @@ Defaults:
 | Mountain | 00CCFF | Catastrophe | 9933FF |
 | Order | CCFF33 | Compulsion | FF8001 |
 | Woods | 1AB3A6 | Death | FFFFFF |
-| Cleansing pool | 66E0FF | Dread | 6666FF |
+| Cleansing pool | 66E0FF | Dread | FFCC99 |
 | Altar of Gold | FFD24D | Hallowed | FFFF99 |
 | Ancient Sepulcher | CC99FF | Other | FF8C8C |
 

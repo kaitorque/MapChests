@@ -84,7 +84,7 @@ The current values from `kaitorque.MapChests.cfg` (VP profile). Each colour show
 | Shrine of Catastrophe | "Shrine of Descent". Adds a soul-binding trial to the teleporter | Purple (9933FF) | Purple (9933FF) | shrine | |
 | Shrine of Compulsion | Gives a Compulsion objective; reward is a page | Orange (FF8001) | Orange (FF8001) | shrine | |
 | Shrine of Death | "Shrine of Malice". Summons monsters with fallen survivors' items | White (FFFFFF) | White (FFFFFF) | shrine | |
-| Shrine of Dread | "N'Kuhana's Endowment". Stronger enemies, item if you survive | Periwinkle (6666FF) | Periwinkle (6666FF) | shrine | |
+| Shrine of Dread | "N'Kuhana's Endowment". Stronger enemies, item if you survive | Peach (FFCC99) | Peach (FFCC99) | shrine | |
 | Cleansing pool | Trade a lunar item for a pearl | Light cyan (66E0FF) | Light cyan (66E0FF) | shrine | |
 | Halcyonite shrine | "Halcyon Shrine". Drains gold, summons a Halcyonite | Sand (D9B36C) | Sand (D9B36C) | shrine | |
 | Hallowed shrine | Appears after the teleporter if you hold hexes or pages; Hand of Life and Hand of Death | Pale yellow (FFFF99) | Pale yellow (FFFF99) | shrine | |
@@ -98,7 +98,7 @@ The current values from `kaitorque.MapChests.cfg` (VP profile). Each colour show
 |---|---|---|---|---|---|
 | Teleporter | The stage teleporter | – | White (FFFFFF), green (00FF00) when charged | teleporter | |
 | Portal | All portals (blue, gold, celestial, void and so on) | – | White (FFFFFF) | portal | |
-| Newt altar | Costs a lunar coin; opens the blue portal to the Bazaar | Royal blue (3366FF) | Royal blue (3366FF) | shrine | |
+| Newt altar | Costs a lunar coin; opens the blue portal to the Bazaar. No shrine uses this blue | Royal blue (3366FF) | Royal blue (3366FF) | shrine | |
 | Pressure plate | Plates on Abandoned Aqueduct that open a secret door | White (FFFFFF) | White (FFFFFF) | ? | |
 | Gold totem | "Halcyon Beacon" on Gilded Coast | – | Light blue (5EB2F2) | cube | |
 | Radar scanner | "Radio Scanner". Reveals the whole stage | – | White (FFFFFF) | ? | |

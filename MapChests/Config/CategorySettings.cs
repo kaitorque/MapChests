@@ -171,7 +171,7 @@ public sealed class CategorySettings
         [MapCategory.CatastropheShrine] = Hex("9933FF"),
         [MapCategory.CompulsionShrine] = Hex("FF8001"),
         [MapCategory.DeathShrine] = Hex("FFFFFF"),
-        [MapCategory.DreadShrine] = Hex("6666FF"),
+        [MapCategory.DreadShrine] = Hex("FFCC99"),
         [MapCategory.HallowedShrine] = Hex("FFFF99"),
         [MapCategory.AncientSepulcher] = Hex("CC99FF"),
         [MapCategory.OtherShrine] = Hex("FF8C8C"),
