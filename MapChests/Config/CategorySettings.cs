@@ -185,6 +185,7 @@ public sealed class CategorySettings
         [MapCategory.EncrustedLockbox] = Settings.Icons.Lock,
         [MapCategory.DroneShop] = Settings.Icons.Drone,
         [MapCategory.NewtAltar] = Settings.Icons.Shrine,
+        [MapCategory.CleansingPool] = Settings.Icons.Wrench,
     };
 
     // Owner's current minimap colours for categories that are never highlighted
