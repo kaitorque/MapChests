@@ -238,7 +238,7 @@ Each phase should end with a successful build and an in-game check in the VP pro
 - [x] One `MapChestsPlugin` whose `Awake` runs the existing QoLChests and minimap startup code. The minimap plugin class became the `MinimapController` component.
 - [x] Move files with `git mv` into the target layout.
 - [x] `package.ps1` builds and copies the DLL into `profiles\VP\BepInEx\plugins\MapChests\`.
-- [ ] In game, with the two original mods disabled: minimap shows, chests highlight and hide as before.
+- [x] In game, with the two original mods disabled: minimap shows, chests highlight and hide as before.
 
 Until Phase 2 merges the configs, the two features use temporary files `kaitorque.MapChests.Highlight.cfg` and `kaitorque.MapChests.Minimap.cfg`. On first run they are copied from `Faust.QoLChests.cfg` and `MiniMap.cfg`, so the owner's settings carry over; the original files are never changed.
 
