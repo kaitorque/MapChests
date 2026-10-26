@@ -23,7 +23,7 @@ Notes:
 | Adaptive chest | Cycles through items; take the one shown | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
 | Cloaked chest | Invisible free chest | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
 | Secret chest | Normal chests placed in hidden spots on some maps | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
-| Hollow chest | "Concept Reliquary". Free; a random Hex item | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
+| Hollow chest | "Concept Reliquary". Free; a random Hex item | Yellow-green (CCFF66) | Yellow-green (CCFF66) | chest | |
 | Nkuhana chest | N'kuhana's chest from the newest DLC (no in-game name found in the files) | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
 | Trial chest | Free damage chests inside a Trial | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
 | Mimic | Enemy disguised as a chest; shows as an enemy once revealed | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
@@ -44,8 +44,8 @@ Notes:
 | Equipment multishop | Multishop that sells equipment | Dark cyan (0099CC) | Dark cyan (0099CC) | chest | |
 | Lunar shop | "Lunar Bud" in the Bazaar; 2 lunar coins per item | Blue (0101FF) | Blue (0101FF) | chest | |
 | Drone shop | "Triple Drone Shop"; pick one of three drones | Cyan (01FFFF) | Cyan (01FFFF) | drone | |
-| Temporary item shop | "Temporary Item Distributor"; 5 temporary items | Cyan (01FFFF) | Cyan (01FFFF) | chest | |
-| Haunted vending machine | "Eclipse Zero Vending Machine" | Cyan (01FFFF) | Cyan (01FFFF) | chest | |
+| Temporary item shop | "Temporary Item Distributor"; 5 temporary items | Pale cyan (99FFFF) | Pale cyan (99FFFF) | chest | |
+| Haunted vending machine | "Eclipse Zero Vending Machine" | Teal (1AB3A6) | Teal (1AB3A6) | chest | |
 | Other shop | Shops from other mods or not recognised | Cyan (01FFFF) | Cyan (01FFFF) | chest | |
 
 ## Printers and scrappers
@@ -58,18 +58,18 @@ Notes:
 | Boss printer | "Overgrown 3D Printer"; yellow (boss) items | Hot pink (FF017F) | Hot pink (FF017F) | chest | |
 | Other printer | Printers from other mods or not recognised | Hot pink (FF017F) | Hot pink (FF017F) | chest | |
 | Scrapper | Turns items into scrap | Red (FF0101) | Red (FF0101) | wrench | |
-| Drone scrapper | Turns drones into scrap | Red (FF0101) | Red (FF0101) | wrench | |
+| Drone scrapper | Turns drones into scrap | Green (01FF01) | Green (01FF01) | wrench | |
 
 ## Drones and barrels
 
 | Category | What it is | Highlight | Map | Icon | Your choice |
 |---|---|---|---|---|---|
 | Drone | Broken drones you buy to follow you | Green (01FF01) | Green (01FF01) | drone | |
-| Drone station | "Drone Upgrade Station" and "Drone Combiner Station" | Green (01FF01) | Green (01FF01) | drone | |
+| Drone station | "Drone Upgrade Station" and "Drone Combiner Station" | Dark green (1A8C1A) | Dark green (1A8C1A) | drone | |
 | Lemurian egg | Offer an item to hatch a Lemurian ally | Green (01FF01) | Green (01FF01) | drone | |
-| Turret | Buyable gun turret that stays in place | Green (01FF01), highlight off | Green (01FF01) | drone | |
+| Turret | Buyable gun turret that stays in place | Light green (80FF80) | Light green (80FF80) | drone | |
 | Barrel | Small barrel with gold | Yellow (FFFF01) | Yellow (FFFF01) | circle | |
-| Void stalk | "Stalk". Void barrel with void coins | Yellow (FFFF01) | Yellow (FFFF01) | circle | |
+| Void stalk | "Stalk". Void barrel with void coins | Magenta (FF01FF) | Magenta (FF01FF) | circle | |
 | Equipment barrel | Barrel with an equipment | Orange (FF8001) | Orange (FF8001) | chest | |
 
 ## Shrines
@@ -78,11 +78,11 @@ Notes:
 |---|---|---|---|---|---|
 | Shrine of Blood | Take health, get gold | Crimson (FF3355) | Crimson (FF3355) | shrine | |
 | Shrine of Chance | Pay gold for a chance at an item | Mint green (33FFAA) | Mint green (33FFAA) | shrine | |
-| Shrine of Combat | Spawns a group of enemies | Light orange (FF8833) | Light orange (FF8833) | shrine | |
+| Shrine of Combat | Spawns a group of enemies | Magenta (FF01FF) | Magenta (FF01FF) | shrine | |
 | Shrine of the Mountain | Harder teleporter boss, extra items | Sky blue (3399FF) | Sky blue (3399FF) | shrine | |
 | Shrine of Order | Turns all items of a rarity into one item | Lime (CCFF33) | Lime (CCFF33) | shrine | |
 | Shrine of the Woods | Makes a healing zone | Leaf green (33CC66) | Leaf green (33CC66) | shrine | |
-| Shrine of Shaping | Revives dead players for 30% health | Lavender (B37DFF) | Lavender (B37DFF) | shrine | |
+| Shrine of Shaping | Revives dead players for 30% health | Green (01FF01) | Green (01FF01) | shrine | |
 | Shrine of Rebirth | Stores an item for your next run | Light pink (FF66CC) | Light pink (FF66CC) | shrine | |
 | Shrine of Catastrophe | "Shrine of Descent". Adds a soul-binding trial to the teleporter | Purple (9933FF) | Purple (9933FF) | shrine | |
 | Shrine of Compulsion | Gives a Compulsion objective; reward is a page | Bright magenta (FF33FF) | Bright magenta (FF33FF) | shrine | |
@@ -145,6 +145,8 @@ You can write any of these names in "Your choice", or any other colour you like.
 | Magenta | FF01FF | Bright magenta | FF33FF |
 | Hot pink | FF017F | Light pink | FF66CC |
 | Pale cream | E6FFCC | Peach | FFCC99 |
+| Yellow-green | CCFF66 | Light green | 80FF80 |
+| Pale cyan | 99FFFF | | |
 
 ## Available icons
 
