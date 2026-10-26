@@ -1,5 +1,4 @@
-﻿using MiniMapLibrary.Config;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -17,6 +16,5 @@ namespace MiniMapLibrary
         public Dimension2D ElevationMarkerDimensions { get; set; }
         public bool ElevationMarkerEnabled { get; set; }
         public Color ElevationMarkerColor { get; set; }
-        public ISettingConfigGroup Config;
     }
 }

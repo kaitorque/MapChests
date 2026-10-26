@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MapChests.Categories;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -15,9 +16,9 @@ namespace MiniMapLibrary.Scanner
             this.sorters = sorters;
         }
 
-        public bool TrySort(T value, out InteractableKind kind, out GameObject? gameObject, out Func<T, bool> activeChecker)
+        public bool TrySort(T value, out MapCategory kind, out GameObject? gameObject, out Func<T, bool> activeChecker)
         {
-            kind = InteractableKind.none;
+            kind = default;
             gameObject = null;
             activeChecker = (x) => true;
 

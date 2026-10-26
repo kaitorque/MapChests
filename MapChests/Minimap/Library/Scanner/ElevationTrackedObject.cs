@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Faust.QoLChests.Configs;
+using MapChests.Categories;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -35,7 +37,7 @@ namespace MiniMapLibrary.Scanner
 
         public GameObject gameObject { get => backing.gameObject; set => backing.gameObject = value; }
 
-        public InteractableKind InteractableType { get => backing.InteractableType; set => backing.InteractableType = value; }
+        public MapCategory Category { get => backing.Category; set => backing.Category = value; }
 
         public RectTransform MinimapTransform { get => backing.MinimapTransform; set => backing.MinimapTransform = value; }
 
@@ -59,9 +61,9 @@ namespace MiniMapLibrary.Scanner
             }
 
             // rotate down
-            InteractibleSetting setting = Settings.GetSetting(backing.InteractableType);
+            CategorySettings setting = Settings.GetSetting(backing.Category);
 
-            if (setting.Config.EnabledElevationMarker.Value is false)
+            if (setting.ElevationMarker.Value is false)
             {
                 flag_disabled = true;
                 return false;
@@ -70,9 +72,9 @@ namespace MiniMapLibrary.Scanner
             Sprite arrowSprite = spriteManager.GetOrCache(Settings.Icons.Arrow);
 
             arrow = Helpers.Sprites.CreateIcon(arrowSprite, 
-                setting.Config.ElevationMarkerWidth.Value, 
-                setting.Config.ElevationMarkerHeight.Value, 
-                setting.Config.ElevationMarkerColor.Value);
+                setting.ElevationMarkerWidth.Value, 
+                setting.ElevationMarkerHeight.Value, 
+                setting.ElevationMarkerColor.Value);
 
             // attach arrow
             Helpers.Transforms.SetParent(arrow.transform, backing.MinimapTransform);
@@ -80,7 +82,7 @@ namespace MiniMapLibrary.Scanner
             arrowTransform = arrow.transform;
 
             // move arrow
-            arrowTransform.localPosition += new Vector3(setting.Config.ElevationMarkerOffset.Value.x, setting.Config.ElevationMarkerOffset.Value.y, 0);
+            arrowTransform.localPosition += new Vector3(setting.ElevationMarkerOffset.Value.x, setting.ElevationMarkerOffset.Value.y, 0);
 
             // rotate arrow upright
             arrowTransform.localRotation = upDirection;

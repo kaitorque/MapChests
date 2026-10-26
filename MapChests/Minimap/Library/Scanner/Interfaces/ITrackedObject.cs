@@ -1,4 +1,4 @@
-﻿using MiniMapLibrary;
+﻿using MapChests.Categories;
 using UnityEngine;
 
 namespace MiniMapLibrary.Scanner
@@ -9,7 +9,7 @@ namespace MiniMapLibrary.Scanner
 #pragma warning disable IDE1006
         GameObject gameObject { get; set; }
 #pragma warning restore IDE1006
-        InteractableKind InteractableType { get; set; }
+        MapCategory Category { get; set; }
         RectTransform MinimapTransform { get; set; }
         bool DynamicObject { get; set; }
         bool Active { get; }

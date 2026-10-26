@@ -1,4 +1,5 @@
-﻿using MiniMapMod;
+﻿using MapChests.Categories;
+using MiniMapMod;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,23 +83,9 @@ namespace MiniMapLibrary
             ContainerTransform.localRotation = Quaternion.Euler(0, 0, euler.y);
         }
 
-        public RectTransform CreateIcon(InteractableKind type, Vector3 minimapPosition, ISpriteManager spriteManager)
+        public RectTransform CreateIcon(MapCategory category, Vector3 minimapPosition, ISpriteManager spriteManager)
         {
-            Sprite sprite;
-
-            try
-            {
-                sprite = spriteManager.GetSprite(type);
-            }
-            catch (MissingComponentException e)
-            {
-                Logger.LogError($"Failed to get sprite for type {type}");
-                Logger.LogError(e.Message);
-
-                return null;
-            }
-
-            GameObject icon = CreateIcon(type, sprite);
+            GameObject icon = CreateIcon(category, spriteManager.GetSprite(category));
 
             var transform = icon.GetComponent<RectTransform>();
 
@@ -127,20 +114,18 @@ namespace MiniMapLibrary
 
         private void CreatePlayerIcon(ISpriteManager spriteManager)
         {
-            GameObject playerIcon = CreateIcon(InteractableKind.Player, spriteManager.GetSprite(InteractableKind.Player));
-
-            playerIcon.GetComponent<Image>().color = Settings.PlayerIconColor;
+            GameObject playerIcon = CreateIcon(MapCategory.Player, spriteManager.GetSprite(MapCategory.Player));
 
             SetParent(playerIcon, gameObject);
         }
 
-        private GameObject CreateIcon(InteractableKind type, Sprite iconTexture)
+        private GameObject CreateIcon(MapCategory category, Sprite iconTexture)
         {
-            InteractibleSetting settings = Settings.GetSetting(type);
+            var settings = Settings.GetSetting(category);
 
-            GameObject icon = Helpers.Sprites.CreateIcon(iconTexture, settings.Dimensions.Width, settings.Dimensions.Height, settings.ActiveColor);
+            GameObject icon = Helpers.Sprites.CreateIcon(iconTexture, settings.IconWidth.Value, settings.IconHeight.Value, settings.MinimapColor.Value);
 
-            icon.name = type.ToString();
+            icon.name = category.ToString();
 
             return icon;
         }

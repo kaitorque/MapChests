@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Faust.QoLChests.Components;
 using MapChests.Categories;
 using MiniMapLibrary;
 using MiniMapLibrary.Scanner;
@@ -35,10 +36,10 @@ namespace MiniMapMod
                 if (!gameObject || !CategoryClassifier.TryClassify(gameObject, out var category))
                     continue;
 
-                if (CategoryCatalog.Get(category).MinimapKind is not { } kind || !Settings.GetSetting(kind).Config.Enabled.Value)
+                if (!Settings.GetSetting(category).Minimap.Value)
                     continue;
 
-                list.Add(new ElevationTrackedObject(new TrackedObject<GameObject>(kind, gameObject, null)
+                list.Add(new ElevationTrackedObject(new TrackedObject<GameObject>(category, gameObject, null)
                 {
                     BackingObject = gameObject,
                     ActiveChecker = CreateActiveChecker(gameObject),
@@ -50,6 +51,12 @@ namespace MiniMapMod
         }
 
         private static Func<GameObject, bool> CreateActiveChecker(GameObject gameObject)
+        {
+            var interactionChecker = CreateInteractionChecker(gameObject);
+            return x => !x.GetComponent<InteractableUsed>() && interactionChecker(x);
+        }
+
+        private static Func<GameObject, bool> CreateInteractionChecker(GameObject gameObject)
         {
             if (gameObject.TryGetComponent<TeleporterInteraction>(out var teleporter))
                 return _ => teleporter && teleporter.activationState != TeleporterInteraction.ActivationState.Charged;

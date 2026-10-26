@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MapChests.Categories;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -30,7 +31,7 @@ namespace MiniMapLibrary.Scanner
 
             foreach (var item in foundObjects)
             {
-                if (sorter.TrySort(item, out InteractableKind kind, out GameObject gameObject, out Func<T, bool> activeChecker))
+                if (sorter.TrySort(item, out MapCategory kind, out GameObject gameObject, out Func<T, bool> activeChecker))
                 {
                     list.Add(new ElevationTrackedObject(new TrackedObject<T>(kind, gameObject, null)
                     {

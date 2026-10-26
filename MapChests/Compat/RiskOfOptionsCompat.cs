@@ -110,6 +110,17 @@ namespace Faust.Shared.Compatability
             }
         }
 
+        public static void AddColorOptions(
+            bool restartRequired = false,
+            params ConfigEntry<UnityEngine.Color>[] configEntries
+        )
+        {
+            foreach (var config in configEntries)
+            {
+                ModSettingsManager.AddOption(new ColorOption(config, restartRequired));
+            }
+        }
+
         public static void AddSliderPercentageOptions(
             bool restartRequired = false,
             params ConfigEntry<float>[] configEntries

@@ -1,4 +1,5 @@
-﻿using MiniMapLibrary.Config;
+﻿using Faust.QoLChests.Configs;
+using MapChests.Categories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,8 +61,6 @@ namespace MiniMapLibrary
 
         private static readonly Dimension2D DefaultUIElementSize = new Dimension2D(10, 10);
 
-        public static Color PlayerIconColor { get; set; } = Color.white;
-
         public static Color DefaultActiveColor { get; set; } = Colors.Yellow;
 
         public static Color DefaultInactiveColor { get; set; } = Color.grey;
@@ -70,23 +69,24 @@ namespace MiniMapLibrary
 
         public static Dimension2D DefaultElevationSize { get; set; } = new Dimension2D(3.0f, 3.0f);
 
-        public static LogLevel LogLevel => _logLevel.Value;
+        public static LogLevel LogLevel => ModConfig.Instance.MinimapLogLevel.Value;
 
-        private static IConfigEntry<LogLevel> _logLevel;
+        public static float MinimapScale => ModConfig.Instance.ZoomLevel.Value;
 
-        public static float MinimapScale => _minimapScale.Value;
-        private static IConfigEntry<float> _minimapScale;
+        public static KeyCode MinimapKey => ModConfig.Instance.MinimapKey.Value;
 
-        public static KeyCode MinimapKey => _MiniMapKey.Value;
-        private static IConfigEntry<KeyCode> _MiniMapKey;
+        public static KeyCode MinimapIncreaseScaleKey => ModConfig.Instance.ZoomInKey.Value;
 
-        public static KeyCode MinimapIncreaseScaleKey => _MinimapIncreaseScaleKey.Value;
-        private static IConfigEntry<KeyCode> _MinimapIncreaseScaleKey;
+        public static KeyCode MinimapDecreaseScaleKey => ModConfig.Instance.ZoomOutKey.Value;
 
-        public static KeyCode MinimapDecreaseScaleKey => _MinimapDecreaseScaleKey.Value;
-        private static IConfigEntry<KeyCode> _MinimapDecreaseScaleKey;
+        /// <summary>Live settings of a category, read from the merged config.</summary>
+        public static CategorySettings GetSetting(MapCategory category) => ModConfig.Instance.Get(category);
 
-        private static ILogger logger;
+        public static Color GetColor(MapCategory category, bool active)
+        {
+            var setting = GetSetting(category);
+            return active ? setting.MinimapColor.Value : setting.MinimapUsedColor.Value;
+        }
 
         static Settings()
         {
@@ -216,8 +216,8 @@ namespace MiniMapLibrary
                 path: Icons.Circle);
 
             Add(InteractableKind.Player, 8, 8,
-                activeColor: PlayerIconColor,
-                inactiveColor: PlayerIconColor,
+                activeColor: Color.white,
+                inactiveColor: Color.white,
                 description: "Player, including friends",
                 path: Icons.Sprint);
 
@@ -263,92 +263,5 @@ namespace MiniMapLibrary
             };
         }
 
-        public static Color GetColor(InteractableKind type, bool active)
-        {
-            if (InteractibleSettings.ContainsKey(type))
-            {
-                var setting = InteractibleSettings[type];
-
-                return active ? setting.ActiveColor : setting.InactiveColor;
-            }
-
-            return active ? DefaultActiveColor : DefaultInactiveColor;
-        }
-
-        public static Dimension2D GetInteractableSize(InteractableKind type)
-        {
-            if (InteractibleSettings.ContainsKey(type))
-            {
-                return InteractibleSettings[type]?.Dimensions ?? DefaultUIElementSize;
-            }
-
-            return DefaultUIElementSize;
-        }
-
-        public static void LoadApplicationSettings(ILogger logger, IConfig config)
-        {
-            Settings.logger = logger;
-            _logLevel = config.Bind<LogLevel>($"Settings.General", "LogLevel", LogLevel.info, "The amount of information that the minimap mod should output to the console during runtime");
-            _MinimapDecreaseScaleKey = config.Bind<KeyCode>($"Settings.Zoom", "UnZoomKey", KeyCode.Minus, "Zooms the minimap OUT");
-            _MinimapIncreaseScaleKey = config.Bind<KeyCode>($"Settings.Zoom", "ZoomKey", KeyCode.Equals, "Zooms the minimap IN");
-            _MiniMapKey = config.Bind<KeyCode>($"Settings.General", "EnableKey", KeyCode.M, "Key that enables or disabled the minimap");
-            _minimapScale = config.Bind<float>($"Settings.Zoom", "zoomLevel", 1.0f, "How far the minimap should be zoomed in");
-
-            logger.LogDebug($"Loaded log level: {Settings.LogLevel} Minimap[Key: {MinimapKey}] Zoom[{Settings.MinimapScale * 100}% UnZoomKey:{MinimapDecreaseScaleKey} ZoomKey:{MinimapIncreaseScaleKey}]");
-        }
-
-        public static void LoadConfigEntries(InteractableKind type, IConfig config)
-        {
-            InteractibleSetting setting;
-
-            if (InteractibleSettings.ContainsKey(type) is false)
-            {
-                logger.LogError($"Failed to find an interactible setting for {type}, aborting config loading for {type}s");
-                return;
-            }
-
-            setting = InteractibleSettings[type];
-
-            string sectionTitle = $"Icon.{type}";
-
-            IConfigEntry<bool> enabled = config.Bind<bool>(sectionTitle, "enabled", true, $"Whether or not {setting.Description} should be shown on the minimap");
-            IConfigEntry<Color> activeColor = config.Bind<Color>(sectionTitle, "activeColor", setting.ActiveColor, "The color the icon should be when it has not been interacted with");
-            IConfigEntry<Color> inactiveColor = config.Bind<Color>(sectionTitle, "inactiveColor", setting.InactiveColor, "The color the icon should be when it has used/bought");
-            IConfigEntry<float> width = config.Bind<float>(sectionTitle, "width", setting.Dimensions.Width, "Width of the icon");
-            IConfigEntry<float> height = config.Bind<float>(sectionTitle, "height", setting.Dimensions.Height, "Width of the icon");
-            IConfigEntry<string> path = config.Bind<string>(sectionTitle, "icon", setting.IconPath ?? Icons.Default, $"The streaming assets path of the icon");
-
-            IConfigEntry<bool> elevationEnabled = config.Bind<bool>(sectionTitle, "elevationMarkerEnabled", true, $"Whether or not the elevation marker for this icon should be shown on the minimap");
-            IConfigEntry<Color> elevationActiveColor = config.Bind<Color>(sectionTitle, "elevationMarkerColor", setting.ElevationMarkerColor, "The color the elevation marker should be when it is shown");
-            IConfigEntry<float> elevationWidth = config.Bind<float>(sectionTitle, "elevationMarkerWidth", setting.ElevationMarkerDimensions.Width, "Width of the elevation marker icon");
-            IConfigEntry<float> elevationHeight = config.Bind<float>(sectionTitle, "elevationMarkerHeight", setting.ElevationMarkerDimensions.Height, "Width of the elevation marker  icon");
-            IConfigEntry<Vector2> elevationOffset = config.Bind<Vector2>(sectionTitle, "elevationMarkerOffset", new Vector2(setting.ElevationMarkerOffset.Width, setting.ElevationMarkerOffset.Height), "The value of the x and y of the elevation marker's position relative to the main icon's center");
-
-            setting.Config = new SettingConfigGroup(
-                enabled,
-                height,
-                width,
-                activeColor,
-                inactiveColor,
-                path,
-                elevationEnabled,
-                elevationOffset,
-                elevationHeight,
-                elevationWidth,
-                elevationActiveColor
-            );
-
-            setting.ActiveColor = activeColor.Value;
-            setting.InactiveColor = inactiveColor.Value;
-            setting.Dimensions.Height = height.Value;
-            setting.Dimensions.Width = width.Value;
-            setting.IconPath = path.Value;
-            setting.ElevationMarkerColor = elevationActiveColor.Value;
-            setting.ElevationMarkerEnabled = elevationEnabled.Value;
-            setting.ElevationMarkerOffset = new Dimension2D(elevationOffset.Value.x, elevationOffset.Value.y);
-            setting.ElevationMarkerDimensions = new Dimension2D(elevationWidth.Value, elevationHeight.Value);
-
-            logger.LogInfo($"Loaded {type} config [{(setting.Config.Enabled.Value ? "enabled" : "disabled")}, {setting.ActiveColor}, {setting.InactiveColor}, ({setting.Dimensions.Width}x{setting.Dimensions.Height})] Elevation [{(setting.Config.EnabledElevationMarker.Value ? "enabled" : "disabled")}, {setting.ElevationMarkerColor}, dimensions: ({setting.ElevationMarkerDimensions.Width}x{setting.ElevationMarkerDimensions.Height}), offset: ({setting.ElevationMarkerOffset.Width}x{setting.ElevationMarkerOffset.Height})]");
-        }
     }
 }

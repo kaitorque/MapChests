@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MapChests.Categories;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -13,13 +14,12 @@ namespace MiniMapLibrary.Scanner
         private readonly Func<T, bool> activeChecker;
         private readonly Func<T, GameObject> converter;
         private readonly Func<T, bool> selector;
-        private readonly InteractableKind kind;
+        private readonly MapCategory kind;
         private readonly Range3D range;
         private readonly ISpriteManager spriteManager;
         private readonly Func<float> playerHeightRetriver;
-        private readonly bool enabled;
 
-        public SingleKindScanner(InteractableKind kind, bool dynamic, IScanner<T> scanner, Range3D range, ISpriteManager spriteManager, Func<float> playerHeightRetriever, Func <T, GameObject> converter, Func<T, bool>? activeChecker = null, Func<T, bool>? selector = null)
+        public SingleKindScanner(MapCategory kind, bool dynamic, IScanner<T> scanner, Range3D range, ISpriteManager spriteManager, Func<float> playerHeightRetriever, Func <T, GameObject> converter, Func<T, bool>? activeChecker = null, Func<T, bool>? selector = null)
         {
             this.scanner = scanner ?? throw new ArgumentNullException(nameof(scanner));
             this.dynamic = dynamic;
@@ -35,13 +35,12 @@ namespace MiniMapLibrary.Scanner
             this.range = range ?? throw new ArgumentNullException(nameof(range));
             this.spriteManager = spriteManager ?? throw new ArgumentNullException(nameof(spriteManager));
             this.playerHeightRetriver = playerHeightRetriever;
-            enabled = Settings.GetSetting(kind).Config.Enabled.Value;
         }
 
         public void ScanScene(IList<ITrackedObject> list)
         {
             // if the kind is disabled, don't bother scanning
-            if (enabled is false)
+            if (Settings.GetSetting(kind).Minimap.Value is false)
             {
                 return;
             }

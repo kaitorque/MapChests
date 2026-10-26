@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MapChests.Categories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,21 +26,11 @@ namespace MiniMapLibrary
             SpriteCache.Clear();
         }
 
-        public Sprite? GetSprite(InteractableKind type)
+        public Sprite? GetSprite(MapCategory category)
         {
-            if (type == InteractableKind.none)
-            {
-                return null;
-            }
+            string? path = Settings.GetSetting(category).Icon.Value;
 
-            string? path = Settings.GetSetting(type)?.Config?.IconPath?.Value;
-
-            if (path != null)
-            {
-                return GetOrCache(path);
-            }
-
-            throw new MissingComponentException($"MissingTextureException: Interactible.{type} does not have a registered texture path to load.");
+            return GetOrCache(string.IsNullOrWhiteSpace(path) ? Settings.Icons.Default : path!);
         }
 
         public Sprite? GetOrCache(string Path)

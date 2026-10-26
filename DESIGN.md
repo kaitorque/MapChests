@@ -178,7 +178,7 @@ Both features use **one enum, `MapCategory`** (`Categories/MapCategory.cs`), and
 - **Shrines, one per type:** Blood, Chance, Combat, Mountain, Order, Woods, cleansing pool, Altar of Gold, Halcyonite, Shaping (Colossus), Rebirth, Catastrophe, Compulsion, Death, Dread, Hallowed, other.
 - **World:** newt altar, pressure plate, teleporter, portal, gold totem, radar scanner, special.
 
-`CategoryDefinition` holds the display name, prefab paths, and, until the configs merge in Phase 2, the old QoLChests config group (`HighlightGroup`) and the old minimap icon kind (`InteractableKind`) it uses. Phase 2 adds the colour, icon and hide settings to the definition and uses these two fields to migrate the owner's current settings. "Other" categories catch untagged objects from other mods. Add a category in `MapCategory` and `CategoryCatalog` only; the catalog throws at startup if a value has no definition. Keep the enum append-only once released.
+`CategoryDefinition` holds the display name, config group, prefab paths, the old QoLChests config group (`HighlightGroup`, null when the category is never highlighted) and the old minimap icon kind (`InteractableKind`). The two old fields only pick default values and migrate the owner's settings into the category's config section (`Config/CategorySettings.cs`). "Other" categories catch untagged objects from other mods. Add a category in `MapCategory` and `CategoryCatalog` only; the catalog throws at startup if a value has no definition. Keep the enum append-only once released.
 
 ### 4.2 One classifier
 
@@ -195,14 +195,32 @@ QoLChests' marker approach becomes the single source of truth:
 
 ### 4.4 One config
 
-There is one config file, `kaitorque.MapChests.cfg`, with one section per category. Each section holds:
+There is one config file, `kaitorque.MapChests.cfg`, with one section per category, named `Group: Category` (for example `Shrine: Shrine of Blood`). Each section holds:
 
-- Color: every category (including each chest subtype) has its own dedicated colour, covering both the highlight and the minimap icon
-- Highlight: enabled, palette color
-- Hide when used: enabled (categories that support it)
-- Minimap: enabled, icon, width, height, inactive color, used icon (gray or hidden), elevation marker settings. The minimap active color stays a separate hex value from the highlight palette color (the owner uses lighter shades on the map for blue and violet). Defaults come from the "Current color mapping" table in section 3.
+- Highlight, Highlight color, Hide when used (only categories that can be highlighted). The colour is any RGB colour, not the old palette.
+- Minimap, Minimap color, Minimap used color, Used icon (Gray or Hidden; not for enemies, players and other entities).
+- Icon, Icon width, Icon height and the elevation marker settings (file only). Icons are game sprite paths.
 
-Global sections cover the minimap (toggle key, zoom keys, zoom level, log level) and hiding (hide time, fade instead of hide, remove highlight when used, do-not-hide-as-Drifter). Register everything with Risk of Options, which is installed. Changes should apply mid-run wherever QoLChests already supports that.
+Global sections: `Hide` (time, fade, remove highlight when used, do not hide as Drifter) and `Minimap` (toggle key, zoom keys, zoom level, log level).
+
+Defaults:
+- Highlight colour starts from the owner's group colour in section 3 (chests yellow, shops cyan, and so on), so all subtypes of a group match for now. Shrines are the exception: each shrine has its own colour so they can be told apart.
+- Minimap colour starts as the highlight colour, except pure blue and violet, which use the owner's lighter map shades (4D79FF and A04DFF). Categories that are never highlighted keep the owner's minimap colours.
+- When `kaitorque.MapChests.cfg` does not exist yet, the values are migrated from `Faust.QoLChests.cfg` and `MiniMap.cfg` (or the Phase 0 copies). Palette colour names become RGB colours. The old files are never changed.
+
+| Shrine | Colour | Shrine | Colour |
+|---|---|---|---|
+| Blood | FF3355 | Halcyonite | D9B36C |
+| Chance | 33FFAA | Shaping (Colossus) | B37DFF |
+| Combat | FF8833 | Rebirth | FF66CC |
+| Mountain | 3399FF | Catastrophe | 9933FF |
+| Order | CCFF33 | Compulsion | FF33FF |
+| Woods | 33CC66 | Death | B3B3B3 |
+| Cleansing pool | 66E0FF | Dread | 6666FF |
+| Altar of Gold | FFD24D | Hallowed | E6FFCC |
+| Ancient Sepulcher | CC99FF | Other | A04DFF |
+
+Risk of Options shows the global hide and zoom settings and, per category, highlight on/off, highlight colour, hide when used, minimap on/off, minimap colour and used icon. Any change re-applies highlights and rebuilds the minimap mid-run.
 
 ### 4.5 Project layout
 
@@ -241,20 +259,22 @@ Each phase should end with a successful build and an in-game check in the VP pro
 - [x] `package.ps1` builds and copies the DLL into `profiles\VP\BepInEx\plugins\MapChests\`.
 - [x] In game, with the two original mods disabled: minimap shows, chests highlight and hide as before.
 
-Until Phase 2 merges the configs, the two features use temporary files `kaitorque.MapChests.Highlight.cfg` and `kaitorque.MapChests.Minimap.cfg`. On first run they are copied from `Faust.QoLChests.cfg` and `MiniMap.cfg`, so the owner's settings carry over; the original files are never changed.
+Phase 0 used temporary files `kaitorque.MapChests.Highlight.cfg` and `kaitorque.MapChests.Minimap.cfg`. Phase 2 replaced them with `kaitorque.MapChests.cfg`; the temporary files are only read once, for migration, and can be deleted afterwards.
 
 ### Phase 1 – Shared categories
 - [x] Introduce `MapCategory`, `CategoryDefinition` (4.1) and `CategoryMarker`; port QoLChests to it.
 - [x] Minimap scans `CategoryMarker` and maps category to icon; add the fallback classifier (4.2).
-- [ ] In game: every row of the comparison table shows the same category in both features.
+- [x] In game: every row of the comparison table shows the same category in both features. The Ancient Sepulcher is enabled by the stage after it starts, so it is tracked from `WakeController.Start`.
 
 Expected visible changes after Phase 1 (until Phase 2 gives each category its own settings): lockboxes, void potentials, scavenger bags, void stalks, Lemurian eggs, drone stations, the radar scanner and DLC shrines now get minimap icons; scavenger bags, void potentials and void stalks also highlight and hide using the nearest old group (chest, void cradle, barrel). Cloaked chests and pressure plates still have no icon. Generic interactions no longer get two icons.
 
 ### Phase 2 – Shared state and config
-- [ ] Minimap active check uses the shared used state (4.3).
-- [ ] Merge configs into the per-category layout (4.4) with Risk of Options entries.
-- [ ] Each category has its own highlight and minimap colour, defaulting to the owner's mapping in section 3 (new subtypes get distinct defaults).
-- [ ] Per-category option: used icon turns gray or disappears.
+- [x] Minimap active check uses the shared used state (4.3).
+- [x] Merge configs into the per-category layout (4.4) with Risk of Options entries.
+- [x] Each category has its own highlight and minimap colour, defaulting to the owner's mapping in section 3 (shrines get distinct defaults).
+- [x] Per-category option: used icon turns gray or disappears.
+- [x] Per-category minimap icon setting. Icons are game sprites only (`LegacyResourcesAPI` paths such as `Textures/MiscIcons/...`); the mod ships no image assets. The game has no book icon, so the Ancient Sepulcher keeps the shrine icon.
+- [ ] In game: settings migrated from the old files, shrine colours, used icons gray or hidden, Risk of Options changes apply mid-run.
 
 ### Phase 3 – Minimap fixes for the current game
 Verify each item in game, then fix it:
@@ -265,7 +285,7 @@ Verify each item in game, then fix it:
 - [ ] Zoom-out bug (3.2, item 2): take the map area per stage from the scene, never from enemies or items, and fix `Range1D` (port from section 3.1).
 - [x] `Log.LogException` (`Minimap/Log.cs`) loops forever when an exception has no inner exception, because `head` is only advanced when `InnerException` is not null. Any exception caught in `ScanScene` would freeze the game.
 - [ ] `GlobalEventManager.onCharacterDeathGlobal` is obsolete in 1.5.0 (use `onCharacterDeathServer` or `onDeathProcServer`); check it still fires on clients.
-- [ ] Lag bug (3.2, item 1): find out in game what the Sky Meadow stones are; stop rebuilding every dynamic icon each scan; remove the duplicate generic-interaction scanner; consider registry-based tracking (section 3.1).
+- [ ] Lag bug (3.2, item 1): find out in game what the Sky Meadow stones are; stop rebuilding every dynamic icon each scan (the duplicate generic-interaction scanner was removed in Phase 1); consider registry-based tracking (section 3.1).
 
 ## 6. Owner decisions
 

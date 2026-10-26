@@ -16,6 +16,8 @@ public static class CategoryCatalog
     private static readonly Dictionary<string, MapCategory> PrefabNames = new(StringComparer.OrdinalIgnoreCase);
     private static readonly Regex InstanceSuffix = new(@"(\(Clone\)|\s*\(\d+\))+$", RegexOptions.Compiled);
 
+    private static string group = "";
+
     public static IEnumerable<CategoryDefinition> All => Definitions.Values;
 
     public static CategoryDefinition Get(MapCategory category) => Definitions[category];
@@ -29,9 +31,8 @@ public static class CategoryCatalog
     static CategoryCatalog()
     {
         HighlightGroup? NoHighlight = null;
-        InteractableKind? NoIcon = null;
 
-        // Chests
+        group = "Chest";
         Add(MapCategory.SmallChest, "Small chest", HighlightGroup.Chest, InteractableKind.Chest,
             "RoR2/Base/Chest1/Chest1.prefab",
             "RoR2/DLC4/Chest1SadObjective.prefab");
@@ -51,7 +52,7 @@ public static class CategoryCatalog
             "RoR2/DLC1/CategoryChest2/CategoryChest2Utility Variant.prefab");
         Add(MapCategory.AdaptiveChest, "Adaptive chest", HighlightGroup.Chest, InteractableKind.Chest,
             "RoR2/Base/CasinoChest/CasinoChest.prefab");
-        Add(MapCategory.CloakedChest, "Cloaked chest", HighlightGroup.StealthedChest, NoIcon,
+        Add(MapCategory.CloakedChest, "Cloaked chest", HighlightGroup.StealthedChest, InteractableKind.Chest,
             "RoR2/Base/Chest1StealthedVariant/Chest1StealthedVariant.prefab");
         Add(MapCategory.SecretChest, "Secret chest", HighlightGroup.Chest, InteractableKind.Chest);
         Add(MapCategory.RustyLockbox, "Rusty lockbox", HighlightGroup.Lockbox, InteractableKind.Chest,
@@ -80,7 +81,7 @@ public static class CategoryCatalog
             "RoR2/DLC4/TrialCategoryChest2Damage.prefab");
         Add(MapCategory.OtherChest, "Other chest", HighlightGroup.Chest, InteractableKind.Chest);
 
-        // Shops
+        group = "Shop";
         Add(MapCategory.Multishop, "Multishop", HighlightGroup.Shop, InteractableKind.Shop,
             "RoR2/Base/MultiShopTerminal/MultiShopTerminal.prefab",
             "RoR2/Base/MultiShopTerminal/ShopTerminal.prefab",
@@ -100,7 +101,7 @@ public static class CategoryCatalog
             "RoR2/DLC4/ShrineCompulsion/HauntedVendingMachine.prefab");
         Add(MapCategory.OtherShop, "Other shop", HighlightGroup.Shop, InteractableKind.Shop);
 
-        // Printers and scrappers
+        group = "Printer";
         Add(MapCategory.CommonPrinter, "Common printer", HighlightGroup.Duplicator, InteractableKind.Printer,
             "RoR2/Base/Duplicator/Duplicator.prefab");
         Add(MapCategory.UncommonPrinter, "Uncommon printer", HighlightGroup.Duplicator, InteractableKind.Printer,
@@ -110,12 +111,13 @@ public static class CategoryCatalog
         Add(MapCategory.BossPrinter, "Boss printer", HighlightGroup.Duplicator, InteractableKind.Printer,
             "RoR2/Base/DuplicatorWild/DuplicatorWild.prefab");
         Add(MapCategory.OtherPrinter, "Other printer", HighlightGroup.Duplicator, InteractableKind.Printer);
+        group = "Scrapper";
         Add(MapCategory.Scrapper, "Scrapper", HighlightGroup.Scrapper, InteractableKind.Utility,
             "RoR2/Base/Scrapper/Scrapper.prefab");
         Add(MapCategory.DroneScrapper, "Drone scrapper", HighlightGroup.Scrapper, InteractableKind.Utility,
             "RoR2/DLC3/DroneScrapper/DroneScrapper.prefab");
 
-        // Drones
+        group = "Drone";
         Add(MapCategory.Drone, "Drone", HighlightGroup.Drone, InteractableKind.Drone,
             "RoR2/Base/Drones/Drone1Broken.prefab",
             "RoR2/Base/Drones/Drone2Broken.prefab",
@@ -139,7 +141,7 @@ public static class CategoryCatalog
         Add(MapCategory.LemurianEgg, "Lemurian egg", HighlightGroup.Drone, InteractableKind.Drone,
             "RoR2/CU8/LemurianEgg/LemurianEgg.prefab");
 
-        // Barrels
+        group = "Barrel";
         Add(MapCategory.Barrel, "Barrel", HighlightGroup.Barrel, InteractableKind.Barrel,
             "RoR2/Base/Barrel1/Barrel1.prefab");
         Add(MapCategory.EquipmentBarrel, "Equipment barrel", HighlightGroup.EquipmentBarrel, InteractableKind.Equipment,
@@ -147,7 +149,7 @@ public static class CategoryCatalog
         Add(MapCategory.VoidStalk, "Void stalk", HighlightGroup.Barrel, InteractableKind.Barrel,
             "RoR2/DLC1/VoidCoinBarrel/VoidCoinBarrel.prefab");
 
-        // Shrines
+        group = "Shrine";
         Add(MapCategory.BloodShrine, "Shrine of Blood", HighlightGroup.Shrine, InteractableKind.Shrine,
             "RoR2/Base/ShrineBlood/ShrineBlood.prefab",
             "RoR2/Base/ShrineBlood/ShrineBloodSandy Variant.prefab",
@@ -201,9 +203,9 @@ public static class CategoryCatalog
             "RoR2/DLC4/Wake/WakeAltar.prefab");
         Add(MapCategory.OtherShrine, "Other shrine", HighlightGroup.Shrine, InteractableKind.Shrine);
 
-        // World
+        group = "World";
         Add(MapCategory.NewtAltar, "Newt altar", HighlightGroup.NewtStatue, InteractableKind.NewtAltar);
-        Add(MapCategory.PressurePlate, "Pressure plate", HighlightGroup.PressurePlate, NoIcon);
+        Add(MapCategory.PressurePlate, "Pressure plate", HighlightGroup.PressurePlate, InteractableKind.Special);
         Add(MapCategory.Teleporter, "Teleporter", NoHighlight, InteractableKind.Teleporter,
             "RoR2/Base/Teleporters/Teleporter1.prefab",
             "RoR2/Base/Teleporters/LunarTeleporter Variant.prefab",
@@ -234,7 +236,7 @@ public static class CategoryCatalog
             "RoR2/Base/RadarTower/RadarTower.prefab");
         Add(MapCategory.Special, "Special", NoHighlight, InteractableKind.Special);
 
-        // Minimap only
+        group = "Map";
         Add(MapCategory.Enemy, "Enemy", NoHighlight, InteractableKind.EnemyMonster);
         Add(MapCategory.LunarEnemy, "Lunar enemy", NoHighlight, InteractableKind.EnemyLunar);
         Add(MapCategory.VoidEnemy, "Void enemy", NoHighlight, InteractableKind.EnemyVoid);
@@ -254,11 +256,11 @@ public static class CategoryCatalog
         MapCategory category,
         string displayName,
         HighlightGroup? highlightGroup,
-        InteractableKind? minimapKind,
+        InteractableKind minimapKind,
         params string[] prefabPaths
     )
     {
-        Definitions.Add(category, new CategoryDefinition(category, displayName, highlightGroup, minimapKind, prefabPaths));
+        Definitions.Add(category, new CategoryDefinition(category, group, displayName, highlightGroup, minimapKind, prefabPaths));
 
         foreach (var path in prefabPaths)
             PrefabNames.Add(Path.GetFileNameWithoutExtension(path), category);

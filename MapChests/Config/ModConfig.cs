@@ -1,384 +1,89 @@
 using System;
+using System.Collections.Generic;
 using BepInEx.Configuration;
 using Faust.Shared.Compatability;
 using MapChests.Categories;
+using MiniMapLibrary;
+using UnityEngine;
 
 namespace Faust.QoLChests.Configs;
 
+/// <summary>
+/// The one config file, <c>kaitorque.MapChests.cfg</c>: global hide and minimap settings plus one section per <see cref="MapCategory"/>.
+/// </summary>
 public class ModConfig
 {
     private static ModConfig instance = null;
-    public static ModConfig Instance
+    public static ModConfig Instance =>
+        instance ?? throw new InvalidOperationException("ModConfig is not initialized. Call Init() first.");
+
+    public static void Init(ConfigFile config, LegacyConfig legacy)
     {
-        get
-        {
-            if (instance == null)
-            {
-                throw new InvalidOperationException(
-                    "ModConfig is not initialized. Call Init() first."
-                );
-            }
-            return instance;
-        }
+        instance ??= new ModConfig(config, legacy);
     }
 
-    public static void Init(ConfigFile config)
-    {
-        instance ??= new ModConfig(config);
-    }
+    public ConfigFile File { get; }
 
-    public ConfigEntry<bool> HideEmptyChests,
-        HideUsedShops,
-        HideUsedBarrels,
-        HideUsedEquipmentBarrels,
-        HideUsedStealthedChests,
-        HideUsedLunarPods,
-        HideUsedVoidCradles,
-        RemoveHighlightFromUsed,
-        FadeInsteadOfHide,
-        DoNotHideAsDrifter;
-
-    public ConfigEntry<bool> HighlightChests,
-        HighlightShops,
-        HighlightScrapper,
-        HighlightDuplicator,
-        HighlightDrones,
-        HighlightTurrets,
-        HighlightStealthedChests,
-        HighlightLockboxes,
-        HighlightBarrels,
-        HighlightEquipmentBarrel,
-        HighlightLunarPod,
-        HighlightVoidCradle,
-        HighlightPressurePlates,
-        HighlightNewtStatues,
-        HighlightShrines;
-
+    public ConfigEntry<bool> RemoveHighlightFromUsed, FadeInsteadOfHide, DoNotHideAsDrifter;
     public ConfigEntry<float> HideTime;
-    public ConfigEntry<ConfigHighlightColor> HighlightColor,
-        HighlightChestColor,
-        HighlightShopColor,
-        HighlightScrapperColor,
-        HighlightDuplicatorColor,
-        HighlightDronesColor,
-        HighlightTurretsColor,
-        HighlightStealthedChestsColor,
-        HighlightLockboxesColor,
-        HighlightBarrelColor,
-        HighlightEquipmentBarrelColor,
-        HighlightLunarPodColor,
-        HighlightVoidCradleColor,
-        HighlightNewtStatueColor,
-        HighlightPressurePlateColor,
-        HighlightShrineColor;
 
-    private ModConfig(ConfigFile config)
+    public ConfigEntry<KeyCode> MinimapKey, ZoomInKey, ZoomOutKey;
+    public ConfigEntry<float> ZoomLevel;
+    public ConfigEntry<LogLevel> MinimapLogLevel;
+
+    private readonly Dictionary<MapCategory, CategorySettings> categories = [];
+
+    private ModConfig(ConfigFile config, LegacyConfig legacy)
     {
-        HideEmptyChests = config.Bind("Hide", "Chest", true, "Hides empty chests after a few seconds");
-        HideUsedShops = config.Bind("Hide", "Shops", true, "Hides used shops after a few seconds");
-        HideUsedBarrels = config.Bind("Hide", "Barrels", true, "Hides used barrels after a few seconds");
-        // New category defaults inherit the previous shared settings for existing configs.
-        HideUsedEquipmentBarrels = config.Bind(
-            "Hide",
-            "Equipment Barrel",
-            HideUsedBarrels.Value,
-            "Hides used equipment barrels after a few seconds"
-        );
-        HideUsedStealthedChests = config.Bind(
-            "Hide",
-            "Stealthed Chests",
-            HideEmptyChests.Value,
-            "Hides used stealthed chests after a few seconds"
-        );
-        HideUsedLunarPods = config.Bind(
-            "Hide",
-            "Lunar Pod",
-            HideEmptyChests.Value,
-            "Hides used lunar pods after a few seconds"
-        );
-        HideUsedVoidCradles = config.Bind(
-            "Hide",
-            "Void Cradle",
-            HideEmptyChests.Value,
-            "Hides used void cradles after a few seconds"
-        );
+        File = config;
 
-        RemoveHighlightFromUsed = config.Bind("Highlight", "RemoveWhenUsed", false, "Remove highlight when used");
-        DoNotHideAsDrifter = config.Bind("Highlight", "DoNotHideAsDrifter", false, "Do not hide used chests as Drifter");
-        FadeInsteadOfHide = config.Bind("Hide", "Fade", false, "Fade instead of hiding");
-        HideTime = config.Bind("Hide", "Time", 1f, "Time before stuff is hidden");
+        HideTime = config.Bind("Hide", "Time", legacy.HighlightFloat("Hide", "Time", 1f), "Seconds before a used interactable is hidden");
+        FadeInsteadOfHide = config.Bind("Hide", "Fade", legacy.HighlightBool("Hide", "Fade", true), "Fade used interactables instead of hiding them");
+        RemoveHighlightFromUsed = config.Bind("Hide", "Remove highlight when used", legacy.HighlightBool("Highlight", "RemoveWhenUsed", true), "Remove the highlight once an interactable is used");
+        DoNotHideAsDrifter = config.Bind("Hide", "Do not hide as Drifter", legacy.HighlightBool("Highlight", "DoNotHideAsDrifter", true), "Do not hide used chests while playing Drifter");
 
-        HighlightChests = config.Bind("Highlight", "Chest", true, "Highlight Chests");
-        HighlightStealthedChests = config.Bind(
-            "Highlight",
-            "Stealthed Chests",
-            true,
-            "Highlight stealthed chests"
-        );
-        HighlightLockboxes = config.Bind("Highlight", "Lockboxes", true, "Highlight Lockboxes");
-        HighlightDuplicator = config.Bind("Highlight", "Duplicator", true, "Highlight Duplicators");
-        HighlightScrapper = config.Bind("Highlight", "Scrapper", true, "Highlight Scrappers");
-        HighlightShops = config.Bind("Highlight", "Shops", true, "Highlight Shops");
-        HighlightDrones = config.Bind("Highlight", "Drones", true, "Highlight Drones");
-        HighlightTurrets = config.Bind("Highlight", "Turrets", true, "Highlight Turrets");
-        HighlightBarrels = config.Bind("Highlight", "Barrels", true, "Highlight Barrels");
-        HighlightEquipmentBarrel = config.Bind(
-            "Highlight",
-            "Equipment Barrel",
-            HighlightBarrels.Value,
-            "Highlight equipment barrels"
-        );
-        HighlightLunarPod = config.Bind(
-            "Highlight",
-            "Lunar Pod",
-            HighlightChests.Value,
-            "Highlight lunar pods"
-        );
-        HighlightVoidCradle = config.Bind(
-            "Highlight",
-            "Void Cradle",
-            HighlightChests.Value,
-            "Highlight void cradles"
-        );
-        HighlightNewtStatues = config.Bind("Highlight", "Newt Statues", true, "Highlight Newt Statues");
-        HighlightPressurePlates = config.Bind("Highlight", "Pressure Plates", true, "Highlight Pressure Plates");
-        HighlightShrines = config.Bind("Highlight", "Shrines", false, "Highlight Shrines");
+        MinimapKey = config.Bind("Minimap", "Toggle key", legacy.MinimapEnum("Settings.General", "EnableKey", KeyCode.M), "Key that shows or hides the minimap");
+        ZoomInKey = config.Bind("Minimap", "Zoom in key", legacy.MinimapEnum("Settings.Zoom", "ZoomKey", KeyCode.Equals), "Zooms the minimap in");
+        ZoomOutKey = config.Bind("Minimap", "Zoom out key", legacy.MinimapEnum("Settings.Zoom", "UnZoomKey", KeyCode.Minus), "Zooms the minimap out");
+        ZoomLevel = config.Bind("Minimap", "Zoom level", legacy.MinimapFloat("Settings.Zoom", "zoomLevel", 1f), "Starting zoom of the minimap");
+        MinimapLogLevel = config.Bind("Minimap", "Log level", legacy.MinimapEnum("Settings.General", "LogLevel", LogLevel.info), "How much the minimap writes to the log");
 
-        HighlightColor = config.Bind(
-            "Highlight",
-            "Color",
-            ConfigHighlightColor.Yellow,
-            "Highlight color for interactables (Only used for backwards compatibility)"
-        );
+        foreach (var definition in CategoryCatalog.All)
+            categories[definition.Category] = new CategorySettings(config, definition, legacy);
 
-        HighlightChestColor = config.Bind(
-            "Highlight",
-            "ChestColor",
-            HighlightColor.Value,
-            "Highlight color for chests"
-        );
-        HighlightShopColor = config.Bind(
-            "Highlight",
-            "ShopColor",
-            HighlightColor.Value,
-            "Highlight color for shops"
-        );
-        HighlightScrapperColor = config.Bind(
-            "Highlight",
-            "ScrapperColor",
-            HighlightColor.Value,
-            "Highlight color for scrappers"
-        );
-        HighlightDuplicatorColor = config.Bind(
-            "Highlight",
-            "DuplicatorColor",
-            HighlightColor.Value,
-            "Highlight color for duplicators"
-        );
-        HighlightDronesColor = config.Bind(
-            "Highlight",
-            "DronesColor",
-            HighlightColor.Value,
-            "Highlight color for drones"
-        );
-        HighlightTurretsColor = config.Bind(
-            "Highlight",
-            "TurretsColor",
-            HighlightColor.Value,
-            "Highlight color for turrets"
-        );
-        HighlightStealthedChestsColor = config.Bind(
-            "Highlight",
-            "StealthedChestsColor",
-            HighlightColor.Value,
-            "Highlight color for stealthed chests"
-        );
-
-        HighlightLockboxesColor = config.Bind(
-            "Highlight",
-            "LockboxesColor",
-            HighlightColor.Value,
-            "Highlight color for lockboxes"
-        );
-
-        HighlightBarrelColor = config.Bind(
-            "Highlight",
-            "BarrelColor",
-            HighlightColor.Value,
-            "Highlight color for barrels"
-        );
-
-        HighlightEquipmentBarrelColor = config.Bind(
-            "Highlight",
-            "EquipmentBarrelColor",
-            HighlightBarrelColor.Value,
-            "Highlight color for equipment barrels"
-        );
-
-        HighlightLunarPodColor = config.Bind(
-            "Highlight",
-            "LunarPodColor",
-            HighlightChestColor.Value,
-            "Highlight color for lunar pods"
-        );
-
-        HighlightVoidCradleColor = config.Bind(
-            "Highlight",
-            "VoidCradleColor",
-            HighlightChestColor.Value,
-            "Highlight color for void cradles"
-        );
-
-        HighlightNewtStatueColor = config.Bind(
-            "Highlight",
-            "NewtStatueColor",
-            HighlightColor.Value,
-            "Highlight color for Newt Statues"
-        );
-
-        HighlightPressurePlateColor = config.Bind(
-            "Highlight",
-            "PressurePlateColor",
-            HighlightColor.Value,
-            "Highlight color for Pressure Plates"
-        );
-
-        HighlightShrineColor = config.Bind(
-            "Highlight",
-            "ShrineColor",
-            HighlightColor.Value,
-            "Highlight color for Shrines"
-        );
-
-        //Softdependencies
         if (RiskOfOptionsCompat.IsInstalled)
+            RegisterRiskOfOptions();
+    }
+
+    public CategorySettings Get(MapCategory category) => categories[category];
+
+    internal bool IsCategoryHighlightEnabled(MapCategory category) => Get(category).HighlightEnabled;
+
+    internal bool IsCategoryHideEnabled(MapCategory category) => Get(category).HideEnabled;
+
+    internal Color GetHighlightColor(MapCategory category) => Get(category).HighlightColor?.Value ?? Color.white;
+
+    private void RegisterRiskOfOptions()
+    {
+        RiskOfOptionsCompat.SetModDescription(
+            $"Highlights interactables, hides them once used, and shows them on a minimap.{Environment.NewLine}Icon paths, sizes and elevation markers are set in the config file."
+        );
+        RiskOfOptionsCompat.AddCheckboxOptions(false, FadeInsteadOfHide, RemoveHighlightFromUsed, DoNotHideAsDrifter);
+        RiskOfOptionsCompat.AddSliderNumberOptions(false, 0.1f, 5f, HideTime);
+        RiskOfOptionsCompat.AddSliderNumberOptions(false, 0.2f, 5f, ZoomLevel);
+
+        foreach (var settings in categories.Values)
         {
-            RiskOfOptionsCompat.SetModDescription(
-                $"Hides chests when they are empty.{Environment.NewLine}Hides used shop terminals.{Environment.NewLine}Highlights chests and interactables."
-            );
-            RiskOfOptionsCompat.AddCheckboxOptions(
-                restartRequired: false,
-                HideEmptyChests,
-                HideUsedShops,
-                HideUsedBarrels,
-                HideUsedEquipmentBarrels,
-                HideUsedStealthedChests,
-                HideUsedLunarPods,
-                HideUsedVoidCradles,
-                FadeInsteadOfHide,
-                RemoveHighlightFromUsed,
-                DoNotHideAsDrifter
-            );
-
-            RiskOfOptionsCompat.AddCheckboxOptions(
-                restartRequired: false,
-                HighlightChests,
-                HighlightDuplicator,
-                HighlightScrapper,
-                HighlightShops,
-                HighlightDrones,
-                HighlightTurrets,
-                HighlightStealthedChests,
-                HighlightLockboxes,
-                HighlightBarrels,
-                HighlightEquipmentBarrel,
-                HighlightLunarPod,
-                HighlightVoidCradle,
-                HighlightNewtStatues,
-                HighlightPressurePlates,
-                HighlightShrines
-            );
-
-            RiskOfOptionsCompat.AddSliderNumberOptions(restartRequired: false, 0.1f, 5f, HideTime);
-            RiskOfOptionsCompat.AddDropdownOptions(
-                false,
-                HighlightColor,
-                HighlightChestColor,
-                HighlightShopColor,
-                HighlightScrapperColor,
-                HighlightDuplicatorColor,
-                HighlightDronesColor,
-                HighlightTurretsColor,
-                HighlightStealthedChestsColor,
-                HighlightLockboxesColor,
-                HighlightBarrelColor,
-                HighlightEquipmentBarrelColor,
-                HighlightLunarPodColor,
-                HighlightVoidCradleColor,
-                HighlightNewtStatueColor,
-                HighlightPressurePlateColor,
-                HighlightShrineColor
-            );
+            if (settings.Highlight != null)
+            {
+                RiskOfOptionsCompat.AddCheckboxOptions(false, settings.Highlight);
+                RiskOfOptionsCompat.AddColorOptions(false, settings.HighlightColor);
+                RiskOfOptionsCompat.AddCheckboxOptions(false, settings.HideWhenUsed);
+            }
+            RiskOfOptionsCompat.AddCheckboxOptions(false, settings.Minimap);
+            RiskOfOptionsCompat.AddColorOptions(false, settings.MinimapColor);
+            if (settings.UsedIcon != null)
+                RiskOfOptionsCompat.AddDropdownOptions(false, settings.UsedIcon);
         }
-    }
-
-    internal ConfigEntry<ConfigHighlightColor> GetCategoryHighlightColorConfig(MapCategory category) =>
-        CategoryCatalog.Get(category).HighlightGroup is { } group ? GetCategoryHighlightColorConfig(group) : HighlightColor;
-
-    internal bool IsCategoryHighlightEnabled(MapCategory category) =>
-        CategoryCatalog.Get(category).HighlightGroup is { } group && IsCategoryHighlightEnabled(group);
-
-    internal bool IsCategoryHideEnabled(MapCategory category) =>
-        CategoryCatalog.Get(category).HighlightGroup is { } group && IsCategoryHideEnabled(group);
-
-    internal ConfigEntry<ConfigHighlightColor> GetCategoryHighlightColorConfig(HighlightGroup category)
-    {
-        return category switch
-        {
-            HighlightGroup.Chest => HighlightChestColor,
-            HighlightGroup.Shop => HighlightShopColor,
-            HighlightGroup.Scrapper => HighlightScrapperColor,
-            HighlightGroup.Duplicator => HighlightDuplicatorColor,
-            HighlightGroup.Drone => HighlightDronesColor,
-            HighlightGroup.Turret => HighlightTurretsColor,
-            HighlightGroup.StealthedChest => HighlightStealthedChestsColor,
-            HighlightGroup.Lockbox => HighlightLockboxesColor,
-            HighlightGroup.Barrel => HighlightBarrelColor,
-            HighlightGroup.EquipmentBarrel => HighlightEquipmentBarrelColor,
-            HighlightGroup.LunarPod => HighlightLunarPodColor,
-            HighlightGroup.VoidCradle => HighlightVoidCradleColor,
-            HighlightGroup.NewtStatue => HighlightNewtStatueColor,
-            HighlightGroup.PressurePlate => HighlightPressurePlateColor,
-            HighlightGroup.Shrine => HighlightShrineColor,
-            _ => HighlightColor
-        };
-    }
-
-    internal bool IsCategoryHighlightEnabled(HighlightGroup category)
-    {
-        return category switch
-        {
-            HighlightGroup.Chest => HighlightChests.Value,
-            HighlightGroup.Shop => HighlightShops.Value,
-            HighlightGroup.Scrapper => HighlightScrapper.Value,
-            HighlightGroup.Duplicator => HighlightDuplicator.Value,
-            HighlightGroup.Drone => HighlightDrones.Value,
-            HighlightGroup.Turret => HighlightTurrets.Value,
-            HighlightGroup.StealthedChest => HighlightStealthedChests.Value,
-            HighlightGroup.Lockbox => HighlightLockboxes.Value,
-            HighlightGroup.Barrel => HighlightBarrels.Value,
-            HighlightGroup.EquipmentBarrel => HighlightEquipmentBarrel.Value,
-            HighlightGroup.LunarPod => HighlightLunarPod.Value,
-            HighlightGroup.VoidCradle => HighlightVoidCradle.Value,
-            HighlightGroup.NewtStatue => HighlightNewtStatues.Value,
-            HighlightGroup.PressurePlate => HighlightPressurePlates.Value,
-            HighlightGroup.Shrine => HighlightShrines.Value,
-            _ => false
-        };
-    }
-
-    internal bool IsCategoryHideEnabled(HighlightGroup category)
-    {
-        return category switch
-        {
-            HighlightGroup.Chest => HideEmptyChests.Value,
-            HighlightGroup.StealthedChest => HideUsedStealthedChests.Value,
-            HighlightGroup.Shop => HideUsedShops.Value,
-            HighlightGroup.Barrel => HideUsedBarrels.Value,
-            HighlightGroup.EquipmentBarrel => HideUsedEquipmentBarrels.Value,
-            HighlightGroup.LunarPod => HideUsedLunarPods.Value,
-            HighlightGroup.VoidCradle => HideUsedVoidCradles.Value,
-            _ => false
-        };
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MapChests.Categories;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -7,7 +8,7 @@ namespace MiniMapLibrary.Scanner
 {
     public interface ISorter<T>
     {
-        InteractableKind Kind { get; }
+        MapCategory Kind { get; }
 
         /// <summary>
         /// Checks to see if the value should be of Kind

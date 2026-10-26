@@ -47,9 +47,7 @@ public static class HighlightHandler
             );
             return;
         }
-        var highlightConfigColor = ModConfig
-            .Instance.GetCategoryHighlightColorConfig(highlightCategory.Category)
-            .Value;
+        var highlightColor = ModConfig.Instance.GetHighlightColor(highlightCategory.Category);
 
         if (!highlight.highlightTargetValid)
         {
@@ -64,7 +62,7 @@ public static class HighlightHandler
         highlight.isOn = true;
         highlight.enabled = true;
         highlight.highlightColor = Highlight.HighlightColor.custom;
-        highlight.CustomColor = highlightConfigColor.ToColor32();
+        highlight.CustomColor = highlightColor;
     }
 
     public static Highlight[] Disable(GameObject[] gameObject)

@@ -12,7 +12,7 @@ namespace MiniMapLibrary.Scanner
         private readonly string targetTag;
         private readonly ILogger logger;
 
-        public TagScanner(InteractableKind kind, bool dynamic, string tag, ILogger logger, Func<GameObject, bool>? selector = null, Func<GameObject, bool>? activeChecker = null)
+        public TagScanner(bool dynamic, string tag, ILogger logger, Func<GameObject, bool>? selector = null, Func<GameObject, bool>? activeChecker = null)
         {
             this.targetTag = tag;
             this.logger = logger;

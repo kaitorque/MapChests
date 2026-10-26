@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MapChests.Categories;
+using System;
 using UnityEngine;
 
 namespace MiniMapLibrary
@@ -11,10 +12,8 @@ namespace MiniMapLibrary
         Sprite GetOrCache(string Path);
 
         /// <summary>
-        /// Uses the provided <see cref="InteractableKind"/> to generate/provide and return a sprite that should represent that kind in the minimap
+        /// Returns the sprite configured to represent the provided <see cref="MapCategory"/> on the minimap
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        Sprite GetSprite(InteractableKind type);
+        Sprite GetSprite(MapCategory category);
     }
 }

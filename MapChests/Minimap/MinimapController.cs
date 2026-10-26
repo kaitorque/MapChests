@@ -5,10 +5,7 @@ using MiniMapLibrary;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using BepInEx.Configuration;
 using BepInEx.Logging;
-using MiniMapMod.Adapters;
-using MiniMapLibrary.Config;
 using MiniMapLibrary.Scanner;
 using MapChests.Categories;
 
@@ -28,7 +25,7 @@ namespace MiniMapMod
 
         private bool ScannedStaticObjects = false;
 
-        private IConfig config;
+        private bool resetRequested;
 
         private MiniMapLibrary.ILogger logger;
 
@@ -39,7 +36,7 @@ namespace MiniMapMod
         private readonly Timer cooldownTimer = new(2.0f, false) { Value = -1.0f };
         private CameraRigController cameraRig;
 
-        public void Init(ConfigFile configFile, ManualLogSource logSource)
+        public void Init(ManualLogSource logSource)
         {
             // wrap the bepinex logger with an adapter so 
             // we can pass it to the business layer
@@ -49,21 +46,6 @@ namespace MiniMapMod
 
             // create the minimap controller
             Minimap = new(logger);
-
-            // SETUP CONFIG
-
-            // wrap bepinex config so we can pass it to business layer
-            config = new ConfigAdapter(configFile);
-
-            Settings.LoadApplicationSettings(logger, config);
-
-            // bind options
-            InteractableKind[] kinds = Enum.GetValues(typeof(InteractableKind)).Cast<InteractableKind>().Where(x => x != InteractableKind.none && x != InteractableKind.All).ToArray();
-
-            foreach (var item in kinds)
-            {
-                Settings.LoadConfigEntries(item, config);
-            }
 
             logger.LogInfo("Creating scene scan hooks");
 
@@ -88,8 +70,17 @@ namespace MiniMapMod
         }
 
         //The Update() method is run on every frame of the game.
+        /// <summary>Rebuilds the minimap on the next frame so config changes show up mid-stage.</summary>
+        public void RequestReset() => resetRequested = true;
+
         private void Update()
         {
+            if (resetRequested)
+            {
+                resetRequested = false;
+                Reset();
+            }
+
             if (UnityEngine.Input.GetKeyDown(Settings.MinimapKey))
             {
                 Enable = !Enable;
@@ -185,7 +176,7 @@ namespace MiniMapMod
                 if (item.MinimapTransform == null)
                 {
                     // create one
-                    item.MinimapTransform = Minimap.CreateIcon(item.InteractableType, itemMinimapPosition, this.SpriteManager);
+                    item.MinimapTransform = Minimap.CreateIcon(item.Category, itemMinimapPosition, this.SpriteManager);
                 }
                 else
                 {
@@ -352,12 +343,12 @@ namespace MiniMapMod
                 new MonoBehaviorScanner<TeamComponent>(logger), new MonoBehaviourSorter<TeamComponent>(
                     new ISorter<TeamComponent>[]
                     {
-                        new DefaultSorter<TeamComponent>(InteractableKind.EnemyMonster, DefaultConverter, EnemyMonsterSelector, x => true),
-                        new DefaultSorter<TeamComponent>(InteractableKind.EnemyLunar, DefaultConverter, EnemyLunarSelector, x => true),
-                        new DefaultSorter<TeamComponent>(InteractableKind.EnemyVoid, DefaultConverter, EnemyVoidSelector, x => true),
-                        new DefaultSorter<TeamComponent>(InteractableKind.Minion, DefaultConverter, MinionSelector, x => true),
-                        new DefaultSorter<TeamComponent>(InteractableKind.Player, DefaultConverter, PlayerSelector, x => true),
-                        new DefaultSorter<TeamComponent>(InteractableKind.Neutral, DefaultConverter, NeutralSelector, x => x?.gameObject.activeSelf ?? true),
+                        new DefaultSorter<TeamComponent>(MapCategory.Enemy, DefaultConverter, EnemyMonsterSelector, x => true),
+                        new DefaultSorter<TeamComponent>(MapCategory.LunarEnemy, DefaultConverter, EnemyLunarSelector, x => true),
+                        new DefaultSorter<TeamComponent>(MapCategory.VoidEnemy, DefaultConverter, EnemyVoidSelector, x => true),
+                        new DefaultSorter<TeamComponent>(MapCategory.Minion, DefaultConverter, MinionSelector, x => true),
+                        new DefaultSorter<TeamComponent>(MapCategory.Player, DefaultConverter, PlayerSelector, x => true),
+                        new DefaultSorter<TeamComponent>(MapCategory.Neutral, DefaultConverter, NeutralSelector, x => x?.gameObject.activeSelf ?? true),
                     }
                 ), TrackedDimensions, SpriteManager, () => GetPlayerPosition().y);
         }
@@ -383,7 +374,7 @@ namespace MiniMapMod
             {
                 CreateAliveEntityScanner(),
                 new SingleKindScanner<GenericPickupController>(
-                    kind: InteractableKind.Item,
+                    kind: MapCategory.Item,
                     dynamic: true,
                     scanner: new MonoBehaviorScanner<GenericPickupController>(logger),
                     range: TrackedDimensions,

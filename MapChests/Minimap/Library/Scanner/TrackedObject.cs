@@ -1,4 +1,5 @@
-﻿using MiniMapLibrary;
+﻿using MapChests.Categories;
+using MiniMapLibrary;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -34,7 +35,7 @@ namespace MiniMapLibrary.Scanner
 
         private Image _MinimapImage;
 
-        public InteractableKind InteractableType { get; set; }
+        public MapCategory Category { get; set; }
 
         public Func<T, bool> ActiveChecker { get; set; }
 
@@ -42,11 +43,11 @@ namespace MiniMapLibrary.Scanner
 
         private bool PreviousActive = true;
 
-        public TrackedObject(InteractableKind interactableType, GameObject gameObject, RectTransform minimapTransform)
+        public TrackedObject(MapCategory category, GameObject gameObject, RectTransform minimapTransform)
         {
             this.gameObject = gameObject;
             MinimapTransform = minimapTransform;
-            InteractableType = interactableType;
+            Category = category;
         }
 
         public void Destroy()
@@ -95,7 +96,8 @@ namespace MiniMapLibrary.Scanner
             {
                 PreviousActive = Active;
 
-                MinimapImage.color = Settings.GetColor(InteractableType, Active);
+                MinimapImage.color = Settings.GetColor(Category, Active);
+                MinimapTransform.gameObject.SetActive(Active || !Settings.GetSetting(Category).HideUsedIcon);
             }
         }
     }
