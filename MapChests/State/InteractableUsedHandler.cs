@@ -1,8 +1,8 @@
-using Faust.QoLChests.Api;
 using Faust.QoLChests.Components;
 using Faust.QoLChests.Configs;
 using Faust.Shared;
 using UnityEngine;
+using MapChests.Categories;
 
 namespace Faust.QoLChests.Handlers;
 
@@ -21,7 +21,7 @@ public static class InteractableUsedHandler
         if (!interactable)
             return;
 
-        var categoryMarker = interactable.GetComponent<InteractableHighlightCategoryMarker>();
+        var categoryMarker = interactable.GetComponent<CategoryMarker>();
         if (!categoryMarker)
         {
             Log.LogWarning(
@@ -33,18 +33,21 @@ public static class InteractableUsedHandler
     }
 
     /// <summary>
-    /// Same as <see cref="MarkUsed(GameObject)"/>, with an explicit hide category.
+    /// Same as <see cref="MarkUsed(GameObject)"/>, using <paramref name="category"/> for objects without a category marker.
     /// </summary>
-    public static void MarkUsed(InteractableCategory category, params GameObject[] interactables)
+    public static void MarkUsed(MapCategory category, params GameObject[] interactables)
     {
         foreach (var interactable in interactables)
         {
-            if (interactable)
-                MarkUsed(interactable, category);
+            if (!interactable)
+                continue;
+
+            var categoryMarker = interactable.GetComponent<CategoryMarker>();
+            MarkUsed(interactable, categoryMarker ? categoryMarker.Category : category);
         }
     }
 
-    private static void MarkUsed(GameObject interactable, InteractableCategory? category)
+    private static void MarkUsed(GameObject interactable, MapCategory? category)
     {
         InteractableUsed.Mark(interactable);
 
@@ -69,7 +72,7 @@ public static class InteractableUsedHandler
 
         VisibilityHandler.Show(interactable);
 
-        var categoryMarker = interactable.GetComponent<InteractableHighlightCategoryMarker>();
+        var categoryMarker = interactable.GetComponent<CategoryMarker>();
         if (categoryMarker && ModConfig.Instance.IsCategoryHighlightEnabled(categoryMarker.Category))
         {
             HighlightHandler.Enable(interactable, ignoreUsed: true);

@@ -1,7 +1,7 @@
-using Faust.QoLChests.Api;
 using Faust.QoLChests.Configs;
 using Faust.QoLChests.Handlers;
 using Faust.Shared.Compatability;
+using MapChests.Categories;
 
 namespace Faust.QoLChests.Compatability;
 
@@ -16,8 +16,8 @@ internal static class StarStorm2CompatHandler
 
         AssetBundleRegistry.Register("ss2interactables");
 
-        InteractableRegistry.Register("ShockDroneBroken", InteractableCategory.Drone);
-        InteractableRegistry.Register("CloneDroneBroken", InteractableCategory.Drone);
-        InteractableRegistry.Register("DroneTablePrefab", InteractableCategory.Duplicator);
+        InteractableRegistry.Register("ShockDroneBroken", MapCategory.Drone);
+        InteractableRegistry.Register("CloneDroneBroken", MapCategory.Drone);
+        InteractableRegistry.Register("DroneTablePrefab", MapCategory.OtherPrinter);
     }
 }

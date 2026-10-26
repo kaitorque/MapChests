@@ -1,8 +1,8 @@
-using Faust.QoLChests.Api;
 using System.Collections;
 using Faust.QoLChests.Handlers;
 using RoR2;
 using UnityEngine;
+using MapChests.Categories;
 
 namespace Faust.QoLChests.Components;
 
@@ -37,7 +37,7 @@ public class RecheckShopAvailableAfterDelay(float Delay = 0.1f) : MonoBehaviour
         if (MultiShopController && !MultiShopController.Networkavailable)
         {
             InteractableUsedHandler.MarkUsed(
-                InteractableCategory.Shop,
+                MapCategory.Multishop,
                 [MultiShopController.gameObject, .. TerminalObjects]
             );
         }

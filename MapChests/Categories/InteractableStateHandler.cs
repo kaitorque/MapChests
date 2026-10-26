@@ -7,6 +7,7 @@ using RoR2;
 using RoR2.ContentManagement;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using MapChests.Categories;
 
 namespace Faust.QoLChests.Handlers;
 
@@ -68,10 +69,10 @@ public static class InteractableStateHandler
         if (!prefab || !InteractableRegistry.IsRegistered(prefab.name, out var category))
             return;
 
-        if (prefab.GetComponent<InteractableHighlightCategoryMarker>())
+        if (prefab.GetComponent<CategoryMarker>())
             return;
 
-        prefab.AddComponent<InteractableHighlightCategoryMarker>().SetCategory(category);
+        prefab.AddComponent<CategoryMarker>().SetCategory(category);
         Log.LogDebug(
             $"Added category marker for registered modded interactable - {prefab.name} - Category: ({category})"
         );
@@ -88,7 +89,7 @@ public static class InteractableStateHandler
         }
 
         var sceneInteractables = Object
-            .FindObjectsOfType<InteractableHighlightCategoryMarker>()
+            .FindObjectsOfType<CategoryMarker>()
             .Select(x => x.gameObject);
 
         var trackedInteractables = sceneInteractables.Concat(TrackedInteractables).ToArray();
@@ -100,7 +101,7 @@ public static class InteractableStateHandler
             if (!interactable)
                 continue;
             var highlightCategoryMarker =
-                interactable.GetComponent<InteractableHighlightCategoryMarker>();
+                interactable.GetComponent<CategoryMarker>();
             if (!highlightCategoryMarker)
             {
                 Log.LogWarning(
@@ -131,32 +132,18 @@ public static class InteractableStateHandler
 
     private static void LoadHighlightableResources()
     {
-        // Load highlightable resources
-        AddResourcesToHighlights(Constants.ChestResourcesPaths);
-        AddResourcesToHighlights(Constants.BarrelResourcesPaths);
-        AddResourcesToHighlights(Constants.LockboxResourcesPaths);
-        AddResourcesToHighlights(Constants.StealthedChestResourcePaths);
-        AddResourcesToHighlights(Constants.ShopResourcePaths);
-        AddResourcesToHighlights(Constants.ScrapperResourcePaths);
-        AddResourcesToHighlights(Constants.DuplicatorResourcesPaths);
-        AddResourcesToHighlights(Constants.DroneResourcesPaths);
-        AddResourcesToHighlights(Constants.TurrentResourcePaths);
-        AddResourcesToHighlights(Constants.ArtifactOfDevotionResourcePaths);
-        AddResourcesToHighlights(Constants.ShrineResourcePaths);
-    }
-
-    private static void AddResourcesToHighlights(HighlightableResource[] resources)
-    {
-        foreach (var resource in resources)
+        foreach (var definition in CategoryCatalog.All)
         {
-            var addressable = Addressables
-                .LoadAssetAsync<GameObject>(resource.ResourcePath)
-                .WaitForCompletion();
-            if (addressable)
+            foreach (var path in definition.PrefabPaths)
             {
-                addressable
-                    .AddComponent<InteractableHighlightCategoryMarker>()
-                    .SetCategory(resource.Category);
+                var addressable = Addressables.LoadAssetAsync<GameObject>(path).WaitForCompletion();
+                if (!addressable)
+                {
+                    Log.LogWarning($"Prefab {path} for category {definition.Category} was not found");
+                    continue;
+                }
+
+                CategoryMarker.Tag(addressable, definition.Category);
                 TrackedInteractables.Add(addressable);
             }
         }

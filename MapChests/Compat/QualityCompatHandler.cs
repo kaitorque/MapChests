@@ -1,6 +1,6 @@
-using Faust.QoLChests.Api;
 using Faust.QoLChests.Handlers;
 using Faust.Shared.Compatability;
+using MapChests.Categories;
 
 namespace Faust.QoLChests.Compatability;
 
@@ -15,18 +15,18 @@ internal static class QualityCompatHandler
 
         AssetBundleRegistry.Register("itemqualitiesassets");
 
-        InteractableRegistry.Register("QualityChest1", InteractableCategory.Chest);
-        InteractableRegistry.Register("QualityChest2", InteractableCategory.Chest);
+        InteractableRegistry.Register("QualityChest1", MapCategory.SmallChest);
+        InteractableRegistry.Register("QualityChest2", MapCategory.LargeChest);
 
-        InteractableRegistry.Register("QualityEquipmentBarrel", InteractableCategory.EquipmentBarrel);
+        InteractableRegistry.Register("QualityEquipmentBarrel", MapCategory.EquipmentBarrel);
 
-        InteractableRegistry.Register("Chest2StealthedVariant", InteractableCategory.StealthedChest);
+        InteractableRegistry.Register("Chest2StealthedVariant", MapCategory.CloakedChest);
 
-        InteractableRegistry.Register("SpeedOnPickupBarrel", InteractableCategory.Barrel);
+        InteractableRegistry.Register("SpeedOnPickupBarrel", MapCategory.Barrel);
 
-        InteractableRegistry.Register("QualityDuplicator", InteractableCategory.Duplicator);
-        InteractableRegistry.Register("QualityDuplicatorLarge", InteractableCategory.Duplicator);
-        InteractableRegistry.Register("QualityDuplicatorMilitary", InteractableCategory.Duplicator);
-        InteractableRegistry.Register("QualityDuplicatorWild", InteractableCategory.Duplicator);
+        InteractableRegistry.Register("QualityDuplicator", MapCategory.CommonPrinter);
+        InteractableRegistry.Register("QualityDuplicatorLarge", MapCategory.UncommonPrinter);
+        InteractableRegistry.Register("QualityDuplicatorMilitary", MapCategory.LegendaryPrinter);
+        InteractableRegistry.Register("QualityDuplicatorWild", MapCategory.BossPrinter);
     }
 }

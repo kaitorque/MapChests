@@ -10,6 +10,7 @@ using BepInEx.Logging;
 using MiniMapMod.Adapters;
 using MiniMapLibrary.Config;
 using MiniMapLibrary.Scanner;
+using MapChests.Categories;
 
 namespace MiniMapMod
 {
@@ -289,159 +290,28 @@ namespace MiniMapMod
             }
         }
 
-        private ITrackedObjectScanner CreateChestScanner(Func<ChestBehavior, bool> activeChecker)
+        private void CreateStaticScanners()
         {
-            bool TryGetPurchaseToken<T>(T value, out string out_token) where T : MonoBehaviour
-            {
-                var token = value?.GetComponent<PurchaseInteraction>()?.contextToken;
+            staticScanners = new ITrackedObjectScanner[] {
+                new CategoryScanner(false, FindTaggedInteractables, TrackedDimensions, SpriteManager, () => GetPlayerPosition().y),
+            };
+        }
 
-                // mods that implement ChestBehaviour, may not also PurchaseInteraction
-                if (token is null)
-                {
-                    logger.LogDebug($"No {nameof(PurchaseInteraction)} component on {typeof(T).Name}. GameObject.name = {value.gameObject.name}");
-                }
+        private static IEnumerable<GameObject> FindTaggedInteractables()
+        {
+            CategoryClassifier.TagUntagged();
 
-                out_token = token;
-
-                return token != null;
-            }
-
-            // given any chest object this will retur true if it should be displayed as a chest
-            bool ChestSelector(ChestBehavior chest)
-            {
-                if (TryGetPurchaseToken(chest, out string token))
-                {
-                    return token.Contains("CHEST") && token != "LUNAR_CHEST_CONTEXT" && token.Contains("STEALTH") == false;
-                }
-
-                return false;
-            }
-
-            bool LunarPodSelector(ChestBehavior chest)
-            {
-                if (TryGetPurchaseToken(chest, out string token))
-                {
-                    return token == "LUNAR_CHEST_CONTEXT";
-                }
-
-                return false;
-            }
-
-            return new MultiKindScanner<ChestBehavior>(false,
-                new MonoBehaviorScanner<ChestBehavior>(logger), new MonoBehaviourSorter<ChestBehavior>(
-                    new ISorter<ChestBehavior>[] {
-                        new DefaultSorter<ChestBehavior>(InteractableKind.Chest, x => x.gameObject, ChestSelector, activeChecker),
-                        new DefaultSorter<ChestBehavior>(InteractableKind.LunarPod,  x => x.gameObject, LunarPodSelector, activeChecker),
-                    }
-                ), TrackedDimensions, SpriteManager, () => GetPlayerPosition().y);
+            // generic interactions (portals) can spawn mid-stage, so the dynamic scan tracks them
+            return GameObject.FindObjectsOfType<CategoryMarker>()
+                .Select(marker => marker.gameObject)
+                .Where(gameObject => !gameObject.GetComponent<GenericInteraction>());
         }
 
         private ITrackedObjectScanner CreateGenericInteractionScanner()
         {
-            bool PortalSelector(GenericInteraction interaction) => interaction?.contextToken?.Contains("PORTAL") ?? false;
-
-            bool DefaultSelector(GenericInteraction interaction) => true;
-
-            bool GenericActiveChecker(GenericInteraction interaction) => interaction?.isActiveAndEnabled ?? true;
-
-            GameObject DefaultConverter<T>(T value) where T : MonoBehaviour => value?.gameObject;
-
-            return new MultiKindScanner<GenericInteraction>(false,
-                new MonoBehaviorScanner<GenericInteraction>(logger), new MonoBehaviourSorter<GenericInteraction>(
-                    new ISorter<GenericInteraction>[] {
-                        new DefaultSorter<GenericInteraction>(InteractableKind.Portal, DefaultConverter, PortalSelector, GenericActiveChecker),
-                        new DefaultSorter<GenericInteraction>(InteractableKind.Special, DefaultConverter, DefaultSelector, GenericActiveChecker)
-                    }
-                ), TrackedDimensions, SpriteManager, () => GetPlayerPosition().y);
-        }
-
-        private ITrackedObjectScanner CreatePurchaseInteractionScanner()
-        {
-            bool FanSelector(PurchaseInteraction interaction) => interaction?.contextToken == "FAN_CONTEXT";
-
-            bool PrinterSelector(PurchaseInteraction interaction) => interaction?.contextToken?.Contains("DUPLICATOR") ?? false;
-
-            bool ShopSelector(PurchaseInteraction interaction) => interaction?.contextToken?.Contains("TERMINAL") ?? false;
-
-            bool EquipmentSelector(PurchaseInteraction interaction) => interaction?.contextToken?.Contains("EQUIPMENTBARREL") ?? false;
-
-            bool GoldShoresSelector(PurchaseInteraction interaction) => interaction?.contextToken?.Contains("GOLDSHORE") ?? false;
-
-            bool GoldShoresBeaconSelector(PurchaseInteraction interaction) => interaction?.contextToken?.Contains("TOTEM") ?? false;
-
-            bool InteractionActiveChecker(PurchaseInteraction interaction) => interaction?.available ?? true;
-
-            bool LunarShopSelector(PurchaseInteraction interaction) => interaction?.GetComponent<PortalStatueBehavior>()?.portalType == PortalStatueBehavior.PortalType.Shop;
-
-            GameObject DefaultConverter<T>(T value) where T : MonoBehaviour => value?.gameObject;
-
-            return new MultiKindScanner<PurchaseInteraction>(false,
-                new MonoBehaviorScanner<PurchaseInteraction>(logger), new MonoBehaviourSorter<PurchaseInteraction>(
-                    new ISorter<PurchaseInteraction>[] {
-                        new DefaultSorter<PurchaseInteraction>(InteractableKind.Printer, DefaultConverter, PrinterSelector, InteractionActiveChecker),
-                        new DefaultSorter<PurchaseInteraction>(InteractableKind.Special, DefaultConverter, FanSelector, InteractionActiveChecker),
-                        new DefaultSorter<PurchaseInteraction>(InteractableKind.Shop, DefaultConverter, ShopSelector, InteractionActiveChecker),
-                        new DefaultSorter<PurchaseInteraction>(InteractableKind.Equipment, DefaultConverter, EquipmentSelector, InteractionActiveChecker),
-                        new DefaultSorter<PurchaseInteraction>(InteractableKind.Portal, DefaultConverter, GoldShoresSelector, InteractionActiveChecker),
-                        new DefaultSorter<PurchaseInteraction>(InteractableKind.Totem, DefaultConverter, GoldShoresBeaconSelector, GoldShoresSelector),
-                        new DefaultSorter<PurchaseInteraction>(InteractableKind.NewtAltar, DefaultConverter, LunarShopSelector, InteractionActiveChecker)
-                    }
-                ), TrackedDimensions, SpriteManager, () => GetPlayerPosition().y);
-        }
-
-        private void CreateStaticScanners()
-        {
-            GameObject DefaultConverter<T>(T value) where T : MonoBehaviour => value?.gameObject;
-
-            bool DefaultActiveChecker<T>(T value) where T : MonoBehaviour
-            {
-                if (value is PurchaseInteraction isInteraction)
-                {
-                    return isInteraction.available;
-                }
-
-                PurchaseInteraction interaction = value?.GetComponent<PurchaseInteraction>();
-
-                if (interaction != null)
-                {
-                    return interaction.available;
-                }
-
-                // default always active;
-                return true;
-            }
-
-            ITrackedObjectScanner SimpleScanner<T>(InteractableKind kind, Func<T, bool> activeChecker = null, Func<T, bool> selector = null, Func<T, GameObject> converter = null) where T : MonoBehaviour
-            {
-                return new SingleKindScanner<T>(
-                    kind: kind,
-                    dynamic: false,
-                    scanner: new MonoBehaviorScanner<T>(logger),
-                    range: TrackedDimensions,
-                    spriteManager: SpriteManager,
-                    playerHeightRetriever: () => GetPlayerPosition().y,
-                    converter: converter ?? DefaultConverter,
-                    activeChecker: activeChecker ?? DefaultActiveChecker,
-                    selector: selector
-                );
-            }
-
-            staticScanners = new ITrackedObjectScanner[] {
-                CreateChestScanner(DefaultActiveChecker),
-                CreatePurchaseInteractionScanner(),
-                CreateGenericInteractionScanner(),
-                SimpleScanner<RouletteChestController>(InteractableKind.Chest),
-                SimpleScanner<ShrineBloodBehavior>(InteractableKind.Shrine),
-                SimpleScanner<ShrineChanceBehavior>(InteractableKind.Shrine),
-                SimpleScanner<ShrineCombatBehavior>(InteractableKind.Shrine),
-                SimpleScanner<ShrineHealingBehavior>(InteractableKind.Shrine),
-                SimpleScanner<ShrineRestackBehavior>(InteractableKind.Shrine),
-                SimpleScanner<ShrineBossBehavior>(InteractableKind.Shrine),
-                SimpleScanner<ScrapperController>(InteractableKind.Utility),
-                SimpleScanner<TeleporterInteraction>(InteractableKind.Teleporter, activeChecker: (teleporter) => teleporter.activationState != TeleporterInteraction.ActivationState.Charged),
-                SimpleScanner<SummonMasterBehavior>(InteractableKind.Drone),
-                SimpleScanner<BarrelInteraction>(InteractableKind.Barrel, activeChecker: barrel => !barrel.Networkopened),
-            };
+            return new CategoryScanner(true,
+                () => GameObject.FindObjectsOfType<GenericInteraction>().Select(interaction => interaction.gameObject),
+                TrackedDimensions, SpriteManager, () => GetPlayerPosition().y);
         }
 
         private ITrackedObjectScanner CreateAliveEntityScanner()

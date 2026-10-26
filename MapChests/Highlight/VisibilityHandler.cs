@@ -1,15 +1,15 @@
-using Faust.QoLChests.Api;
 using Faust.QoLChests.Components;
 using Faust.QoLChests.Configs;
 using Faust.Shared;
 using RoR2;
 using UnityEngine;
+using MapChests.Categories;
 
 namespace Faust.QoLChests.Handlers;
 
 public static class VisibilityHandler
 {
-    public static void Hide(InteractableCategory category, params GameObject[] gameObjects)
+    public static void Hide(MapCategory category, params GameObject[] gameObjects)
     {
         var doNotHideAsDrifter = ModConfig.Instance.DoNotHideAsDrifter.Value && CharacterStateHandler.IsDrifter;
         Log.LogDebug(

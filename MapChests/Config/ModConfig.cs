@@ -1,7 +1,7 @@
-using Faust.QoLChests.Api;
 using System;
 using BepInEx.Configuration;
 using Faust.Shared.Compatability;
+using MapChests.Categories;
 
 namespace Faust.QoLChests.Configs;
 
@@ -312,65 +312,72 @@ public class ModConfig
         }
     }
 
-    internal ConfigEntry<ConfigHighlightColor> GetCategoryHighlightColorConfig(
-        InteractableCategory category
-    )
+    internal ConfigEntry<ConfigHighlightColor> GetCategoryHighlightColorConfig(MapCategory category) =>
+        CategoryCatalog.Get(category).HighlightGroup is { } group ? GetCategoryHighlightColorConfig(group) : HighlightColor;
+
+    internal bool IsCategoryHighlightEnabled(MapCategory category) =>
+        CategoryCatalog.Get(category).HighlightGroup is { } group && IsCategoryHighlightEnabled(group);
+
+    internal bool IsCategoryHideEnabled(MapCategory category) =>
+        CategoryCatalog.Get(category).HighlightGroup is { } group && IsCategoryHideEnabled(group);
+
+    internal ConfigEntry<ConfigHighlightColor> GetCategoryHighlightColorConfig(HighlightGroup category)
     {
         return category switch
         {
-            InteractableCategory.Chest => HighlightChestColor,
-            InteractableCategory.Shop => HighlightShopColor,
-            InteractableCategory.Scrapper => HighlightScrapperColor,
-            InteractableCategory.Duplicator => HighlightDuplicatorColor,
-            InteractableCategory.Drone => HighlightDronesColor,
-            InteractableCategory.Turret => HighlightTurretsColor,
-            InteractableCategory.StealthedChest => HighlightStealthedChestsColor,
-            InteractableCategory.Lockbox => HighlightLockboxesColor,
-            InteractableCategory.Barrel => HighlightBarrelColor,
-            InteractableCategory.EquipmentBarrel => HighlightEquipmentBarrelColor,
-            InteractableCategory.LunarPod => HighlightLunarPodColor,
-            InteractableCategory.VoidCradle => HighlightVoidCradleColor,
-            InteractableCategory.NewtStatue => HighlightNewtStatueColor,
-            InteractableCategory.PressurePlate => HighlightPressurePlateColor,
-            InteractableCategory.Shrine => HighlightShrineColor,
+            HighlightGroup.Chest => HighlightChestColor,
+            HighlightGroup.Shop => HighlightShopColor,
+            HighlightGroup.Scrapper => HighlightScrapperColor,
+            HighlightGroup.Duplicator => HighlightDuplicatorColor,
+            HighlightGroup.Drone => HighlightDronesColor,
+            HighlightGroup.Turret => HighlightTurretsColor,
+            HighlightGroup.StealthedChest => HighlightStealthedChestsColor,
+            HighlightGroup.Lockbox => HighlightLockboxesColor,
+            HighlightGroup.Barrel => HighlightBarrelColor,
+            HighlightGroup.EquipmentBarrel => HighlightEquipmentBarrelColor,
+            HighlightGroup.LunarPod => HighlightLunarPodColor,
+            HighlightGroup.VoidCradle => HighlightVoidCradleColor,
+            HighlightGroup.NewtStatue => HighlightNewtStatueColor,
+            HighlightGroup.PressurePlate => HighlightPressurePlateColor,
+            HighlightGroup.Shrine => HighlightShrineColor,
             _ => HighlightColor
         };
     }
 
-    internal bool IsCategoryHighlightEnabled(InteractableCategory category)
+    internal bool IsCategoryHighlightEnabled(HighlightGroup category)
     {
         return category switch
         {
-            InteractableCategory.Chest => HighlightChests.Value,
-            InteractableCategory.Shop => HighlightShops.Value,
-            InteractableCategory.Scrapper => HighlightScrapper.Value,
-            InteractableCategory.Duplicator => HighlightDuplicator.Value,
-            InteractableCategory.Drone => HighlightDrones.Value,
-            InteractableCategory.Turret => HighlightTurrets.Value,
-            InteractableCategory.StealthedChest => HighlightStealthedChests.Value,
-            InteractableCategory.Lockbox => HighlightLockboxes.Value,
-            InteractableCategory.Barrel => HighlightBarrels.Value,
-            InteractableCategory.EquipmentBarrel => HighlightEquipmentBarrel.Value,
-            InteractableCategory.LunarPod => HighlightLunarPod.Value,
-            InteractableCategory.VoidCradle => HighlightVoidCradle.Value,
-            InteractableCategory.NewtStatue => HighlightNewtStatues.Value,
-            InteractableCategory.PressurePlate => HighlightPressurePlates.Value,
-            InteractableCategory.Shrine => HighlightShrines.Value,
+            HighlightGroup.Chest => HighlightChests.Value,
+            HighlightGroup.Shop => HighlightShops.Value,
+            HighlightGroup.Scrapper => HighlightScrapper.Value,
+            HighlightGroup.Duplicator => HighlightDuplicator.Value,
+            HighlightGroup.Drone => HighlightDrones.Value,
+            HighlightGroup.Turret => HighlightTurrets.Value,
+            HighlightGroup.StealthedChest => HighlightStealthedChests.Value,
+            HighlightGroup.Lockbox => HighlightLockboxes.Value,
+            HighlightGroup.Barrel => HighlightBarrels.Value,
+            HighlightGroup.EquipmentBarrel => HighlightEquipmentBarrel.Value,
+            HighlightGroup.LunarPod => HighlightLunarPod.Value,
+            HighlightGroup.VoidCradle => HighlightVoidCradle.Value,
+            HighlightGroup.NewtStatue => HighlightNewtStatues.Value,
+            HighlightGroup.PressurePlate => HighlightPressurePlates.Value,
+            HighlightGroup.Shrine => HighlightShrines.Value,
             _ => false
         };
     }
 
-    internal bool IsCategoryHideEnabled(InteractableCategory category)
+    internal bool IsCategoryHideEnabled(HighlightGroup category)
     {
         return category switch
         {
-            InteractableCategory.Chest => HideEmptyChests.Value,
-            InteractableCategory.StealthedChest => HideUsedStealthedChests.Value,
-            InteractableCategory.Shop => HideUsedShops.Value,
-            InteractableCategory.Barrel => HideUsedBarrels.Value,
-            InteractableCategory.EquipmentBarrel => HideUsedEquipmentBarrels.Value,
-            InteractableCategory.LunarPod => HideUsedLunarPods.Value,
-            InteractableCategory.VoidCradle => HideUsedVoidCradles.Value,
+            HighlightGroup.Chest => HideEmptyChests.Value,
+            HighlightGroup.StealthedChest => HideUsedStealthedChests.Value,
+            HighlightGroup.Shop => HideUsedShops.Value,
+            HighlightGroup.Barrel => HideUsedBarrels.Value,
+            HighlightGroup.EquipmentBarrel => HideUsedEquipmentBarrels.Value,
+            HighlightGroup.LunarPod => HideUsedLunarPods.Value,
+            HighlightGroup.VoidCradle => HideUsedVoidCradles.Value,
             _ => false
         };
     }

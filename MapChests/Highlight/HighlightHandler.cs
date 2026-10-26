@@ -4,6 +4,7 @@ using Faust.QoLChests.Configs;
 using Faust.Shared;
 using RoR2;
 using UnityEngine;
+using MapChests.Categories;
 
 namespace Faust.QoLChests.Handlers;
 
@@ -38,7 +39,7 @@ public static class HighlightHandler
             }
         }
 
-        var highlightCategory = interactable.GetComponent<InteractableHighlightCategoryMarker>();
+        var highlightCategory = interactable.GetComponent<CategoryMarker>();
         if (!highlightCategory)
         {
             Log.LogWarning(
@@ -63,7 +64,7 @@ public static class HighlightHandler
         highlight.isOn = true;
         highlight.enabled = true;
         highlight.highlightColor = Highlight.HighlightColor.custom;
-        highlight.CustomColor = Constants.GetColor(highlightConfigColor);
+        highlight.CustomColor = highlightConfigColor.ToColor32();
     }
 
     public static Highlight[] Disable(GameObject[] gameObject)

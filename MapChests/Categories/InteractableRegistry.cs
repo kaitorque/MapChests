@@ -1,19 +1,19 @@
-using Faust.QoLChests.Api;
 using System.Collections.Generic;
 using Faust.QoLChests.Configs;
+using MapChests.Categories;
 
 namespace Faust.QoLChests.Handlers;
 
 public static class InteractableRegistry
 {
-    private static readonly Dictionary<string, InteractableCategory> RegisteredInteractables = [];
+    private static readonly Dictionary<string, MapCategory> RegisteredInteractables = [];
     private static readonly HashSet<string> BlackListedInteractables = [];
 
     /// <summary>
     /// Register an interactable by prefab name, to track them dynamically.
     /// </summary>
     /// <param name="interactableName"></param>
-    public static void Register(string interactableName, InteractableCategory category)
+    public static void Register(string interactableName, MapCategory category)
     {
         RegisteredInteractables.TryAdd(interactableName, category);
         if (interactableName.EndsWith("(Clone)"))
@@ -22,7 +22,7 @@ public static class InteractableRegistry
         RegisteredInteractables.TryAdd(cloneInteractableName, category);
     }
 
-    public static bool IsRegistered(string interactableName, out InteractableCategory category)
+    public static bool IsRegistered(string interactableName, out MapCategory category)
     {
         return RegisteredInteractables.TryGetValue(interactableName, out category);
     }

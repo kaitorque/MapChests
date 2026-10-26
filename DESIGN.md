@@ -169,24 +169,25 @@ The lighter minimap blues and violet (`4D79FF`, `A04DFF`) look deliberate: pure 
 
 ### 4.1 One category model
 
-Replace both enums with one enum, `InteractableCategory`, covering the union of the interactable rows above. The owner wants categories **as fine-grained as possible**, each with its own colour, so split broad groups into their real types:
+Both features use **one enum, `MapCategory`** (`Categories/MapCategory.cs`), and **one object per category, `CategoryDefinition`**, listed in `CategoryCatalog`. Enemies, players, minions, items and neutrals are in the same enum, with no highlight group. Categories are as fine-grained as the game allows (owner decision), about 75 in total:
 
-- **Chests:** separate small, large, legendary, category chests (damage, healing, utility), adaptive, lockbox (rusty), encrusted lockbox, cloaked (stealthed) chest, hidden or secret chests, timed chest, void cradle, lunar pod, and the DLC chests.
-- **Drones and turrets:** turret is its own category, never merged into drones. Split further where the game has distinct types (drone stations, Lemurian eggs).
-- **Others:** keep `Barrel, EquipmentBarrel, Shop, Duplicator, Scrapper, Shrine, NewtStatue, PressurePlate, Teleporter, Portal, Totem, Special`, and split them where distinct types exist (for example printer tiers, shrine types).
+- **Chests:** small, large, legendary, damage, healing, utility (each covering small and large versions), adaptive, cloaked, secret (in "HOLDER: Secret"), rusty lockbox, encrusted lockbox, void cradle, void potential, lunar pod, shipping request, scavenger bag, hollow, Nkuhana, trial, other.
+- **Shops:** multishop, equipment multishop, lunar shop, drone shop, temporary item shop, haunted vending machine, other.
+- **Printers and scrappers:** common, uncommon, legendary, boss, other printer; scrapper, drone scrapper.
+- **Drones:** drone, turret, drone station, Lemurian egg. **Barrels:** barrel, equipment barrel, void stalk.
+- **Shrines, one per type:** Blood, Chance, Combat, Mountain, Order, Woods, cleansing pool, Altar of Gold, Halcyonite, Shaping (Colossus), Rebirth, Catastrophe, Compulsion, Death, Dread, Hallowed, other.
+- **World:** newt altar, pressure plate, teleporter, portal, gold totem, radar scanner, special.
 
-The exact list is built in Phase 1 from the prefab paths in `QoLChests/Constants.cs`, the decompiled game source and the token list in section 3.1. QoLChests' enum values are part of its public API ("only append, never renumber"); MapChests has its own API, so it can renumber, but should stay append-only once released.
-
-Keep the non-interactable minimap kinds (enemies, players, minions, items, neutral) in a separate enum, `EntityKind`. They have no highlight or hide behaviour.
+`CategoryDefinition` holds the display name, prefab paths, and, until the configs merge in Phase 2, the old QoLChests config group (`HighlightGroup`) and the old minimap icon kind (`InteractableKind`) it uses. Phase 2 adds the colour, icon and hide settings to the definition and uses these two fields to migrate the owner's current settings. "Other" categories catch untagged objects from other mods. Add a category in `MapCategory` and `CategoryCatalog` only; the catalog throws at startup if a value has no definition. Keep the enum append-only once released.
 
 ### 4.2 One classifier
 
 QoLChests' marker approach becomes the single source of truth:
 
-1. A `CategoryCatalog` (from `Constants.cs`) maps prefab paths to categories. Add rows for categories QoLChests did not cover (teleporter, portals, totems, fans) where a prefab path exists.
-2. Startup and scene hooks tag prefabs and preplaced objects with a `CategoryMarker` component (renamed from `InteractableHighlightCategoryMarker`). Keep the name-based registry and modded-prefab hooks.
-3. The minimap scans for `CategoryMarker` instead of matching context tokens, and picks each icon from the marker's category.
-4. A **fallback classifier** handles untagged interactables (for example from other mods) using the old minimap rules. It logs each unknown prefab name once, so missing catalog rows are easy to spot.
+1. `CategoryCatalog` (from `Constants.cs`) maps prefab paths to categories, including teleporters, portals, the gold totem and the radar scanner. All 122 paths were checked against the game's addressables catalog.
+2. Startup and scene hooks tag prefabs and preplaced objects with a `CategoryMarker` component (renamed from `InteractableHighlightCategoryMarker`). Preplaced chests take their category from their prefab name. The name-based registry and modded-prefab hooks stay.
+3. The minimap scans for `CategoryMarker` (`Minimap/CategoryScanner.cs`) instead of matching context tokens. Generic interactions (portals) stay in the dynamic scan because they spawn mid-stage.
+4. `CategoryClassifier` handles untagged interactables with the old minimap rules and tags them. It runs at stage start (before highlights are applied) and on each minimap static scan, and logs each unknown object name once.
 
 ### 4.3 One "used" state
 
@@ -243,9 +244,11 @@ Each phase should end with a successful build and an in-game check in the VP pro
 Until Phase 2 merges the configs, the two features use temporary files `kaitorque.MapChests.Highlight.cfg` and `kaitorque.MapChests.Minimap.cfg`. On first run they are copied from `Faust.QoLChests.cfg` and `MiniMap.cfg`, so the owner's settings carry over; the original files are never changed.
 
 ### Phase 1 – Shared categories
-- [ ] Introduce `InteractableCategory` (4.1) and `CategoryMarker`; port QoLChests to it.
-- [ ] Minimap scans `CategoryMarker` and maps category to icon; add the fallback classifier (4.2).
-- [ ] Every row of the comparison table shows the same category in both features.
+- [x] Introduce `MapCategory`, `CategoryDefinition` (4.1) and `CategoryMarker`; port QoLChests to it.
+- [x] Minimap scans `CategoryMarker` and maps category to icon; add the fallback classifier (4.2).
+- [ ] In game: every row of the comparison table shows the same category in both features.
+
+Expected visible changes after Phase 1 (until Phase 2 gives each category its own settings): lockboxes, void potentials, scavenger bags, void stalks, Lemurian eggs, drone stations, the radar scanner and DLC shrines now get minimap icons; scavenger bags, void potentials and void stalks also highlight and hide using the nearest old group (chest, void cradle, barrel). Cloaked chests and pressure plates still have no icon. Generic interactions no longer get two icons.
 
 ### Phase 2 – Shared state and config
 - [ ] Minimap active check uses the shared used state (4.3).
@@ -260,7 +263,7 @@ Verify each item in game, then fix it:
 - [ ] List-removal bug: `ClearDynamicTrackedObjects` and `UpdateIconPositions` call `RemoveAt(i)` inside a forward `for` loop without `i--`, which skips the next element.
 - [ ] Icons load through `LegacyResourcesAPI` paths (`Textures/MiscIcons/...`); confirm they still resolve in 1.5.0.
 - [ ] Zoom-out bug (3.2, item 2): take the map area per stage from the scene, never from enemies or items, and fix `Range1D` (port from section 3.1).
-- [ ] `Log.LogException` (`Minimap/Log.cs`) loops forever when an exception has no inner exception, because `head` is only advanced when `InnerException` is not null. Any exception caught in `ScanScene` would freeze the game.
+- [x] `Log.LogException` (`Minimap/Log.cs`) loops forever when an exception has no inner exception, because `head` is only advanced when `InnerException` is not null. Any exception caught in `ScanScene` would freeze the game.
 - [ ] `GlobalEventManager.onCharacterDeathGlobal` is obsolete in 1.5.0 (use `onCharacterDeathServer` or `onDeathProcServer`); check it still fires on clients.
 - [ ] Lag bug (3.2, item 1): find out in game what the Sky Meadow stones are; stop rebuilding every dynamic icon each scan; remove the duplicate generic-interaction scanner; consider registry-based tracking (section 3.1).
 

@@ -1,10 +1,10 @@
-namespace Faust.QoLChests.Api;
+namespace Faust.QoLChests.Configs;
 
 /// <summary>
-/// Highlight/hide category of an interactable; each category has its own user config.
-/// Values are part of the public API: only append new ones, never renumber.
+/// The original QoLChests categories, which are still the keys of the highlight and hide config entries.
+/// Each <see cref="MapChests.Categories.MapCategory"/> maps to one of these until the configs are merged.
 /// </summary>
-public enum InteractableCategory
+public enum HighlightGroup
 {
     Chest = 0,
     Shop = 1,

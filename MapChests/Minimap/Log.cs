@@ -33,10 +33,7 @@ namespace MiniMapMod
 
                 LogError($"\t{head.StackTrace}");
 
-                if (head.InnerException != null)
-                {
-                    head = head.InnerException;
-                }
+                head = head.InnerException;
             }
         }
     }

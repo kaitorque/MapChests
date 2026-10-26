@@ -1,9 +1,9 @@
-using Faust.QoLChests.Api;
 using Faust.QoLChests.Components;
 using Faust.QoLChests.Configs;
 using Faust.QoLChests.Handlers;
 using Faust.Shared;
 using RoR2;
+using MapChests.Categories;
 
 namespace Faust.QoLChests.Hooks;
 
@@ -31,7 +31,7 @@ public static class ChestHooks
     )
     {
         orig(self);
-        InteractableUsedHandler.MarkUsed(InteractableCategory.Chest, self.outer.gameObject);
+        InteractableUsedHandler.MarkUsed(MapCategory.AdaptiveChest, self.outer.gameObject);
     }
 
     private static void ResetChestForDelusion(

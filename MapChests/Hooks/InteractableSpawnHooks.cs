@@ -3,6 +3,7 @@ using Faust.QoLChests.Components;
 using Faust.QoLChests.Handlers;
 using Faust.Shared;
 using RoR2;
+using MapChests.Categories;
 
 namespace Faust.QoLChests.Hooks;
 
@@ -86,9 +87,9 @@ public static class InteractableSpawnHooks
 
             if (InteractableRegistry.IsRegistered(isc.prefab.name, out var category))
             {
-                if (!isc.prefab.GetComponent<InteractableHighlightCategoryMarker>())
+                if (!isc.prefab.GetComponent<CategoryMarker>())
                 {
-                    isc.prefab.AddComponent<InteractableHighlightCategoryMarker>()
+                    isc.prefab.AddComponent<CategoryMarker>()
                         .SetCategory(category);
 
                     Log.LogDebug(

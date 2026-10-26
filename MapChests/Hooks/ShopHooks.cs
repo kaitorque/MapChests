@@ -1,4 +1,3 @@
-using Faust.QoLChests.Api;
 using System.Collections.Generic;
 using System.Linq;
 using Faust.QoLChests.Components;
@@ -7,6 +6,7 @@ using Faust.QoLChests.Handlers;
 using Faust.Shared;
 using RoR2;
 using UnityEngine;
+using MapChests.Categories;
 
 namespace Faust.QoLChests.Hooks;
 
@@ -33,7 +33,7 @@ public static class ShopHooks
         if (self.Networkavailable)
             return;
 
-        var interactableCategoryMarker = self.GetComponent<InteractableHighlightCategoryMarker>();
+        var interactableCategoryMarker = self.GetComponent<CategoryMarker>();
         if (!interactableCategoryMarker)
             return;
 
@@ -41,7 +41,7 @@ public static class ShopHooks
                  $"PurchaseInteraction_OnInteractionBegin - Hiding interactable of category: {interactableCategoryMarker.Category}"
         );
 
-        if (interactableCategoryMarker.Category == InteractableCategory.Shop && self.gameObject.name.Contains("TripleDroneShopTerminal"))
+        if (interactableCategoryMarker.Category == MapCategory.DroneShop && self.gameObject.name.Contains("TripleDroneShopTerminal"))
         {
             var droneController = FindDroneMultishopController(self);
             if (!droneController)
@@ -114,7 +114,7 @@ public static class ShopHooks
             .Concat([self.gameObject])
             .ToArray();
 
-        InteractableUsedHandler.MarkUsed(InteractableCategory.Shop, shopObjects);
+        InteractableUsedHandler.MarkUsed(MapCategory.Multishop, shopObjects);
     }
 
     private static void SetHasBeenPurchased(
@@ -149,7 +149,7 @@ public static class ShopHooks
             multiShopControllerForTerminal.gameObject
         ];
 
-        InteractableUsedHandler.MarkUsed(InteractableCategory.Shop, shopObjects);
+        InteractableUsedHandler.MarkUsed(MapCategory.Multishop, shopObjects);
     }
 
     private static MultiShopController FindMultiShopControllerForTerminal(

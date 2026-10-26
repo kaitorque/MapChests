@@ -1,4 +1,3 @@
-using Faust.QoLChests.Api;
 using System;
 using System.Linq;
 using Faust.QoLChests.Components;
@@ -7,6 +6,7 @@ using Faust.QoLChests.Handlers;
 using Faust.Shared;
 using RoR2;
 using UnityEngine;
+using MapChests.Categories;
 
 namespace Faust.QoLChests.Hooks;
 
@@ -22,6 +22,7 @@ public static class SceneHooks
         orig(self);
         AddHighlightCategoryToPreplaced();
         AddCustomHandlingOfSpecialScenes();
+        CategoryClassifier.TagUntagged();
         InteractableStateHandler.Reset();
         Log.LogDebug(
             $"SceneDirector.Start - {InteractableStateHandler.InteractablesToHighlight.Count} interactables highlighted"
@@ -32,8 +33,8 @@ public static class SceneHooks
     {
         var primeMeridian = GameObject.Find("Chests");
         var goldenShores = GameObject.Find("HOLDER: Preplaced Goodies");
-        AddInteractableMarkerToChildren(primeMeridian, InteractableCategory.Chest);
-        AddInteractableMarkerToChildren(goldenShores, InteractableCategory.Chest);
+        AddChestMarkersToChildren(primeMeridian);
+        AddChestMarkersToChildren(goldenShores);
     }
 
     private static void AddHighlightCategoryToPreplaced()
@@ -69,7 +70,7 @@ public static class SceneHooks
                 continue;
 
             Log.LogDebug($"Pressure Plate found in Holder: {holder.name} - {highlight.gameObject.name}");
-            AddInteractableMarker(InteractableCategory.PressurePlate, highlight);
+            AddInteractableMarker(MapCategory.PressurePlate, highlight);
         }
     }
 
@@ -85,7 +86,7 @@ public static class SceneHooks
                 continue;
 
             Log.LogDebug($"Newt Statue found in Holder: {holder.name} - {highlight.gameObject.name}");
-            AddInteractableMarker(InteractableCategory.NewtStatue, highlight);
+            AddInteractableMarker(MapCategory.NewtAltar, highlight);
         }
     }
 
@@ -101,11 +102,14 @@ public static class SceneHooks
                 continue;
 
             Log.LogDebug($"Chest found in Holder: {holder.name} - {highlight.gameObject.name}");
-            AddInteractableMarker(InteractableCategory.Chest, highlight);
+            if (holder.name.Contains("Secret", StringComparison.OrdinalIgnoreCase))
+                AddInteractableMarker(MapCategory.SecretChest, highlight);
+            else
+                AddInteractableMarker(ChestCategory(highlight.gameObject), highlight);
         }
     }
 
-    private static void AddInteractableMarkerToChildren(GameObject holder, InteractableCategory category)
+    private static void AddChestMarkersToChildren(GameObject holder)
     {
         if (!holder)
             return;
@@ -113,16 +117,19 @@ public static class SceneHooks
         var highlights = holder.GetComponentsInChildren<Highlight>();
         foreach (var highlight in highlights)
         {
-            AddInteractableMarker(category, highlight);
+            AddInteractableMarker(ChestCategory(highlight.gameObject), highlight);
         }
     }
 
-    private static void AddInteractableMarker(InteractableCategory category, Highlight highlight)
+    private static MapCategory ChestCategory(GameObject chest) =>
+        CategoryCatalog.TryGetByObjectName(chest.name, out var category) ? category : MapCategory.OtherChest;
+
+    private static void AddInteractableMarker(MapCategory category, Highlight highlight)
     {
-        if (!highlight.gameObject.TryGetComponent<InteractableHighlightCategoryMarker>(out _))
+        if (!highlight.gameObject.TryGetComponent<CategoryMarker>(out _))
         {
             highlight.gameObject
-                .AddComponent<InteractableHighlightCategoryMarker>()
+                .AddComponent<CategoryMarker>()
                 .SetCategory(category);
 
             Log.LogDebug(

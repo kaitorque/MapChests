@@ -1,5 +1,6 @@
 using Faust.QoLChests.Handlers;
 using UnityEngine;
+using MapChests.Categories;
 
 namespace Faust.QoLChests.Api;
 
@@ -15,7 +16,7 @@ public static class QoLChestsApi
     /// Call this from your plugin's Awake, before the game finishes loading.
     /// </summary>
     /// <param name="prefabName">Prefab name, without "(Clone)"; the clone name is registered too.</param>
-    public static void RegisterInteractable(string prefabName, InteractableCategory category) =>
+    public static void RegisterInteractable(string prefabName, MapCategory category) =>
         InteractableRegistry.Register(prefabName, category);
 
     /// <summary>
