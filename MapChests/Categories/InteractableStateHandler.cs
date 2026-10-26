@@ -64,6 +64,22 @@ public static class InteractableStateHandler
         Log.LogDebug($"{nameof(PostInit)} processing AssetBundles and content packs took {stopwatch.ElapsedMilliseconds}ms");
     }
 
+    /// <summary>
+    /// Tags and highlights an interactable that appears after the stage-start pass, such as a scene object enabled later.
+    /// </summary>
+    public static void TrackLateInteractable(GameObject interactable)
+    {
+        if (!interactable || !CategoryClassifier.TryClassify(interactable, out var category))
+            return;
+
+        CategoryMarker.Tag(interactable, category);
+        if (!ModConfig.Instance.IsCategoryHighlightEnabled(category) || InteractablesToHighlight.Contains(interactable))
+            return;
+
+        InteractablesToHighlight.Add(interactable);
+        HighlightHandler.Enable(interactable);
+    }
+
     private static void TagRegisteredPrefab(GameObject prefab)
     {
         if (!prefab || !InteractableRegistry.IsRegistered(prefab.name, out var category))

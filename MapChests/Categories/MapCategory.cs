@@ -74,6 +74,7 @@ public enum MapCategory
     DeathShrine,
     DreadShrine,
     HallowedShrine,
+    AncientSepulcher,
     OtherShrine,
 
     // World

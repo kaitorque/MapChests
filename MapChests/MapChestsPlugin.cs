@@ -39,6 +39,7 @@ namespace MapChests
             ShopHooks.Register();
             SceneHooks.Register();
             InteractableSpawnHooks.Register();
+            StageEventHooks.Register();
             CharacterHooks.Register();
 
             QualityCompatHandler.Register();

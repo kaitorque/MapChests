@@ -197,6 +197,8 @@ public static class CategoryCatalog
         Add(MapCategory.HallowedShrine, "Hallowed shrine", HighlightGroup.Shrine, InteractableKind.Shrine,
             "RoR2/DLC4/HallowingShrineBase.prefab",
             "RoR2/DLC4/BetterHallowingShrineBase.prefab");
+        Add(MapCategory.AncientSepulcher, "Ancient Sepulcher", HighlightGroup.Shrine, InteractableKind.Shrine,
+            "RoR2/DLC4/Wake/WakeAltar.prefab");
         Add(MapCategory.OtherShrine, "Other shrine", HighlightGroup.Shrine, InteractableKind.Shrine);
 
         // World
