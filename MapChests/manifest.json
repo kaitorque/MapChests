@@ -1,0 +1,9 @@
+{
+  "name": "MapChests",
+  "version_number": "0.1.0",
+  "website_url": "",
+  "description": "Minimap and interactable highlighting with shared categories. Combines MiniMapMod and QoLChests.",
+  "dependencies": [
+    "bbepis-BepInExPack-5.4.2122"
+  ]
+}

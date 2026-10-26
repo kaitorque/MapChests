@@ -16,6 +16,8 @@ The two must share **one definition of interactable categories**. A chest is a "
 - **One plugin, one DLL.** `MiniMapLibrary` is folded into the main assembly. The original mods are uninstalled when MapChests is used.
 - **Local only for now.** Build and test in the owner's r2modman profile. Do not push to any remote, and do not publish to Thunderstore.
 - **Keep credit.** The original commit history is preserved in this repo. When moving files, use `git mv` so history and blame follow the code. Keep the Credits section in `README.md`.
+- **Credit all borrowed code.** Whenever code or logic from another person's work is ported (for example winterofhell's 4.2.0 update, section 3.1), add them to the Credits section of `README.md` in the same commit, and name the source (repo, PR, file) in the commit message.
+- **No licenses upstream.** None of the source repositories (DekuDesu/MiniMapMod, winterofhell's fork, Faustvii/R2Mods) has a license file. That is fine for local use; before any public release, ask the original authors for permission or check with the owner.
 - **Ask before adding scope.** Anything beyond this plan (new features, balance changes) needs the owner's approval first.
 
 ## 2. Environment
@@ -81,6 +83,28 @@ Both projects sit side by side, unchanged from upstream:
 | Teleporter, portals, Gilded Coast totems, fans | – | Teleporter, Portal, Totem, Special | QoLChests ignores these |
 | Enemies, players, minions, items, neutral NPCs | – | EnemyMonster/Lunar/Void, Player, Minion, Item, Neutral | Not interactables; minimap only |
 
+### 3.1 Upstream minimap 4.2.0 update (reference only)
+
+[artyredd/MiniMapMod PR #64](https://github.com/artyredd/MiniMapMod/pull/64) by **winterofhell** (branch `minimap-4.2.0` on `winterofhell/MiniMapMod`, open and unmerged) updates the minimap for game 1.5.0. Port its ideas and code where useful, and credit it (section 1). Do not merge the branch: it keeps the old csproj and commits game DLLs, which this plan removes. Useful parts:
+
+- `SceneBounds.cs` and `MapProjection.cs`: the map area is taken once per stage from `SceneInfo.approximateMapBoundMesh`, falling back to ground navigation nodes, then to interactable positions only. Enemies never change the scale. One uniform scale is used for both axes.
+- `Range.cs`: a corrected `Range1D` (no early return, ignores non-finite values).
+- `SceneTracker.cs`: tracks objects through the game's registries (`InterfaceInstanceTracker<IInteractable>`, `InstanceTracker.GetInstancesList<GenericPickupController>()` and similar) instead of scanning the whole scene every few seconds.
+- `PurchaseTokenClassifier.cs`: context-token rules including DLC tokens (drone assembly and combiner, cleansing pool, Halcyonite and Hallowed cauldrons, trial gong). Useful for the fallback classifier (4.2).
+- New kinds: timed chest, stealth chest, End of the Cycle enemies, small dots for dropped pickups.
+
+### 3.2 Known minimap bugs reported by the owner
+
+1. **Lag on some stages, especially Sky Meadow** (last seen after the Alloyed Collective release; not yet retested on the current version). Many flying stones appear to be tracked. Toggling the minimap off and on with M clears it. Likely causes in the current code:
+    - Every rescan (every 5 s, and on every character death and interaction, with a 2 s cooldown) runs `FindObjectsOfType` for about 16 types, then destroys and recreates the icon of every dynamic object (each enemy, ally and dropped item).
+    - `ClearDynamicTrackedObjects` skips every other entry (`RemoveAt(i)` without `i--`), so about half the old dynamic icons survive each scan and duplicates pile up.
+    - `CreateGenericInteractionScanner()` is registered as both a static and a dynamic scanner, so generic interactables get two icons.
+    - If the stones carry a `TeamComponent` or are pickups, each one becomes an icon. Confirm in game what they are.
+2. **Minimap slowly zooms out until icons bunch together.** Still present on the current version. Toggling with M sometimes fixes it, sometimes not until the next stage. Likely cause:
+    - The map area (`Range3D` / `Range1D`) only ever grows until a reset, and every scan adds the positions of dynamic objects (enemies, allies, items). Anything far away, such as a flung or falling body, a flying enemy or an item knocked off the map, widens it for good.
+    - A reset rescans right away, so if the far-away object still exists, the area grows straight back.
+    - `Range1D.CheckValue` returns early after setting `Min`, so `Max` may never be set.
+
 ### Current color mapping (owner's config)
 
 These are the owner's current values from `config\Faust.QoLChests.cfg` and `config\MiniMap.cfg` in the VP profile. The owner has already aligned the minimap colors to the highlight colors. **Use these as the MapChests defaults**, not the upstream code defaults.
@@ -145,9 +169,13 @@ The lighter minimap blues and violet (`4D79FF`, `A04DFF`) look deliberate: pure 
 
 ### 4.1 One category model
 
-Replace both enums with one enum, `InteractableCategory`, covering the union of the interactable rows above:
+Replace both enums with one enum, `InteractableCategory`, covering the union of the interactable rows above. The owner wants categories **as fine-grained as possible**, each with its own colour, so split broad groups into their real types:
 
-`Chest, StealthedChest, Lockbox, LunarPod, VoidCradle, Barrel, EquipmentBarrel, Shop, Duplicator, Scrapper, Drone, Turret, Shrine, NewtStatue, PressurePlate, Teleporter, Portal, Totem, Special`
+- **Chests:** separate small, large, legendary, category chests (damage, healing, utility), adaptive, lockbox (rusty), encrusted lockbox, cloaked (stealthed) chest, hidden or secret chests, timed chest, void cradle, lunar pod, and the DLC chests.
+- **Drones and turrets:** turret is its own category, never merged into drones. Split further where the game has distinct types (drone stations, Lemurian eggs).
+- **Others:** keep `Barrel, EquipmentBarrel, Shop, Duplicator, Scrapper, Shrine, NewtStatue, PressurePlate, Teleporter, Portal, Totem, Special`, and split them where distinct types exist (for example printer tiers, shrine types).
+
+The exact list is built in Phase 1 from the prefab paths in `QoLChests/Constants.cs`, the decompiled game source and the token list in section 3.1. QoLChests' enum values are part of its public API ("only append, never renumber"); MapChests has its own API, so it can renumber, but should stay append-only once released.
 
 Keep the non-interactable minimap kinds (enemies, players, minions, items, neutral) in a separate enum, `EntityKind`. They have no highlight or hide behaviour.
 
@@ -162,15 +190,16 @@ QoLChests' marker approach becomes the single source of truth:
 
 ### 4.3 One "used" state
 
-`InteractableUsedHandler` stays the only place that decides an interactable is used. The minimap's active check becomes "has no `InteractableUsed` component and, if it has a `PurchaseInteraction`, `available` is true". A per-category option (open question in section 6) chooses whether a used icon turns gray or disappears once the object is hidden.
+`InteractableUsedHandler` stays the only place that decides an interactable is used. The minimap's active check becomes "has no `InteractableUsed` component and, if it has a `PurchaseInteraction`, `available` is true". A per-category config option chooses whether a used icon turns gray (inactive colour) or disappears.
 
 ### 4.4 One config
 
 There is one config file, `kaitorque.MapChests.cfg`, with one section per category. Each section holds:
 
-- Highlight: enabled, color
+- Color: every category (including each chest subtype) has its own dedicated colour, covering both the highlight and the minimap icon
+- Highlight: enabled, palette color
 - Hide when used: enabled (categories that support it)
-- Minimap: enabled, icon, width, height, active color, inactive color, elevation marker settings. The minimap active color stays a separate hex value from the highlight palette color (the owner uses lighter shades on the map for blue and violet). Defaults come from the "Current color mapping" table in section 3.
+- Minimap: enabled, icon, width, height, inactive color, used icon (gray or hidden), elevation marker settings. The minimap active color stays a separate hex value from the highlight palette color (the owner uses lighter shades on the map for blue and violet). Defaults come from the "Current color mapping" table in section 3.
 
 Global sections cover the minimap (toggle key, zoom keys, zoom level, log level) and hiding (hide time, fade instead of hide, remove highlight when used, do-not-hide-as-Drifter). Register everything with Risk of Options, which is installed. Changes should apply mid-run wherever QoLChests already supports that.
 
@@ -180,14 +209,21 @@ Global sections cover the minimap (toggle key, zoom keys, zoom level, log level)
 MapChests/
   MapChests.csproj            single project, single DLL
   MapChestsPlugin.cs          [BepInPlugin("kaitorque.MapChests", "MapChests", "0.1.0")]
+  Api/                        QoLChestsApi (to be renamed)
   Categories/                 InteractableCategory, EntityKind, CategoryCatalog, CategoryMarker, registry
   State/                      used-state handler and components
   Highlight/                  highlighting, hiding and fading (from QoLChests)
-  Minimap/                    minimap UI, scanners, tracked objects (from MiniMapMod + MiniMapLibrary)
+  Hooks/                      game hooks (from QoLChests)
+  Minimap/                    minimap UI, scanners, tracked objects (from MiniMapMod); Minimap/Library/ from MiniMapLibrary
   Config/                     the one config, Risk of Options registration
   Compat/                     Quality, Sandswept, Starstorm 2, Hunk, Risk of Options (from QoLChests + Faust.Shared)
+  libs/RiskOfOptions.dll      Risk of Options reference (not on NuGet)
+  manifest.json               package manifest
   package.ps1                 build, copy into the VP profile, zip (modelled on MonsoonLikeDrizzle)
+MapChests.sln, NuGet.Config   solution and package sources (the BepInEx feed is required)
 ```
+
+Namespaces are still the originals (`Faust.QoLChests.*`, `Faust.Shared`, `MiniMapMod`, `MiniMapLibrary`); rename them when the code is reworked in later phases.
 
 - Use the NuGet references from `QoLChests.csproj` for game libraries. Delete `MiniMapMod/libs/` from the repo; those are the game's own DLLs and should not be committed.
 - Add `[BepInIncompatibility("MiniMap")]` and `[BepInIncompatibility("Faust.QoLChests")]` so it never runs alongside the originals.
@@ -198,11 +234,13 @@ MapChests/
 Each phase should end with a successful build and an in-game check in the VP profile.
 
 ### Phase 0 – Build as one plugin, no behaviour change
-- [ ] Create `MapChests.csproj` with the NuGet references; compile all four source folders into one DLL.
-- [ ] One `MapChestsPlugin` whose `Awake` runs the existing QoLChests and minimap startup code.
-- [ ] Move files with `git mv` into the target layout.
-- [ ] `package.ps1` builds and copies the DLL into `profiles\VP\BepInEx\plugins\MapChests\`.
+- [x] Create `MapChests.csproj` with the NuGet references; compile all four source folders into one DLL.
+- [x] One `MapChestsPlugin` whose `Awake` runs the existing QoLChests and minimap startup code. The minimap plugin class became the `MinimapController` component.
+- [x] Move files with `git mv` into the target layout.
+- [x] `package.ps1` builds and copies the DLL into `profiles\VP\BepInEx\plugins\MapChests\`.
 - [ ] In game, with the two original mods disabled: minimap shows, chests highlight and hide as before.
+
+Until Phase 2 merges the configs, the two features use temporary files `kaitorque.MapChests.Highlight.cfg` and `kaitorque.MapChests.Minimap.cfg`. On first run they are copied from `Faust.QoLChests.cfg` and `MiniMap.cfg`, so the owner's settings carry over; the original files are never changed.
 
 ### Phase 1 – Shared categories
 - [ ] Introduce `InteractableCategory` (4.1) and `CategoryMarker`; port QoLChests to it.
@@ -212,22 +250,23 @@ Each phase should end with a successful build and an in-game check in the VP pro
 ### Phase 2 – Shared state and config
 - [ ] Minimap active check uses the shared used state (4.3).
 - [ ] Merge configs into the per-category layout (4.4) with Risk of Options entries.
-- [ ] Option: minimap icon color follows the category's highlight color.
+- [ ] Each category has its own highlight and minimap colour, defaulting to the owner's mapping in section 3 (new subtypes get distinct defaults).
+- [ ] Per-category option: used icon turns gray or disappears.
 
 ### Phase 3 – Minimap fixes for the current game
 Verify each item in game, then fix it:
 - [ ] Missing icons: DLC shrines, lockboxes, cloaked chests (now its own category), drone scrapper, pressure plates.
-- [ ] Objects spawned after the stage starts: static objects are scanned once per stage (`ScanStaticTypes`), so late spawns (Halcyonite shrines, trial chests, copies from loot-instancing mods) can be missed.
+- [ ] Objects spawned after the stage starts: static objects are scanned once per stage (`ScanStaticTypes`), so late spawns (Halcyonite shrines, trial chests) can be missed.
 - [ ] List-removal bug: `ClearDynamicTrackedObjects` and `UpdateIconPositions` call `RemoveAt(i)` inside a forward `for` loop without `i--`, which skips the next element.
 - [ ] Icons load through `LegacyResourcesAPI` paths (`Textures/MiscIcons/...`); confirm they still resolve in 1.5.0.
-- [ ] Any bugs the owner reports (section 6).
+- [ ] Zoom-out bug (3.2, item 2): take the map area per stage from the scene, never from enemies or items, and fix `Range1D` (port from section 3.1).
+- [ ] `Log.LogException` (`Minimap/Log.cs`) loops forever when an exception has no inner exception, because `head` is only advanced when `InnerException` is not null. Any exception caught in `ScanScene` would freeze the game.
+- [ ] `GlobalEventManager.onCharacterDeathGlobal` is obsolete in 1.5.0 (use `onCharacterDeathServer` or `onDeathProcServer`); check it still fires on clients.
+- [ ] Lag bug (3.2, item 1): find out in game what the Sky Meadow stones are; stop rebuilding every dynamic icon each scan; remove the duplicate generic-interaction scanner; consider registry-based tracking (section 3.1).
 
-### Phase 4 – Optional: loot-instancing awareness
-Mods like Equilibrium or InstancedLoot give each player their own copy of a chest in the same spot. The minimap then draws every copy, and unopened copies of other players cover yours. If the owner wants this, show only the copies the local player can use. No instancing mod is installed right now, so leave this until asked.
+## 6. Owner decisions
 
-## 6. Open questions for the owner
-
-1. Which minimap bugs and missing features do you see in game? (Feeds Phase 3.)
-2. Once a used chest is hidden, should its minimap icon disappear, or stay in the inactive (gray) color?
-3. Should minimap icon colors follow the highlight colors by default, or keep the minimap's own colors?
-4. Should turrets keep their own category and icon, separate from drones?
+1. Minimap bugs: missing interactables, plus the two bugs in section 3.2.
+2. Used icons: gray or hidden, chosen per category in the config.
+3. Colours: every category, including each chest subtype, has its own dedicated colour for both highlight and minimap. Defaults come from the color mapping in section 3; categories without a minimap colour yet (void cradle, lockbox, cloaked chest, pressure plate) default to their highlight colour.
+4. Turrets: own category, separate from drones. In general, split categories as finely as the game allows.
