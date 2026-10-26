@@ -69,7 +69,7 @@ public sealed class CategorySettings
             ? LighterOnMap(highlightColor)
             : legacy.MinimapColor(kindSection, "activeColor", MapOnlyColors.TryGetValue(kind, out var mapColor) ? mapColor : kindDefaults.ActiveColor);
 
-        Minimap = config.Bind(section, "Minimap", !HiddenOnMapByDefault.Contains(definition.Category) && legacy.MinimapBool(kindSection, "enabled", kind != InteractableKind.Neutral), $"Show {name} on the minimap");
+        Minimap = config.Bind(section, "Minimap", legacy.MinimapBool(kindSection, "enabled", kind != InteractableKind.Neutral), $"Show {name} on the minimap");
         MinimapColor = config.Bind(section, "Minimap color", minimapColor, $"Minimap icon colour for {name}");
         MinimapUsedColor = config.Bind(section, "Minimap used color", legacy.MinimapColor(kindSection, "inactiveColor", kindDefaults.InactiveColor), $"Minimap icon colour once {name} are used");
         if (!definition.IsEntity)
@@ -190,7 +190,4 @@ public sealed class CategorySettings
         [InteractableKind.Item] = Hex("5EB2F2"),
         [InteractableKind.Neutral] = Hex("FFFFFF"),
     };
-
-    /// <summary>The original minimap never showed these.</summary>
-    private static readonly HashSet<MapCategory> HiddenOnMapByDefault = [MapCategory.CloakedChest, MapCategory.PressurePlate];
 }
