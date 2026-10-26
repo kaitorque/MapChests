@@ -81,6 +81,66 @@ Both projects sit side by side, unchanged from upstream:
 | Teleporter, portals, Gilded Coast totems, fans | – | Teleporter, Portal, Totem, Special | QoLChests ignores these |
 | Enemies, players, minions, items, neutral NPCs | – | EnemyMonster/Lunar/Void, Player, Minion, Item, Neutral | Not interactables; minimap only |
 
+### Current color mapping (owner's config)
+
+These are the owner's current values from `config\Faust.QoLChests.cfg` and `config\MiniMap.cfg` in the VP profile. The owner has already aligned the minimap colors to the highlight colors. **Use these as the MapChests defaults**, not the upstream code defaults.
+
+QoLChests picks from a fixed palette (`ConfigHighlightColor`, hex values in `Constants.cs`). The minimap takes any RGBA hex.
+
+| QoLChests palette | Hex |
+|---|---|
+| Yellow | `FFFF01` |
+| Red | `FF0101` |
+| Blue | `0101FF` |
+| Pink | `FF017F` |
+| Orange | `FF8001` |
+| Green | `01FF01` |
+| Cyan | `01FFFF` |
+| Violet | `7F01FF` |
+| Magenta | `FF01FF` |
+| Gray | `808080` |
+| White | `FFFFFF` |
+
+**Interactables**
+
+| Category | Highlight | Highlight color | Minimap kind | Minimap | Minimap active | Minimap inactive | Same color? |
+|---|---|---|---|---|---|---|---|
+| Chest | on | Yellow `FFFF01` | Chest | on | `FFFF01` | `808080` | yes |
+| StealthedChest | on | Yellow `FFFF01` | – | – | – | – | no minimap icon |
+| Lockbox | on | Red `FF0101` | – | – | – | – | no minimap icon |
+| LunarPod | on | Blue `0101FF` | LunarPod | on | `4D79FF` | `808080` | **no**: lighter blue on map |
+| VoidCradle | on | Magenta `FF01FF` | (shown as Chest) | on | `FFFF01` | `808080` | **no**: needs its own icon |
+| Barrel | on | Yellow `FFFF01` | Barrel | on | `FFFF01` | `808080` | yes |
+| EquipmentBarrel | on | Orange `FF8001` | Equipment | on | `FF8001` | `808080` | yes |
+| Shop | on | Cyan `01FFFF` | Shop | on | `01FFFF` | `808080` | yes |
+| Duplicator | on | Pink `FF017F` | Printer | on | `FF017F` | `808080` | yes |
+| Scrapper | on | Red `FF0101` | Utility | on | `FF0101` | `808080` | yes |
+| Drone | on | Green `01FF01` | Drone | on | `01FF01` | `808080` | yes |
+| Turret | **off** | Green `01FF01` | (shown as Drone) | on | `01FF01` | `808080` | yes, but no own category |
+| Shrine | on | Violet `7F01FF` | Shrine | on | `A04DFF` | `808080` | **no**: lighter violet on map |
+| NewtStatue | on | Blue `0101FF` | NewtAltar | on | `4D79FF` | `808080` | **no**: lighter blue on map |
+| PressurePlate | on | Gray `808080` | – | – | – | – | no minimap icon |
+| Teleporter | – | – | Teleporter | on | `FFFFFF` | `00FF00` (charged) | minimap only |
+| Portal | – | – | Portal | on | `FFFFFF` | `808080` | minimap only |
+| Totem | – | – | Totem | on | `5EB2F2` | `808080` | minimap only |
+| Special (fans, pods) | – | – | Special | on | `FFFFFF` | `808080` | minimap only |
+
+The lighter minimap blues and violet (`4D79FF`, `A04DFF`) look deliberate: pure `0101FF` and `7F01FF` are hard to see on a small dark map. The unified config should therefore allow a minimap color that differs from the highlight color (see 4.4).
+
+**Minimap-only kinds**
+
+| Kind | Minimap | Active | Inactive |
+|---|---|---|---|
+| EnemyMonster | on | `DC143C` | `808080` |
+| EnemyLunar | on | `FF8C8C` | `808080` |
+| EnemyVoid | on | `FF00FF` | `808080` |
+| Minion | on | `00FF00` | `808080` |
+| Player | on | `FFFFFF` | `FFFFFF` |
+| Item | on | `5EB2F2` | `00FFFF` |
+| Neutral | **off** | `FFFFFF` | `808080` |
+
+**Other QoLChests settings in use:** hide is on for every hideable category, with **Fade = true** and **Time = 1**; **RemoveWhenUsed = true**; **DoNotHideAsDrifter = true**.
+
 ## 4. Target design
 
 ### 4.1 One category model
@@ -110,7 +170,7 @@ There is one config file, `kaitorque.MapChests.cfg`, with one section per catego
 
 - Highlight: enabled, color
 - Hide when used: enabled (categories that support it)
-- Minimap: enabled, icon, width, height, active color, inactive color, elevation marker settings
+- Minimap: enabled, icon, width, height, active color, inactive color, elevation marker settings. The minimap active color stays a separate hex value from the highlight palette color (the owner uses lighter shades on the map for blue and violet). Defaults come from the "Current color mapping" table in section 3.
 
 Global sections cover the minimap (toggle key, zoom keys, zoom level, log level) and hiding (hide time, fade instead of hide, remove highlight when used, do-not-hide-as-Drifter). Register everything with Risk of Options, which is installed. Changes should apply mid-run wherever QoLChests already supports that.
 
