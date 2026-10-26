@@ -51,7 +51,8 @@ public static class InteractableUsedHandler
     {
         InteractableUsed.Mark(interactable);
 
-        if (category.HasValue && !InteractableRegistry.IsBlackListed(interactable.name))
+        // never hide a living character, such as a Mimic disguised as a chest
+        if (category.HasValue && !InteractableRegistry.IsBlackListed(interactable.name) && !interactable.GetComponent<RoR2.CharacterBody>())
         {
             VisibilityHandler.Hide(category.Value, interactable);
         }

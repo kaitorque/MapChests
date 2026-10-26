@@ -26,6 +26,7 @@ public enum MapCategory
     HollowChest,
     NkuhanaChest,
     TrialChest,
+    Mimic,
     OtherChest,
 
     // Shops

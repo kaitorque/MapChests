@@ -17,8 +17,8 @@ public static class InteractableStateHandler
     private static List<GameObject> TrackedInteractables { get; set; } = [];
     public static List<GameObject> InteractablesToHighlight { get; set; } = [];
 
-    /// <summary>Raised when an interactable that appeared mid-stage is tagged, so the minimap can pick it up.</summary>
-    public static event System.Action<GameObject> LateInteractableTracked;
+    /// <summary>Raised when an interactable is tagged or untagged mid-stage, so the minimap can rebuild.</summary>
+    public static event System.Action<GameObject> LateInteractableChanged;
 
     public static void Reset()
     {
@@ -76,12 +76,29 @@ public static class InteractableStateHandler
             return;
 
         CategoryMarker.Tag(interactable, category);
-        LateInteractableTracked?.Invoke(interactable);
+        LateInteractableChanged?.Invoke(interactable);
         if (!ModConfig.Instance.IsCategoryHighlightEnabled(category) || InteractablesToHighlight.Contains(interactable))
             return;
 
         InteractablesToHighlight.Add(interactable);
         HighlightHandler.Enable(interactable);
+    }
+
+    /// <summary>
+    /// Stops treating an object as an interactable, such as a Mimic that has revealed itself:
+    /// removes its highlight and category so the minimap shows it as an enemy again.
+    /// </summary>
+    public static void UntrackInteractable(GameObject interactable)
+    {
+        if (!interactable)
+            return;
+
+        HighlightHandler.Disable(interactable);
+        InteractablesToHighlight.Remove(interactable);
+        var marker = interactable.GetComponent<CategoryMarker>();
+        if (marker)
+            Object.Destroy(marker);
+        LateInteractableChanged?.Invoke(interactable);
     }
 
     private static void TagRegisteredPrefab(GameObject prefab)

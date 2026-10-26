@@ -39,7 +39,7 @@ namespace MapChests
             minimap.Init(Logger);
 
             GeneralHooks.Register(config, minimap.RequestReset);
-            Faust.QoLChests.Handlers.InteractableStateHandler.LateInteractableTracked += _ => minimap.RequestReset();
+            Faust.QoLChests.Handlers.InteractableStateHandler.LateInteractableChanged += _ => minimap.RequestReset();
             ChestHooks.Register();
             ShopHooks.Register();
             SceneHooks.Register();

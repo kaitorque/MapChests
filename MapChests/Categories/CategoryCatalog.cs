@@ -79,6 +79,7 @@ public static class CategoryCatalog
         Add(MapCategory.TrialChest, "Trial chest", HighlightGroup.Chest, InteractableKind.Chest,
             "RoR2/DLC4/TrialCategoryChestDamage.prefab",
             "RoR2/DLC4/TrialCategoryChest2Damage.prefab");
+        Add(MapCategory.Mimic, "Mimic", HighlightGroup.Chest, InteractableKind.Chest);
         Add(MapCategory.OtherChest, "Other chest", HighlightGroup.Chest, InteractableKind.Chest);
 
         group = "Shop";

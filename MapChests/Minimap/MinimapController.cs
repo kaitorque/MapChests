@@ -308,13 +308,16 @@ namespace MiniMapMod
 
         private ITrackedObjectScanner CreateAliveEntityScanner()
         {
-            bool EnemyMonsterSelector(TeamComponent team) => team?.teamIndex == TeamIndex.Monster;
+            // a disguised Mimic is tagged as a chest and already has a chest icon
+            bool IsTeam(TeamComponent team, TeamIndex index) => team?.teamIndex == index && !team.GetComponent<CategoryMarker>();
 
-            bool EnemyLunarSelector(TeamComponent team) => team?.teamIndex == TeamIndex.Lunar;
+            bool EnemyMonsterSelector(TeamComponent team) => IsTeam(team, TeamIndex.Monster);
 
-            bool EnemyVoidSelector(TeamComponent team) => team?.teamIndex == TeamIndex.Void;
+            bool EnemyLunarSelector(TeamComponent team) => IsTeam(team, TeamIndex.Lunar);
 
-            bool NeutralSelector(TeamComponent team) => team?.teamIndex == TeamIndex.Neutral;
+            bool EnemyVoidSelector(TeamComponent team) => IsTeam(team, TeamIndex.Void);
+
+            bool NeutralSelector(TeamComponent team) => IsTeam(team, TeamIndex.Neutral);
 
             bool MinionSelector(TeamComponent team)
             {

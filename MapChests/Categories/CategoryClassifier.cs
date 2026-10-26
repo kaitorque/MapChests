@@ -17,6 +17,7 @@ public static class CategoryClassifier
 
     private static readonly Type[] CandidateTypes =
     [
+        typeof(MimicController),
         typeof(ChestBehavior),
         typeof(RouletteChestController),
         typeof(ShrineBloodBehavior),
@@ -86,6 +87,7 @@ public static class CategoryClassifier
 
         MapCategory? result = gameObject switch
         {
+            _ when gameObject.TryGetComponent<MimicController>(out _) => MapCategory.Mimic,
             _ when gameObject.TryGetComponent<ChestBehavior>(out _) && token.Contains("STEALTH") => MapCategory.CloakedChest,
             _ when gameObject.TryGetComponent<ChestBehavior>(out _) && token == "LUNAR_CHEST_CONTEXT" => MapCategory.LunarPod,
             _ when gameObject.TryGetComponent<ChestBehavior>(out _) && token.Contains("CHEST") => MapCategory.OtherChest,
