@@ -27,10 +27,10 @@ Notes:
 | Nkuhana chest | N'kuhana's chest from the newest DLC (no in-game name found in the files) | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
 | Trial chest | Free damage chests inside a Trial | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
 | Mimic | Enemy disguised as a chest; shows as an enemy once revealed | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
-| Scavenger bag | "Scavenger's Sack". Dropped by a Scavenger; 10 items | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
+| Scavenger bag | "Scavenger's Sack". Dropped by a Scavenger; 10 items | Yellow (FFFF01) | Yellow (FFFF01) | loot bag | |
 | Other chest | Chests from other mods or not recognised | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
-| Rusty lockbox | Appears when someone holds a Rusted Key | Red (FF0101) | Red (FF0101) | chest | |
-| Encrusted lockbox | "Encrusted Cache". Appears when someone holds an Encrusted Key | Red (FF0101) | Red (FF0101) | chest | |
+| Rusty lockbox | Appears when someone holds a Rusted Key | Yellow (FFFF01) | Yellow (FFFF01) | lock | |
+| Encrusted lockbox | "Encrusted Cache". Appears when someone holds an Encrusted Key | Magenta (FF01FF) | Magenta (FF01FF) | lock | |
 | Void cradle | Costs 50% health; a void item | Magenta (FF01FF) | Magenta (FF01FF) | chest | |
 | Void potential | Costs 50% health; pick one of several items | Magenta (FF01FF) | Magenta (FF01FF) | chest | |
 | Lunar pod | Costs 1 lunar coin; a lunar item or equipment | Blue (0101FF) | Light blue (4D79FF) | loot bag | |
@@ -41,9 +41,9 @@ Notes:
 | Category | What it is | Highlight | Map | Icon | Your choice |
 |---|---|---|---|---|---|
 | Multishop | "Multishop Terminal" (small and large); pick one of three items | Cyan (01FFFF) | Cyan (01FFFF) | chest | |
-| Equipment multishop | Multishop that sells equipment | Cyan (01FFFF) | Cyan (01FFFF) | chest | |
-| Lunar shop | "Lunar Bud" in the Bazaar; 2 lunar coins per item | Cyan (01FFFF) | Cyan (01FFFF) | chest | |
-| Drone shop | "Triple Drone Shop"; pick one of three drones | Cyan (01FFFF) | Cyan (01FFFF) | chest | |
+| Equipment multishop | Multishop that sells equipment | Dark cyan (0099CC) | Dark cyan (0099CC) | chest | |
+| Lunar shop | "Lunar Bud" in the Bazaar; 2 lunar coins per item | Blue (0101FF) | Light blue (4D79FF) | chest | |
+| Drone shop | "Triple Drone Shop"; pick one of three drones | Cyan (01FFFF) | Cyan (01FFFF) | drone | |
 | Temporary item shop | "Temporary Item Distributor"; 5 temporary items | Cyan (01FFFF) | Cyan (01FFFF) | chest | |
 | Haunted vending machine | "Eclipse Zero Vending Machine" | Cyan (01FFFF) | Cyan (01FFFF) | chest | |
 | Other shop | Shops from other mods or not recognised | Cyan (01FFFF) | Cyan (01FFFF) | chest | |
@@ -136,6 +136,7 @@ You can write any of these names in "Your choice", or any other colour you like.
 | Green | 01FF01 | Leaf green | 33CC66 |
 | Dark green | 1A8C1A | Mint green | 33FFAA |
 | Teal | 1AB3A6 | Cyan | 01FFFF |
+| Dark cyan | 0099CC | Dark orange | CC6600 |
 | Light cyan | 66E0FF | Light blue | 4D79FF |
 | Sky blue | 3399FF | Blue | 0101FF |
 | Navy | 1A1A99 | Periwinkle | 6666FF |
