@@ -1,4 +1,4 @@
-# Builds the plugin, copies it into the VP r2modman profile's Kaitorque-MapChests folder and zips an r2modman-importable package next to this repo.
+# Builds the plugin, copies it into the VP r2modman profile's Kaitorque-MapChests folder and zips an r2modman-importable package into the parent folder next to the other mods' zips.
 $ErrorActionPreference = "Stop"
 $name = "MapChests"
 $dir = $PSScriptRoot
@@ -24,7 +24,7 @@ New-Item -ItemType Directory $package | Out-Null
 Copy-Item $dll, (Join-Path $dir "manifest.json"), (Join-Path $root "icon.png"), (Join-Path $root "README.md") $package
 
 $version = (Get-Content (Join-Path $dir "manifest.json") -Raw | ConvertFrom-Json).version_number
-$zip = Join-Path $root "Kaitorque-$name-$version.zip"
+$zip = Join-Path (Split-Path $root -Parent) "Kaitorque-$name-$version.zip"
 if (Test-Path $zip) { Remove-Item $zip }
 Compress-Archive -Path (Join-Path $package "*") -DestinationPath $zip
 Write-Host "Packaged $zip"
