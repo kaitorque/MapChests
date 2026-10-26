@@ -64,7 +64,7 @@ The current values from `kaitorque.MapChests.cfg` (VP profile). Each colour show
 | Drone | Broken drones you buy to follow you | Green (01FF01) | Green (01FF01) | drone | |
 | Drone station | "Drone Upgrade Station" and "Drone Combiner Station" | Medium green (33B333) | Medium green (33B333) | drone | |
 | Lemurian egg | Offer an item to hatch a Lemurian ally | Green (01FF01) | Green (01FF01) | drone | |
-| Turret | Buyable gun turret that stays in place | Light green (80FF80) | Light green (80FF80) | drone | |
+| Turret | Buyable gun turret that stays in place | Mint green (33FFAA) | Mint green (33FFAA) | drone | |
 | Barrel | Small barrel with gold | Yellow (FFFF01) | Yellow (FFFF01) | circle | |
 | Void stalk | "Stalk". Void barrel with void coins | Magenta (FF01FF) | Magenta (FF01FF) | circle | |
 | Equipment barrel | Barrel with an equipment | Orange (FF8001) | Orange (FF8001) | chest | |

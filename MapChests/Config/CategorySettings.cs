@@ -131,7 +131,7 @@ public sealed class CategorySettings
         [HighlightGroup.Scrapper] = new(true, Hex("FF0101"), false),
         [HighlightGroup.Duplicator] = new(true, Hex("FF017F"), false),
         [HighlightGroup.Drone] = new(true, Hex("01FF01"), false),
-        [HighlightGroup.Turret] = new(true, Hex("80FF80"), false),
+        [HighlightGroup.Turret] = new(true, Hex("33FFAA"), false),
         [HighlightGroup.StealthedChest] = new(true, Hex("FFFF99"), true),
         [HighlightGroup.Lockbox] = new(true, Hex("FF0101"), false),
         [HighlightGroup.Barrel] = new(true, Hex("FFFF01"), true),
