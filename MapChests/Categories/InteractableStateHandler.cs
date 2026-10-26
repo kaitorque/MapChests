@@ -17,6 +17,9 @@ public static class InteractableStateHandler
     private static List<GameObject> TrackedInteractables { get; set; } = [];
     public static List<GameObject> InteractablesToHighlight { get; set; } = [];
 
+    /// <summary>Raised when an interactable that appeared mid-stage is tagged, so the minimap can pick it up.</summary>
+    public static event System.Action<GameObject> LateInteractableTracked;
+
     public static void Reset()
     {
         // Remove highlights from tracked resources
@@ -73,6 +76,7 @@ public static class InteractableStateHandler
             return;
 
         CategoryMarker.Tag(interactable, category);
+        LateInteractableTracked?.Invoke(interactable);
         if (!ModConfig.Instance.IsCategoryHighlightEnabled(category) || InteractablesToHighlight.Contains(interactable))
             return;
 

@@ -292,10 +292,11 @@ namespace MiniMapMod
         {
             CategoryClassifier.TagUntagged();
 
-            // generic interactions (portals) can spawn mid-stage, so the dynamic scan tracks them
+            // generic interactions (portals) can spawn mid-stage, so the dynamic scan tracks them;
+            // the Hallowed shrine's hands sit on the shrine, which already has an icon
             return GameObject.FindObjectsOfType<CategoryMarker>()
                 .Select(marker => marker.gameObject)
-                .Where(gameObject => !gameObject.GetComponent<GenericInteraction>());
+                .Where(gameObject => !gameObject.GetComponent<GenericInteraction>() && !gameObject.GetComponent<HallowingShrineSplitNode>());
         }
 
         private ITrackedObjectScanner CreateGenericInteractionScanner()

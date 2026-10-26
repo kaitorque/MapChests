@@ -30,6 +30,8 @@ public static class CategoryClassifier
         typeof(BarrelInteraction),
         typeof(TeleporterInteraction),
         typeof(WakeController),
+        typeof(HallowingShrineSplitBase),
+        typeof(HallowingShrineSplitNode),
         typeof(PurchaseInteraction),
         typeof(GenericInteraction),
     ];
@@ -99,6 +101,8 @@ public static class CategoryClassifier
             _ when gameObject.TryGetComponent<BarrelInteraction>(out _) => MapCategory.Barrel,
             _ when gameObject.TryGetComponent<TeleporterInteraction>(out _) => MapCategory.Teleporter,
             _ when gameObject.TryGetComponent<WakeController>(out _) => MapCategory.AncientSepulcher,
+            _ when gameObject.TryGetComponent<HallowingShrineSplitBase>(out _)
+                || gameObject.TryGetComponent<HallowingShrineSplitNode>(out _) => MapCategory.HallowedShrine,
             _ when gameObject.TryGetComponent<PortalStatueBehavior>(out var statue)
                 && statue.portalType == PortalStatueBehavior.PortalType.Shop => MapCategory.NewtAltar,
             _ when token.Contains("DUPLICATOR") => MapCategory.OtherPrinter,
