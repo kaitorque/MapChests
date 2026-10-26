@@ -33,7 +33,7 @@ Notes:
 | Encrusted lockbox | "Encrusted Cache". Appears when someone holds an Encrusted Key | Magenta (FF01FF) | Magenta (FF01FF) | lock | |
 | Void cradle | Costs 50% health; a void item | Magenta (FF01FF) | Magenta (FF01FF) | chest | |
 | Void potential | Costs 50% health; pick one of several items | Magenta (FF01FF) | Magenta (FF01FF) | chest | |
-| Lunar pod | Costs 1 lunar coin; a lunar item or equipment | Blue (0101FF) | Light blue (4D79FF) | loot bag | |
+| Lunar pod | Costs 1 lunar coin; a lunar item or equipment | Blue (0101FF) | Blue (0101FF) | loot bag | |
 | Shipping request | Free terminal from the Shipping Request Form item | Cyan (01FFFF) | Cyan (01FFFF) | chest | |
 
 ## Shops
@@ -42,7 +42,7 @@ Notes:
 |---|---|---|---|---|---|
 | Multishop | "Multishop Terminal" (small and large); pick one of three items | Cyan (01FFFF) | Cyan (01FFFF) | chest | |
 | Equipment multishop | Multishop that sells equipment | Dark cyan (0099CC) | Dark cyan (0099CC) | chest | |
-| Lunar shop | "Lunar Bud" in the Bazaar; 2 lunar coins per item | Blue (0101FF) | Light blue (4D79FF) | chest | |
+| Lunar shop | "Lunar Bud" in the Bazaar; 2 lunar coins per item | Blue (0101FF) | Blue (0101FF) | chest | |
 | Drone shop | "Triple Drone Shop"; pick one of three drones | Cyan (01FFFF) | Cyan (01FFFF) | drone | |
 | Temporary item shop | "Temporary Item Distributor"; 5 temporary items | Cyan (01FFFF) | Cyan (01FFFF) | chest | |
 | Haunted vending machine | "Eclipse Zero Vending Machine" | Cyan (01FFFF) | Cyan (01FFFF) | chest | |
@@ -101,7 +101,7 @@ Notes:
 |---|---|---|---|---|---|
 | Teleporter | The stage teleporter | – | White (FFFFFF), green (00FF00) when charged | teleporter | |
 | Portal | All portals (blue, gold, celestial, void and so on) | – | White (FFFFFF) | portal | |
-| Newt altar | Costs a lunar coin; opens the blue portal to the Bazaar | Blue (0101FF) | Light blue (4D79FF) | shrine | |
+| Newt altar | Costs a lunar coin; opens the blue portal to the Bazaar | Blue (0101FF) | Blue (0101FF) | shrine | |
 | Pressure plate | Plates on Abandoned Aqueduct that open a secret door | Gray (808080) | Gray (808080) | ? | |
 | Gold totem | "Halcyon Beacon" on Gilded Coast | – | Light blue (5EB2F2) | cube | |
 | Radar scanner | "Radio Scanner". Reveals the whole stage | – | White (FFFFFF) | ? | |

@@ -66,7 +66,7 @@ public sealed class CategorySettings
         var kindDefaults = Settings.GetSetting(kind);
 
         var minimapColor = definition.IsHighlightable
-            ? LighterOnMap(highlightColor)
+            ? highlightColor
             : legacy.MinimapColor(kindSection, "activeColor", MapOnlyColors.TryGetValue(kind, out var mapColor) ? mapColor : kindDefaults.ActiveColor);
 
         Minimap = config.Bind(section, "Minimap", legacy.MinimapBool(kindSection, "enabled", kind != InteractableKind.Neutral), $"Show {name} on the minimap");
@@ -103,18 +103,6 @@ public sealed class CategorySettings
     }
 
     private static Color Hex(string hex) => ColorUtility.TryParseHtmlString("#" + hex, out var color) ? color : Color.white;
-
-    /// <summary>Pure blue and violet are hard to see on the small dark minimap, so the map uses the owner's lighter shades.</summary>
-    private static Color LighterOnMap(Color color)
-    {
-        Color32 c = color;
-        return (c.r, c.g, c.b) switch
-        {
-            (1, 1, 255) => Hex("4D79FF"),
-            (127, 1, 255) => Hex("A04DFF"),
-            _ => color,
-        };
-    }
 
     private static readonly Dictionary<HighlightGroup, LegacyKeys> LegacyHighlightKeys = new()
     {

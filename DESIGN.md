@@ -205,7 +205,7 @@ Global sections: `Hide` (time, fade, remove highlight when used, do not hide as 
 
 Defaults:
 - Highlight colour starts from the owner's group colour in section 3 (chests yellow, shops cyan, and so on), so all subtypes of a group match for now. The exceptions: each shrine has its own colour so they can be told apart; the equipment multishop is dark cyan (0099CC); the lunar shop is blue like the newt altar; the rusty lockbox is yellow and the encrusted lockbox magenta. Some categories also get their own icon: lock for lockboxes, loot bag for the scavenger bag, drone for the drone shop. The full list with descriptions is in `Colors.md`.
-- Minimap colour starts as the highlight colour, except pure blue and violet, which use the owner's lighter map shades (4D79FF and A04DFF). Categories that are never highlighted keep the owner's minimap colours.
+- Minimap colour starts as the highlight colour (owner decision; this replaced the old lighter map shades for blue and violet). The two stay separate settings. Categories that are never highlighted keep the owner's minimap colours.
 - When `kaitorque.MapChests.cfg` does not exist yet, the values are migrated from `Faust.QoLChests.cfg` and `MiniMap.cfg` (or the Phase 0 copies). Palette colour names become RGB colours. The old files are never changed.
 
 | Shrine | Colour | Shrine | Colour |
