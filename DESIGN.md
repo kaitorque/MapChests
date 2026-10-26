@@ -204,7 +204,7 @@ There is one config file, `kaitorque.MapChests.cfg`, with one section per catego
 Global sections: `Hide` (time, fade, remove highlight when used, do not hide as Drifter) and `Minimap` (toggle key, zoom keys, zoom level, log level).
 
 Defaults:
-- Highlight colour starts from the owner's group colour in section 3 (chests yellow, shops cyan, and so on), so all subtypes of a group match for now. Shrines are the exception: each shrine has its own colour so they can be told apart.
+- Highlight colour starts from the owner's group colour in section 3 (chests yellow, shops cyan, and so on), so all subtypes of a group match for now. The exceptions: each shrine has its own colour so they can be told apart, and the equipment multishop is orange (FF8001, like the equipment barrel) so it stands out from item multishops.
 - Minimap colour starts as the highlight colour, except pure blue and violet, which use the owner's lighter map shades (4D79FF and A04DFF). Categories that are never highlighted keep the owner's minimap colours.
 - When `kaitorque.MapChests.cfg` does not exist yet, the values are migrated from `Faust.QoLChests.cfg` and `MiniMap.cfg` (or the Phase 0 copies). Palette colour names become RGB colours. The old files are never changed.
 

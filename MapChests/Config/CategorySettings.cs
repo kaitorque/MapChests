@@ -152,9 +152,10 @@ public sealed class CategorySettings
         [HighlightGroup.Shrine] = new(true, Hex("7F01FF"), false),
     };
 
-    /// <summary>Shrines are told apart by colour (owner decision); every other category starts with its group colour.</summary>
+    /// <summary>Shrines and the equipment multishop are told apart by colour (owner decision); every other category starts with its group colour.</summary>
     private static readonly Dictionary<MapCategory, Color> DistinctColors = new()
     {
+        [MapCategory.EquipmentMultishop] = Hex("FF8001"),
         [MapCategory.BloodShrine] = Hex("FF3355"),
         [MapCategory.ChanceShrine] = Hex("33FFAA"),
         [MapCategory.CombatShrine] = Hex("FF8833"),
