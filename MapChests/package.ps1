@@ -1,4 +1,4 @@
-# Builds the plugin, copies it into the VP r2modman profile and zips an r2modman-importable package next to this repo.
+# Builds the plugin, copies it into the VP r2modman profile's Kaitorque-MapChests folder and zips an r2modman-importable package next to this repo.
 $ErrorActionPreference = "Stop"
 $name = "MapChests"
 $dir = $PSScriptRoot
@@ -10,8 +10,11 @@ if ($LASTEXITCODE -ne 0) { throw "Build failed" }
 
 $dll = Join-Path $dir "bin\Release\netstandard2.1\$name.dll"
 
-$install = Join-Path $profilePlugins $name
+# Same folder r2modman uses when the zip is imported, so only one copy is loaded and r2modman can toggle it
+$install = Join-Path $profilePlugins "Kaitorque-$name"
 New-Item -ItemType Directory -Force $install | Out-Null
+$stray = Join-Path $profilePlugins $name
+if (Test-Path $stray) { Remove-Item $stray -Recurse -Force }
 Copy-Item $dll $install -Force
 Write-Host "Installed $install\$name.dll"
 
