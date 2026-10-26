@@ -204,21 +204,21 @@ There is one config file, `kaitorque.MapChests.cfg`, with one section per catego
 Global sections: `Hide` (time, fade, remove highlight when used, do not hide as Drifter) and `Minimap` (toggle key, zoom keys, zoom level, log level).
 
 Defaults:
-- Highlight colour starts from the owner's group colour in section 3 (chests yellow, shops cyan, and so on), so all subtypes of a group match for now. The exceptions: each shrine has its own colour so they can be told apart; the equipment multishop is dark cyan (0099CC); the lunar shop is blue like the newt altar; the rusty lockbox is yellow and the encrusted lockbox magenta; the hollow chest is yellow-green; the temporary item shop pale cyan and the vending machine teal; the drone scrapper green, the drone station dark green and the turret light green with highlight on; the void stalk magenta. Some categories also get their own icon: lock for lockboxes, loot bag for the scavenger bag, drone for the drone shop. The full list with descriptions is in `Colors.md`.
+- Highlight colour starts from the owner's group colour in section 3 (chests yellow, shops cyan, and so on), so all subtypes of a group match for now. The exceptions: each shrine has its own colour so they can be told apart; the equipment multishop is dark cyan (0099CC); lunar things (pod, shop, newt altar) are royal blue (3366FF), brighter than pure blue for the dark minimap; the legendary chest is gold and the cloaked chest pale yellow; the pressure plate is white; the rusty lockbox is yellow and the encrusted lockbox magenta; the hollow chest is yellow-green; the temporary item shop pale cyan and the vending machine teal; the drone scrapper green, the drone station medium green and the turret light green with highlight on; the void stalk magenta. Some categories also get their own icon: lock for lockboxes, loot bag for the scavenger bag, drone for the drone shop. The full list with descriptions is in `Colors.md`.
 - Minimap colour starts as the highlight colour (owner decision; this replaced the old lighter map shades for blue and violet). The two stay separate settings. Categories that are never highlighted keep the owner's minimap colours.
 - When `kaitorque.MapChests.cfg` does not exist yet, the values are migrated from `Faust.QoLChests.cfg` and `MiniMap.cfg` (or the Phase 0 copies). Palette colour names become RGB colours. The old files are never changed.
 
 | Shrine | Colour | Shrine | Colour |
 |---|---|---|---|
 | Blood | FF3355 | Halcyonite | D9B36C |
-| Chance | 33FFAA | Shaping (Colossus) | 01FF01 |
+| Chance | FFD24D | Shaping (Colossus) | 01FF01 |
 | Combat | FF01FF | Rebirth | FF66CC |
-| Mountain | 3399FF | Catastrophe | 9933FF |
-| Order | CCFF33 | Compulsion | FF33FF |
-| Woods | 33CC66 | Death | B3B3B3 |
+| Mountain | 00CCFF | Catastrophe | 9933FF |
+| Order | CCFF33 | Compulsion | FF8001 |
+| Woods | 1AB3A6 | Death | FFFFFF |
 | Cleansing pool | 66E0FF | Dread | 6666FF |
-| Altar of Gold | FFD24D | Hallowed | E6FFCC |
-| Ancient Sepulcher | CC99FF | Other | A04DFF |
+| Altar of Gold | FFD24D | Hallowed | FFFF99 |
+| Ancient Sepulcher | CC99FF | Other | FF8C8C |
 
 Risk of Options shows the global hide and zoom settings and, per category, highlight on/off, highlight colour, hide when used, minimap on/off, minimap colour and used icon. Any change re-applies highlights and rebuilds the minimap mid-run.
 

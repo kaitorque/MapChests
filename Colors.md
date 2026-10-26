@@ -7,21 +7,18 @@ The current values from `kaitorque.MapChests.cfg` (VP profile). Each colour show
 - **Map**: the minimap icon colour. Used icons turn gray (808080) unless the table says otherwise.
 - **Your choice**: write the colour (a name from the palette at the bottom is fine) and icon you want. Leave a cell empty to keep the current value.
 
-Notes:
-- **Pressure plate**: gray, the same as a used icon, so on the map it always looks used.
-
 ## Chests
 
 | Category | What it is | Highlight | Map | Icon | Your choice |
 |---|---|---|---|---|---|
 | Small chest | "Chest". The basic chest; one random item | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
 | Large chest | Pricier chest; uncommon or better | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
-| Legendary chest | Gold chest; always a legendary item | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
+| Legendary chest | Gold chest; always a legendary item | Gold (FFD24D) | Gold (FFD24D) | chest | |
 | Damage chest | "Chest - Damage" (small and large); a damage item | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
 | Healing chest | "Chest - Healing" (small and large); a healing item | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
 | Utility chest | "Chest - Utility" (small and large); a utility item | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
 | Adaptive chest | Cycles through items; take the one shown | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
-| Cloaked chest | Invisible free chest | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
+| Cloaked chest | Invisible free chest | Pale yellow (FFFF99) | Pale yellow (FFFF99) | chest | |
 | Secret chest | Normal chests placed in hidden spots on some maps | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
 | Hollow chest | "Concept Reliquary". Free; a random Hex item | Yellow-green (CCFF66) | Yellow-green (CCFF66) | chest | |
 | Nkuhana chest | N'kuhana's chest from the newest DLC (no in-game name found in the files) | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
@@ -33,7 +30,7 @@ Notes:
 | Encrusted lockbox | "Encrusted Cache". Appears when someone holds an Encrusted Key | Magenta (FF01FF) | Magenta (FF01FF) | lock | |
 | Void cradle | Costs 50% health; a void item | Magenta (FF01FF) | Magenta (FF01FF) | chest | |
 | Void potential | Costs 50% health; pick one of several items | Magenta (FF01FF) | Magenta (FF01FF) | chest | |
-| Lunar pod | Costs 1 lunar coin; a lunar item or equipment | Blue (0101FF) | Blue (0101FF) | loot bag | |
+| Lunar pod | Costs 1 lunar coin; a lunar item or equipment | Royal blue (3366FF) | Royal blue (3366FF) | loot bag | |
 | Shipping request | Free terminal from the Shipping Request Form item | Cyan (01FFFF) | Cyan (01FFFF) | chest | |
 
 ## Shops
@@ -42,7 +39,7 @@ Notes:
 |---|---|---|---|---|---|
 | Multishop | "Multishop Terminal" (small and large); pick one of three items | Cyan (01FFFF) | Cyan (01FFFF) | chest | |
 | Equipment multishop | Multishop that sells equipment | Dark cyan (0099CC) | Dark cyan (0099CC) | chest | |
-| Lunar shop | "Lunar Bud" in the Bazaar; 2 lunar coins per item | Blue (0101FF) | Blue (0101FF) | chest | |
+| Lunar shop | "Lunar Bud" in the Bazaar; 2 lunar coins per item | Royal blue (3366FF) | Royal blue (3366FF) | chest | |
 | Drone shop | "Triple Drone Shop"; pick one of three drones | Cyan (01FFFF) | Cyan (01FFFF) | drone | |
 | Temporary item shop | "Temporary Item Distributor"; 5 temporary items | Pale cyan (99FFFF) | Pale cyan (99FFFF) | chest | |
 | Haunted vending machine | "Eclipse Zero Vending Machine" | Teal (1AB3A6) | Teal (1AB3A6) | chest | |
@@ -65,7 +62,7 @@ Notes:
 | Category | What it is | Highlight | Map | Icon | Your choice |
 |---|---|---|---|---|---|
 | Drone | Broken drones you buy to follow you | Green (01FF01) | Green (01FF01) | drone | |
-| Drone station | "Drone Upgrade Station" and "Drone Combiner Station" | Dark green (1A8C1A) | Dark green (1A8C1A) | drone | |
+| Drone station | "Drone Upgrade Station" and "Drone Combiner Station" | Medium green (33B333) | Medium green (33B333) | drone | |
 | Lemurian egg | Offer an item to hatch a Lemurian ally | Green (01FF01) | Green (01FF01) | drone | |
 | Turret | Buyable gun turret that stays in place | Light green (80FF80) | Light green (80FF80) | drone | |
 | Barrel | Small barrel with gold | Yellow (FFFF01) | Yellow (FFFF01) | circle | |
@@ -77,23 +74,23 @@ Notes:
 | Category | What it is | Highlight | Map | Icon | Your choice |
 |---|---|---|---|---|---|
 | Shrine of Blood | Take health, get gold | Crimson (FF3355) | Crimson (FF3355) | shrine | |
-| Shrine of Chance | Pay gold for a chance at an item | Mint green (33FFAA) | Mint green (33FFAA) | shrine | |
+| Shrine of Chance | Pay gold for a chance at an item | Gold (FFD24D) | Gold (FFD24D) | shrine | |
 | Shrine of Combat | Spawns a group of enemies | Magenta (FF01FF) | Magenta (FF01FF) | shrine | |
-| Shrine of the Mountain | Harder teleporter boss, extra items | Sky blue (3399FF) | Sky blue (3399FF) | shrine | |
+| Shrine of the Mountain | Harder teleporter boss, extra items | Cyan-blue (00CCFF) | Cyan-blue (00CCFF) | shrine | |
 | Shrine of Order | Turns all items of a rarity into one item | Lime (CCFF33) | Lime (CCFF33) | shrine | |
-| Shrine of the Woods | Makes a healing zone | Leaf green (33CC66) | Leaf green (33CC66) | shrine | |
+| Shrine of the Woods | Makes a healing zone | Teal (1AB3A6) | Teal (1AB3A6) | shrine | |
 | Shrine of Shaping | Revives dead players for 30% health | Green (01FF01) | Green (01FF01) | shrine | |
 | Shrine of Rebirth | Stores an item for your next run | Light pink (FF66CC) | Light pink (FF66CC) | shrine | |
 | Shrine of Catastrophe | "Shrine of Descent". Adds a soul-binding trial to the teleporter | Purple (9933FF) | Purple (9933FF) | shrine | |
-| Shrine of Compulsion | Gives a Compulsion objective; reward is a page | Bright magenta (FF33FF) | Bright magenta (FF33FF) | shrine | |
-| Shrine of Death | "Shrine of Malice". Summons monsters with fallen survivors' items | Light gray (B3B3B3) | Light gray (B3B3B3) | shrine | |
+| Shrine of Compulsion | Gives a Compulsion objective; reward is a page | Orange (FF8001) | Orange (FF8001) | shrine | |
+| Shrine of Death | "Shrine of Malice". Summons monsters with fallen survivors' items | White (FFFFFF) | White (FFFFFF) | shrine | |
 | Shrine of Dread | "N'Kuhana's Endowment". Stronger enemies, item if you survive | Periwinkle (6666FF) | Periwinkle (6666FF) | shrine | |
 | Cleansing pool | Trade a lunar item for a pearl | Light cyan (66E0FF) | Light cyan (66E0FF) | shrine | |
 | Halcyonite shrine | "Halcyon Shrine". Drains gold, summons a Halcyonite | Sand (D9B36C) | Sand (D9B36C) | shrine | |
-| Hallowed shrine | Appears after the teleporter if you hold hexes or pages; Hand of Life and Hand of Death | Pale cream (E6FFCC) | Pale cream (E6FFCC) | shrine | |
+| Hallowed shrine | Appears after the teleporter if you hold hexes or pages; Hand of Life and Hand of Death | Pale yellow (FFFF99) | Pale yellow (FFFF99) | shrine | |
 | Ancient Sepulcher | Drops a rare collectible and starts The Wake event | Lilac (CC99FF) | Lilac (CC99FF) | shrine | |
 | Altar of Gold | Opens a gold portal to Gilded Coast | Gold (FFD24D) | Gold (FFD24D) | portal | |
-| Other shrine | Shrines from other mods or not recognised | Violet (A04DFF) | Violet (A04DFF) | shrine | |
+| Other shrine | Shrines from other mods or not recognised | Salmon (FF8C8C) | Salmon (FF8C8C) | shrine | |
 
 ## World
 
@@ -101,8 +98,8 @@ Notes:
 |---|---|---|---|---|---|
 | Teleporter | The stage teleporter | – | White (FFFFFF), green (00FF00) when charged | teleporter | |
 | Portal | All portals (blue, gold, celestial, void and so on) | – | White (FFFFFF) | portal | |
-| Newt altar | Costs a lunar coin; opens the blue portal to the Bazaar | Blue (0101FF) | Blue (0101FF) | shrine | |
-| Pressure plate | Plates on Abandoned Aqueduct that open a secret door | Gray (808080) | Gray (808080) | ? | |
+| Newt altar | Costs a lunar coin; opens the blue portal to the Bazaar | Royal blue (3366FF) | Royal blue (3366FF) | shrine | |
+| Pressure plate | Plates on Abandoned Aqueduct that open a secret door | White (FFFFFF) | White (FFFFFF) | ? | |
 | Gold totem | "Halcyon Beacon" on Gilded Coast | – | Light blue (5EB2F2) | cube | |
 | Radar scanner | "Radio Scanner". Reveals the whole stage | – | White (FFFFFF) | ? | |
 | Special | Fans (launch pads) and other unrecognised objects | – | White (FFFFFF) | ? | |
@@ -146,7 +143,8 @@ You can write any of these names in "Your choice", or any other colour you like.
 | Hot pink | FF017F | Light pink | FF66CC |
 | Pale cream | E6FFCC | Peach | FFCC99 |
 | Yellow-green | CCFF66 | Light green | 80FF80 |
-| Pale cyan | 99FFFF | | |
+| Pale cyan | 99FFFF | Royal blue | 3366FF |
+| Medium green | 33B333 | Cyan-blue | 00CCFF |
 
 ## Available icons
 
