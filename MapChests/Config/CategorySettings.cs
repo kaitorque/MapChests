@@ -75,7 +75,10 @@ public sealed class CategorySettings
         if (!definition.IsEntity)
             UsedIcon = config.Bind(section, "Used icon", UsedIconMode.Gray, $"What the minimap icon does once {name} are used: turn gray (the used colour) or disappear");
 
-        Icon = config.Bind(section, "Icon", legacy.MinimapString(kindSection, "icon", kindDefaults.IconPath), "Game sprite path of the minimap icon (Textures/MiscIcons/...)");
+        var icon = DistinctIcons.TryGetValue(definition.Category, out var distinctIcon)
+            ? distinctIcon
+            : legacy.MinimapString(kindSection, "icon", kindDefaults.IconPath);
+        Icon = config.Bind(section, "Icon", icon, "Game sprite path of the minimap icon (Textures/MiscIcons/...)");
         IconWidth = config.Bind(section, "Icon width", legacy.MinimapFloat(kindSection, "width", kindDefaults.Dimensions.Width), "Width of the minimap icon");
         IconHeight = config.Bind(section, "Icon height", legacy.MinimapFloat(kindSection, "height", kindDefaults.Dimensions.Height), "Height of the minimap icon");
         ElevationMarker = config.Bind(section, "Elevation marker", legacy.MinimapBool(kindSection, "elevationMarkerEnabled", kindDefaults.ElevationMarkerEnabled), "Show an arrow when the object is above or below you");
@@ -152,10 +155,13 @@ public sealed class CategorySettings
         [HighlightGroup.Shrine] = new(true, Hex("7F01FF"), false),
     };
 
-    /// <summary>Shrines and the equipment multishop are told apart by colour (owner decision); every other category starts with its group colour.</summary>
+    /// <summary>Owner's colour choices that differ from the group colour; every other category starts with its group colour.</summary>
     private static readonly Dictionary<MapCategory, Color> DistinctColors = new()
     {
-        [MapCategory.EquipmentMultishop] = Hex("FF8001"),
+        [MapCategory.RustyLockbox] = Hex("FFFF01"),
+        [MapCategory.EncrustedLockbox] = Hex("FF01FF"),
+        [MapCategory.EquipmentMultishop] = Hex("0099CC"),
+        [MapCategory.LunarShop] = Hex("0101FF"),
         [MapCategory.BloodShrine] = Hex("FF3355"),
         [MapCategory.ChanceShrine] = Hex("33FFAA"),
         [MapCategory.CombatShrine] = Hex("FF8833"),
@@ -174,6 +180,15 @@ public sealed class CategorySettings
         [MapCategory.HallowedShrine] = Hex("E6FFCC"),
         [MapCategory.AncientSepulcher] = Hex("CC99FF"),
         [MapCategory.OtherShrine] = Hex("A04DFF"),
+    };
+
+    /// <summary>Owner's icon choices that differ from the old minimap icon kind.</summary>
+    private static readonly Dictionary<MapCategory, string> DistinctIcons = new()
+    {
+        [MapCategory.ScavengerBag] = Settings.Icons.LootBag,
+        [MapCategory.RustyLockbox] = Settings.Icons.Lock,
+        [MapCategory.EncrustedLockbox] = Settings.Icons.Lock,
+        [MapCategory.DroneShop] = Settings.Icons.Drone,
     };
 
     // Owner's current minimap colours for categories that are never highlighted

@@ -8,7 +8,6 @@ The current values from `kaitorque.MapChests.cfg` (VP profile). Each colour show
 - **Your choice**: write the colour (a name from the palette at the bottom is fine) and icon you want. Leave a cell empty to keep the current value.
 
 Notes:
-- **Equipment multishop**: the new default is orange (FF8001), but your file still has cyan.
 - **Pressure plate**: gray, the same as a used icon, so on the map it always looks used.
 
 ## Chests
