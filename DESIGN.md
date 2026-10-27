@@ -204,7 +204,7 @@ There is one config file, `kaitorque.MapChests.cfg`, with one section per catego
 Global sections: `Hide` (time, fade, remove highlight when used, do not hide as Drifter) and `Minimap` (toggle key, zoom keys, zoom level, log level).
 
 Defaults:
-- Highlight colour starts from the owner's group colour in section 3 (chests yellow, shops cyan, and so on), so all subtypes of a group match for now. The exceptions: each shrine has its own colour so they can be told apart; the equipment multishop is dark cyan (0099CC); lunar things (pod, shop, newt altar) are royal blue (3366FF), brighter than pure blue for the dark minimap; the legendary chest is gold and the cloaked chest pale yellow; the pressure plate is white; the rusty lockbox is yellow and the encrusted lockbox magenta; the hollow chest is yellow-green; the temporary item shop pale cyan and the vending machine teal; the drone scrapper green, the drone station medium green and the turret mint green with highlight on; the void stalk magenta. Some categories also get their own icon: lock for lockboxes, loot bag for the scavenger bag, drone for the drone shop, shrine for the newt altar, wrench for the cleansing pool (a trade, like the scrapper). The full list with descriptions is in `Colors.md`.
+- Highlight colour starts from the owner's group colour in section 3 (chests yellow, shops cyan, and so on), so all subtypes of a group match for now. The exceptions: each shrine has its own colour so they can be told apart; the equipment multishop is dark cyan (0099CC); lunar things (pod, shop, newt altar) are royal blue (3366FF), brighter than pure blue for the dark minimap; the legendary chest is gold and the cloaked chest pale yellow; the pressure plate is white; the rusty lockbox is yellow and the encrusted lockbox magenta; the hollow chest is yellow-green; the temporary item shop pale cyan and the vending machine teal; the drone scrapper green, the drone station medium green and the turret mint green with highlight on; the void stalk magenta. Some categories also get their own icon: lock for lockboxes, loot bag for the scavenger bag, drone for the drone shop, shrine for the newt altar, wrench for the cleansing pool (a trade, like the scrapper; same small size, lunar blue). Icons are turned gray when loaded so colours tint cleanly; the game's wrench sprite is yellow. The full list with descriptions is in `Colors.md`.
 - Minimap colour starts as the highlight colour (owner decision; this replaced the old lighter map shades for blue and violet). The two stay separate settings. Categories that are never highlighted keep the owner's minimap colours.
 - When `kaitorque.MapChests.cfg` does not exist yet, the values are migrated from `Faust.QoLChests.cfg` and `MiniMap.cfg` (or the Phase 0 copies). Palette colour names become RGB colours. The old files are never changed.
 
@@ -216,7 +216,7 @@ Defaults:
 | Mountain | 00CCFF | Catastrophe | 9933FF |
 | Order | CCFF33 | Compulsion | FF8001 |
 | Woods | 1AB3A6 | Death | FFFFFF |
-| Cleansing pool | 66E0FF | Dread | FFCC99 |
+| Cleansing pool | 3366FF (lunar) | Dread | FFCC99 |
 | Altar of Gold | FFD24D | Hallowed | FFFF99 |
 | Ancient Sepulcher | CC99FF | Other | FF8C8C |
 
@@ -286,6 +286,40 @@ Verify each item in game, then fix it:
 - [x] `Log.LogException` (`Minimap/Log.cs`) loops forever when an exception has no inner exception, because `head` is only advanced when `InnerException` is not null. Any exception caught in `ScanScene` would freeze the game.
 - [ ] `GlobalEventManager.onCharacterDeathGlobal` is obsolete in 1.5.0 (use `onCharacterDeathServer` or `onDeathProcServer`); check it still fires on clients.
 - [ ] Lag bug (3.2, item 1): find out in game what the Sky Meadow stones are; stop rebuilding every dynamic icon each scan (the duplicate generic-interaction scanner was removed in Phase 1); consider registry-based tracking (section 3.1).
+
+### Phase 4 – ArtifactOfParallel compatibility
+ArtifactOfParallel (`F:\Mod\RoR2\ArtifactOfParallel`, owner's mod, still in design; see its `DESIGN.md`) is an artifact that gives each player their own private chests, shrines of chance, multishops, etc. Only the owner can see and open them; whatever drops out is shared. Other players' private objects are never sent to a client, but the **host** has all of them. Objects can also become visible or hidden mid-stage: a dead or disconnected player's chests become shared, and go back to them on revival or reconnect.
+
+What breaks today:
+
+| Where | Situation | Result |
+|---|---|---|
+| Client | Stage start | Works: other players' objects don't exist on the client |
+| Client | An object appears mid-stage | Not highlighted and no minimap icon until next stage; only `StageEventHooks` types are tracked late |
+| Client | An object disappears mid-stage | Highlight goes with it; the minimap icon stays as "used" (the `ActiveChecker` throws on the destroyed object and `CheckActive` swallows it) |
+| Host | Stage start | Every player's objects get highlights and minimap icons, because `FindObjectsOfType<CategoryMarker>()` finds them and `HighlightHandler.Enable` turns `isOn` back on over ArtifactOfParallel's hiding |
+
+ArtifactOfParallel will provide (exact names may still change; check its `DESIGN.md`):
+
+```csharp
+namespace ArtifactOfParallel
+{
+    public static class ParallelApi
+    {
+        // True if the local player should see this object: not private, owned by the local player, or currently shared.
+        public static bool IsVisibleToLocalPlayer(GameObject obj);
+
+        // Host and clients: an object became visible (true) or hidden (false) for the local player mid-stage.
+        public static event Action<GameObject, bool> LocalVisibilityChanged;
+    }
+}
+```
+
+Tasks (soft dependency, guarded by `Chainloader.PluginInfos.ContainsKey("kaitorque.ArtifactOfParallel")`; MapChests must still work without it):
+- [ ] Skip objects where `IsVisibleToLocalPlayer` is false in `InteractableStateHandler.TrackInteractables`, `HighlightHandler.Enable` and `CategoryScanner.ScanScene`.
+- [ ] Subscribe to `LocalVisibilityChanged`: `true` calls `InteractableStateHandler.TrackLateInteractable(obj)`, `false` calls `UntrackInteractable(obj)`. Both already raise `LateInteractableChanged`, which resets the minimap.
+- [ ] Treat a destroyed backing object in the minimap as removed (no icon) rather than "used".
+- [ ] In game with ArtifactOfParallel, host + client: each player only sees highlights and icons for their own and shared objects; a dead player's chests appear for the others and disappear again on revival.
 
 ## 6. Owner decisions
 

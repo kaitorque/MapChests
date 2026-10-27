@@ -44,6 +44,7 @@ namespace MiniMapLibrary
 
             if (loaded != null)
             {
+                loaded = Whiten(loaded);
                 SpriteCache.Add(Path, loaded);
             }
             else 
@@ -62,6 +63,52 @@ namespace MiniMapLibrary
             }
 
             return loaded;
+        }
+
+        /// <summary>
+        /// Copies the sprite with every pixel turned gray (brightest channel kept), so the icon colour tints it cleanly.
+        /// A few game icons, like the wrench, are coloured; tinting those directly gives muddy colours.
+        /// </summary>
+        private Sprite Whiten(Sprite sprite)
+        {
+            RenderTexture? target = null;
+            var previous = RenderTexture.active;
+            try
+            {
+                var source = sprite.texture;
+                var rect = sprite.textureRect;
+                int width = (int)rect.width, height = (int)rect.height;
+
+                target = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+                Graphics.Blit(source, target);
+                RenderTexture.active = target;
+                var copy = new Texture2D(width, height, TextureFormat.RGBA32, false);
+                copy.ReadPixels(new Rect(rect.x, rect.y, width, height), 0, 0);
+
+                var pixels = copy.GetPixels32();
+                for (int i = 0; i < pixels.Length; i++)
+                {
+                    var p = pixels[i];
+                    var v = Math.Max(p.r, Math.Max(p.g, p.b));
+                    pixels[i] = new Color32(v, v, v, p.a);
+                }
+                copy.SetPixels32(pixels);
+                copy.Apply();
+
+                var pivot = new Vector2(sprite.pivot.x / width, sprite.pivot.y / height);
+                return Sprite.Create(copy, new Rect(0, 0, width, height), pivot, sprite.pixelsPerUnit);
+            }
+            catch (Exception e)
+            {
+                logger.LogWarning($"Could not make a gray copy of icon {sprite.name}, using it as is: {e.Message}");
+                return sprite;
+            }
+            finally
+            {
+                RenderTexture.active = previous;
+                if (target != null)
+                    RenderTexture.ReleaseTemporary(target);
+            }
         }
     }
 }

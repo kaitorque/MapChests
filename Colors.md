@@ -85,7 +85,7 @@ The current values from `kaitorque.MapChests.cfg` (VP profile). Each colour show
 | Shrine of Compulsion | Gives a Compulsion objective; reward is a page | Orange (FF8001) | Orange (FF8001) | shrine | |
 | Shrine of Death | "Shrine of Malice". Summons monsters with fallen survivors' items | White (FFFFFF) | White (FFFFFF) | shrine | |
 | Shrine of Dread | "N'Kuhana's Endowment". Stronger enemies, item if you survive | Peach (FFCC99) | Peach (FFCC99) | shrine | |
-| Cleansing pool | Trade a lunar item for a pearl | Light cyan (66E0FF) | Light cyan (66E0FF) | wrench | |
+| Cleansing pool | Trade a lunar item for a pearl | Royal blue (3366FF) | Royal blue (3366FF) | wrench (small, like the scrapper) | |
 | Halcyonite shrine | "Halcyon Shrine". Drains gold, summons a Halcyonite | Sand (D9B36C) | Sand (D9B36C) | shrine | |
 | Hallowed shrine | Appears after the teleporter if you hold hexes or pages; Hand of Life and Hand of Death | Pale yellow (FFFF99) | Pale yellow (FFFF99) | shrine | |
 | Ancient Sepulcher | Drops a rare collectible and starts The Wake event | Lilac (CC99FF) | Lilac (CC99FF) | shrine | |

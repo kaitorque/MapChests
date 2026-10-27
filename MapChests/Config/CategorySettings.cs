@@ -79,8 +79,9 @@ public sealed class CategorySettings
             ? distinctIcon
             : legacy.MinimapString(kindSection, "icon", kindDefaults.IconPath);
         Icon = config.Bind(section, "Icon", icon, "Game sprite path of the minimap icon (Textures/MiscIcons/...)");
-        IconWidth = config.Bind(section, "Icon width", legacy.MinimapFloat(kindSection, "width", kindDefaults.Dimensions.Width), "Width of the minimap icon");
-        IconHeight = config.Bind(section, "Icon height", legacy.MinimapFloat(kindSection, "height", kindDefaults.Dimensions.Height), "Height of the minimap icon");
+        var hasDistinctSize = DistinctIconSizes.TryGetValue(definition.Category, out var distinctSize);
+        IconWidth = config.Bind(section, "Icon width", hasDistinctSize ? distinctSize : legacy.MinimapFloat(kindSection, "width", kindDefaults.Dimensions.Width), "Width of the minimap icon");
+        IconHeight = config.Bind(section, "Icon height", hasDistinctSize ? distinctSize : legacy.MinimapFloat(kindSection, "height", kindDefaults.Dimensions.Height), "Height of the minimap icon");
         ElevationMarker = config.Bind(section, "Elevation marker", legacy.MinimapBool(kindSection, "elevationMarkerEnabled", kindDefaults.ElevationMarkerEnabled), "Show an arrow when the object is above or below you");
         ElevationMarkerColor = config.Bind(section, "Elevation marker color", legacy.MinimapColor(kindSection, "elevationMarkerColor", kindDefaults.ElevationMarkerColor), "Colour of the elevation arrow");
         ElevationMarkerWidth = config.Bind(section, "Elevation marker width", legacy.MinimapFloat(kindSection, "elevationMarkerWidth", kindDefaults.ElevationMarkerDimensions.Width), "Width of the elevation arrow");
@@ -163,7 +164,7 @@ public sealed class CategorySettings
         [MapCategory.MountainShrine] = Hex("00CCFF"),
         [MapCategory.OrderShrine] = Hex("CCFF33"),
         [MapCategory.WoodsShrine] = Hex("1AB3A6"),
-        [MapCategory.CleansingPool] = Hex("66E0FF"),
+        [MapCategory.CleansingPool] = Hex("3366FF"),
         [MapCategory.GoldAltar] = Hex("FFD24D"),
         [MapCategory.HalcyoniteShrine] = Hex("D9B36C"),
         [MapCategory.ColossusShrine] = Hex("01FF01"),
@@ -186,6 +187,12 @@ public sealed class CategorySettings
         [MapCategory.DroneShop] = Settings.Icons.Drone,
         [MapCategory.NewtAltar] = Settings.Icons.Shrine,
         [MapCategory.CleansingPool] = Settings.Icons.Wrench,
+    };
+
+    /// <summary>Icon sizes for categories whose distinct icon belongs to a kind with another size.</summary>
+    private static readonly Dictionary<MapCategory, float> DistinctIconSizes = new()
+    {
+        [MapCategory.CleansingPool] = 5f,
     };
 
     // Owner's current minimap colours for categories that are never highlighted
