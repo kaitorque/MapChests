@@ -16,6 +16,7 @@ public static class ShopHooks
     {
         On.RoR2.ShopTerminalBehavior.SetHasBeenPurchased += SetHasBeenPurchased;
         On.RoR2.PurchaseInteraction.OnInteractionBegin += PurchaseInteractionOnInteractionBegin;
+        On.RoR2.PurchaseInteraction.OnSyncAvailable += PurchaseInteractionOnSyncAvailable;
 
         #region Host only hooks
         On.RoR2.MultiShopController.OnPurchase += MultiShopControllerOnPurchase;
@@ -57,6 +58,25 @@ public static class ShopHooks
         }
 
         InteractableUsedHandler.MarkUsed(interactableCategoryMarker.Category, self.gameObject);
+    }
+
+    /// <summary>
+    /// Shrines turn unavailable the moment they are bought. OnInteractionBegin only runs on the host, while this
+    /// availability sync runs on the host and every client. Shrines with uses left become available again after
+    /// a short refresh, so they get their highlight back.
+    /// </summary>
+    private static void PurchaseInteractionOnSyncAvailable(On.RoR2.PurchaseInteraction.orig_OnSyncAvailable orig, PurchaseInteraction self, bool newAvailable)
+    {
+        orig(self, newAvailable);
+
+        var marker = self.GetComponent<CategoryMarker>();
+        if (!marker || CategoryCatalog.Get(marker.Category).HighlightGroup != HighlightGroup.Shrine)
+            return;
+
+        if (!self.available)
+            InteractableUsedHandler.MarkUsed(marker.Category, self.gameObject);
+        else if (self.GetComponent<InteractableUsed>())
+            InteractableUsedHandler.MarkAvailable(self.gameObject);
     }
 
     private static DroneVendorMultiShopController FindDroneMultishopController(PurchaseInteraction terminalBehavior)

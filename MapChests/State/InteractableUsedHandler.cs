@@ -71,6 +71,10 @@ public static class InteractableUsedHandler
         if (!interactable)
             return;
 
+        var used = interactable.GetComponent<InteractableUsed>();
+        if (used)
+            Object.DestroyImmediate(used);
+
         VisibilityHandler.Show(interactable);
 
         var categoryMarker = interactable.GetComponent<CategoryMarker>();
