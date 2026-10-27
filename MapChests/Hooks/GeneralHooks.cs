@@ -1,5 +1,6 @@
 using System;
 using BepInEx.Configuration;
+using Faust.QoLChests.Configs;
 using Faust.QoLChests.Handlers;
 using RoR2;
 
@@ -15,6 +16,9 @@ public static class GeneralHooks
 
         config.SettingChanged += (sender, args) =>
         {
+            // the minimap applies zoom itself; rebuilding everything on every zoom key press would stutter
+            if (args.ChangedSetting == ModConfig.Instance.ZoomLevel)
+                return;
             InteractableStateHandler.Reset();
             resetMinimap();
         };

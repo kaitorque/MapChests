@@ -45,7 +45,7 @@ public class ModConfig
         MinimapKey = config.Bind("Minimap", "Toggle key", legacy.MinimapEnum("Settings.General", "EnableKey", KeyCode.M), "Key that shows or hides the minimap");
         ZoomInKey = config.Bind("Minimap", "Zoom in key", legacy.MinimapEnum("Settings.Zoom", "ZoomKey", KeyCode.Equals), "Zooms the minimap in");
         ZoomOutKey = config.Bind("Minimap", "Zoom out key", legacy.MinimapEnum("Settings.Zoom", "UnZoomKey", KeyCode.Minus), "Zooms the minimap out");
-        ZoomLevel = config.Bind("Minimap", "Zoom level", legacy.MinimapFloat("Settings.Zoom", "zoomLevel", 1f), "Starting zoom of the minimap");
+        ZoomLevel = config.Bind("Minimap", "Zoom level", legacy.MinimapFloat("Settings.Zoom", "zoomLevel", 1.5f), "Zoom of the minimap; the zoom keys change it and it is kept between stages");
         MinimapLogLevel = config.Bind("Minimap", "Log level", legacy.MinimapEnum("Settings.General", "LogLevel", LogLevel.info), "How much the minimap writes to the log");
 
         foreach (var definition in CategoryCatalog.All)

@@ -26,9 +26,12 @@ namespace MiniMapMod
             x += dimensions.X.Offset;
             z += dimensions.Z.Offset;
 
-            // ensure the dimensions are always between 0 and 1
-            x /= dimensions.X.Difference;
-            z /= dimensions.Z.Difference;
+            // one scale for both axes so the map is not stretched; the longer side fits between 0 and 1
+            float size = Math.Max(dimensions.X.Difference, dimensions.Z.Difference);
+            if (size <= 0f || float.IsInfinity(size) || float.IsNaN(size))
+                size = 1f;
+            x /= size;
+            z /= size;
 
             return new(x * Settings.MinimapSize.Width, z * Settings.MinimapSize.Height);
         }

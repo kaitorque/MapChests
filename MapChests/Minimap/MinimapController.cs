@@ -8,6 +8,7 @@ using System;
 using BepInEx.Logging;
 using MiniMapLibrary.Scanner;
 using MapChests.Categories;
+using Faust.QoLChests.Configs;
 
 namespace MiniMapMod
 {
@@ -20,6 +21,10 @@ namespace MiniMapMod
         private Minimap Minimap;
 
         private readonly Range3D TrackedDimensions = new();
+
+        // Enemies, items and portals can be anywhere (falling off the map, thrown far away); letting them widen
+        // TrackedDimensions shrank the whole map during a stage, so their scanners write here instead.
+        private readonly Range3D DynamicDimensions = new();
 
         private bool Enable = true;
 
@@ -115,14 +120,11 @@ namespace MiniMapMod
                         UpdateIconPositions();
 
                         if (Input.GetKeyDown(Settings.MinimapIncreaseScaleKey))
-                        {
-                            Minimap.Container.transform.localScale *= 1.1f;
-                        }
-                        else
-                            if (Input.GetKeyDown(Settings.MinimapDecreaseScaleKey))
-                            {
-                                Minimap.Container.transform.localScale *= 0.90f;
-                            }
+                            SetZoom(Settings.MinimapScale * 1.1f);
+                        else if (Input.GetKeyDown(Settings.MinimapDecreaseScaleKey))
+                            SetZoom(Settings.MinimapScale * 0.9f);
+                        else if (Minimap.Container.transform.localScale.x != Settings.MinimapScale)
+                            Minimap.Container.transform.localScale = Vector3.one * Settings.MinimapScale;
                     }
                     catch (NullReferenceException)
                     {
@@ -193,6 +195,13 @@ namespace MiniMapMod
                 // check the position to see if we should show arrow
                 item.CheckActive();
             }
+        }
+
+        /// <summary>Zoom keys change the saved zoom level, so it carries over to the next stage and run.</summary>
+        private void SetZoom(float zoom)
+        {
+            ModConfig.Instance.ZoomLevel.Value = Mathf.Clamp(zoom, 0.2f, 5f);
+            Minimap.Container.transform.localScale = Vector3.one * Settings.MinimapScale;
         }
 
         private bool TryCreateMinimap()
@@ -303,7 +312,7 @@ namespace MiniMapMod
         {
             return new CategoryScanner(true,
                 () => GameObject.FindObjectsOfType<GenericInteraction>().Select(interaction => interaction.gameObject),
-                TrackedDimensions, SpriteManager, () => GetPlayerPosition().y);
+                DynamicDimensions, SpriteManager, () => GetPlayerPosition().y);
         }
 
         private ITrackedObjectScanner CreateAliveEntityScanner()
@@ -354,7 +363,7 @@ namespace MiniMapMod
                         new DefaultSorter<TeamComponent>(MapCategory.Player, DefaultConverter, PlayerSelector, x => true),
                         new DefaultSorter<TeamComponent>(MapCategory.Neutral, DefaultConverter, NeutralSelector, x => x?.gameObject.activeSelf ?? true),
                     }
-                ), TrackedDimensions, SpriteManager, () => GetPlayerPosition().y);
+                ), DynamicDimensions, SpriteManager, () => GetPlayerPosition().y);
         }
 
         private Vector3 GetPlayerPosition()
@@ -381,7 +390,7 @@ namespace MiniMapMod
                     kind: MapCategory.Item,
                     dynamic: true,
                     scanner: new MonoBehaviorScanner<GenericPickupController>(logger),
-                    range: TrackedDimensions,
+                    range: DynamicDimensions,
                     spriteManager: SpriteManager,
                     playerHeightRetriever: () => GetPlayerPosition().y,
                     converter: x => x.gameObject,

@@ -23,15 +23,9 @@ namespace MiniMapLibrary
         public void CheckValue(float value)
         {
             if (value < Min)
-            {
                 Min = value;
-                return;
-            }
             if (value > Max)
-            {
                 Max = value;
-                return;
-            }
         }
 
         public void Clear()
