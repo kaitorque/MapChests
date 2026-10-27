@@ -14,6 +14,10 @@ namespace MapChests
         RiskOfOptionsCompat.PluginGUID,
         BepInDependency.DependencyFlags.SoftDependency
     )]
+    [BepInDependency(
+        ParallelCompat.PluginGUID,
+        BepInDependency.DependencyFlags.SoftDependency
+    )]
     [BepInIncompatibility("MiniMap")]
     [BepInIncompatibility("Faust.QoLChests")]
     public class MapChestsPlugin : BaseUnityPlugin
@@ -51,6 +55,7 @@ namespace MapChests
             StarStorm2CompatHandler.Register();
             HunkCompatHandler.Register();
             SandsweptCompatHandler.Register();
+            ParallelCompat.Register();
 
             stopwatch.Stop();
 

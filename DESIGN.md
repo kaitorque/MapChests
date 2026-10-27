@@ -299,7 +299,7 @@ What breaks today:
 | Client | An object disappears mid-stage | Highlight goes with it; the minimap icon stays as "used" (the `ActiveChecker` throws on the destroyed object and `CheckActive` swallows it) |
 | Host | Stage start | Every player's objects get highlights and minimap icons, because `FindObjectsOfType<CategoryMarker>()` finds them and `HighlightHandler.Enable` turns `isOn` back on over ArtifactOfParallel's hiding |
 
-ArtifactOfParallel will provide (exact names may still change; check its `DESIGN.md`):
+**The API is ready** (ArtifactOfParallel phase 5, `ParallelApi.cs`). Plugin GUID `kaitorque.ArtifactOfParallel`; reference `ArtifactOfParallel.dll` from the profile's `plugins\Kaitorque-ArtifactOfParallel` folder with `Private=false`.
 
 ```csharp
 namespace ArtifactOfParallel
@@ -307,13 +307,21 @@ namespace ArtifactOfParallel
     public static class ParallelApi
     {
         // True if the local player should see this object: not private, owned by the local player, or currently shared.
+        // Also true for objects ArtifactOfParallel doesn't manage; false for a null/destroyed object.
         public static bool IsVisibleToLocalPlayer(GameObject obj);
 
-        // Host and clients: an object became visible (true) or hidden (false) for the local player mid-stage.
+        // Host and clients: an object became visible (true) or hidden (false) for the local player.
         public static event Action<GameObject, bool> LocalVisibilityChanged;
     }
 }
 ```
+
+How the event behaves:
+- Host: raised whenever a private object's visibility flips (owner died, disconnected, revived or reconnected).
+- Client: raised when another player's object is network-spawned mid-stage (`true`) or removed (`false`). Not raised during the first 2 seconds of a stage, so the normal stage-start scan covers those.
+- It may repeat for an object already in that state; handle it idempotently.
+- The object passed is the root of the interactable (for multishops, each terminal and the shop itself are raised separately).
+- Call the API through a separate class marked `[MethodImpl(MethodImplOptions.NoInlining)]` so MapChests loads without ArtifactOfParallel installed.
 
 Tasks (soft dependency, guarded by `Chainloader.PluginInfos.ContainsKey("kaitorque.ArtifactOfParallel")`; MapChests must still work without it):
 - [ ] Skip objects where `IsVisibleToLocalPlayer` is false in `InteractableStateHandler.TrackInteractables`, `HighlightHandler.Enable` and `CategoryScanner.ScanScene`.

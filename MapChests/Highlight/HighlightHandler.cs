@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Faust.QoLChests.Compatability;
 using Faust.QoLChests.Components;
 using Faust.QoLChests.Configs;
 using Faust.Shared;
@@ -20,7 +21,7 @@ public static class HighlightHandler
 
     public static void Enable(GameObject interactable, bool ignoreUsed = false)
     {
-        if (!interactable)
+        if (!interactable || !ParallelCompat.IsVisible(interactable))
             return;
 
         var highlight = interactable.GetComponent<Highlight>();

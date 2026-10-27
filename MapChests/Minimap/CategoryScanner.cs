@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Faust.QoLChests.Compatability;
 using Faust.QoLChests.Components;
 using MapChests.Categories;
 using MiniMapLibrary;
@@ -33,7 +34,7 @@ namespace MiniMapMod
         {
             foreach (var gameObject in source())
             {
-                if (!gameObject || !CategoryClassifier.TryClassify(gameObject, out var category))
+                if (!gameObject || !ParallelCompat.IsVisible(gameObject) || !CategoryClassifier.TryClassify(gameObject, out var category))
                     continue;
 
                 if (!Settings.GetSetting(category).Minimap.Value)

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Faust.QoLChests.Compatability;
 using Faust.QoLChests.Components;
 using Faust.QoLChests.Configs;
 using Faust.Shared;
@@ -72,7 +73,7 @@ public static class InteractableStateHandler
     /// </summary>
     public static void TrackLateInteractable(GameObject interactable)
     {
-        if (!interactable || !CategoryClassifier.TryClassify(interactable, out var category))
+        if (!interactable || !ParallelCompat.IsVisible(interactable) || !CategoryClassifier.TryClassify(interactable, out var category))
             return;
 
         CategoryMarker.Tag(interactable, category);
@@ -98,6 +99,20 @@ public static class InteractableStateHandler
         var marker = interactable.GetComponent<CategoryMarker>();
         if (marker)
             Object.Destroy(marker);
+        LateInteractableChanged?.Invoke(interactable);
+    }
+
+    /// <summary>
+    /// Removes the highlight of an object the local player may no longer see (ArtifactOfParallel), keeping its
+    /// category so it can come back. The minimap rebuild skips it while it is hidden.
+    /// </summary>
+    public static void HideInteractable(GameObject interactable)
+    {
+        if (!interactable)
+            return;
+
+        HighlightHandler.Disable(interactable);
+        InteractablesToHighlight.Remove(interactable);
         LateInteractableChanged?.Invoke(interactable);
     }
 
@@ -135,7 +150,7 @@ public static class InteractableStateHandler
         );
         foreach (var interactable in trackedInteractables)
         {
-            if (!interactable)
+            if (!interactable || !ParallelCompat.IsVisible(interactable))
                 continue;
             var highlightCategoryMarker =
                 interactable.GetComponent<CategoryMarker>();
