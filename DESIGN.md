@@ -327,9 +327,9 @@ Tasks (soft dependency, guarded by `Chainloader.PluginInfos.ContainsKey("kaitorq
 - [x] Skip objects where `IsVisibleToLocalPlayer` is false in `InteractableStateHandler.TrackInteractables`, `TrackLateInteractable`, `HighlightHandler.Enable` and `CategoryScanner.ScanScene`.
 - [x] Subscribe to `LocalVisibilityChanged`: `true` calls `InteractableStateHandler.TrackLateInteractable(obj)`, `false` calls the new `HideInteractable(obj)` (removes the highlight but keeps the category marker, so the object can come back). Both raise `LateInteractableChanged`, which resets the minimap.
 - [x] Destroyed backing objects: already removed by `MinimapController.UpdateIconPositions` (`item.gameObject == null` uses Unity's null check), so no change needed.
-
-Done in `Compat/ParallelCompat.cs`: finds `ArtifactOfParallel.ParallelApi` by reflection (no build reference), soft `BepInDependency` so it loads first, and `IsVisible` returns true when the mod is missing.
 - [ ] In game with ArtifactOfParallel, host + client: each player only sees highlights and icons for their own and shared objects; a dead player's chests appear for the others and disappear again on revival.
+
+Done in `Compat/ParallelCompat.cs`: finds `ArtifactOfParallel.ParallelApi` by reflection (no build reference, so nothing to inline), soft `BepInDependency` so it loads first, and `IsVisible` returns true when the mod is missing.
 
 ## 6. Owner decisions
 
