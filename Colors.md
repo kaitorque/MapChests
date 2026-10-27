@@ -7,6 +7,11 @@ The current values from `kaitorque.MapChests.cfg` (VP profile). Each colour show
 - **Map**: the minimap icon colour. Used icons turn gray (808080) unless the table says otherwise.
 - **Your choice**: write the colour (a name from the palette at the bottom is fine) and icon you want. Leave a cell empty to keep the current value.
 
+The colour system has three levels of attention:
+1. **Gives items** (chests, lockboxes, shops, printers, scrappers, void and lunar item sources, equipment barrels, drones): bright, fully saturated, one colour per family.
+2. **Shrines**: muted versions of each shrine's sigil colour in game; shrines that give items are a little brighter.
+3. **Gold and coins only** (barrels, void stalks): dim.
+
 ## Chests
 
 | Category | What it is | Highlight | Map | Icon | Your choice |
@@ -65,32 +70,32 @@ The current values from `kaitorque.MapChests.cfg` (VP profile). Each colour show
 | Drone station | "Drone Upgrade Station" and "Drone Combiner Station" | Medium green (33B333) | Medium green (33B333) | drone | |
 | Lemurian egg | Offer an item to hatch a Lemurian ally | Green (01FF01) | Green (01FF01) | drone | |
 | Turret | Buyable gun turret that stays in place | Mint green (33FFAA) | Mint green (33FFAA) | drone | |
-| Barrel | Small barrel with gold | Yellow (FFFF01) | Yellow (FFFF01) | circle | |
-| Void stalk | "Stalk". Void barrel with void coins | Magenta (FF01FF) | Magenta (FF01FF) | circle | |
+| Barrel | Small barrel with gold | Dim gold (A68C40) | Dim gold (A68C40) | circle | |
+| Void stalk | "Stalk". Void barrel with void coins | Dim magenta (A64DA6) | Dim magenta (A64DA6) | circle | |
 | Equipment barrel | Barrel with an equipment | Orange (FF8001) | Orange (FF8001) | chest | |
 
 ## Shrines
 
 | Category | What it is | Highlight | Map | Icon | Your choice |
 |---|---|---|---|---|---|
-| Shrine of Blood | Take health, get gold | Crimson (FF3355) | Crimson (FF3355) | shrine | |
-| Shrine of Chance | Pay gold for a chance at an item | Gold (FFD24D) | Gold (FFD24D) | shrine | |
-| Shrine of Combat | Spawns a group of enemies | Magenta (FF01FF) | Magenta (FF01FF) | shrine | |
-| Shrine of the Mountain | Harder teleporter boss, extra items | Light green (80FF80) | Light green (80FF80) | shrine | |
-| Shrine of Order | Turns all items of a rarity into one item | Lime (CCFF33) | Lime (CCFF33) | shrine | |
-| Shrine of the Woods | Makes a healing zone | Teal (1AB3A6) | Teal (1AB3A6) | shrine | |
-| Shrine of Shaping | Revives dead players for 30% health | Green (01FF01) | Green (01FF01) | shrine | |
-| Shrine of Rebirth | Stores an item for your next run | Light pink (FF66CC) | Light pink (FF66CC) | shrine | |
-| Shrine of Catastrophe | "Shrine of Descent". Adds a soul-binding trial to the teleporter | Purple (9933FF) | Purple (9933FF) | shrine | |
-| Shrine of Compulsion | Gives a Compulsion objective; reward is a page | Orange (FF8001) | Orange (FF8001) | shrine | |
-| Shrine of Death | "Shrine of Malice". Summons monsters with fallen survivors' items | White (FFFFFF) | White (FFFFFF) | shrine | |
-| Shrine of Dread | "N'Kuhana's Endowment". Stronger enemies, item if you survive | Peach (FFCC99) | Peach (FFCC99) | shrine | |
+| Shrine of Blood | Take health, get gold | Muted red (B34D4D) | Muted red (B34D4D) | shrine | |
+| Shrine of Chance | Pay gold for a chance at an item | Olive gold (CCD24D) | Olive gold (CCD24D) | shrine | |
+| Shrine of Combat | Spawns a group of enemies | Muted violet (8066CC) | Muted violet (8066CC) | shrine | |
+| Shrine of the Mountain | Harder teleporter boss, extra items | Muted cyan (4DB8D9) | Muted cyan (4DB8D9) | shrine | |
+| Shrine of Order | Turns all items of a rarity into one item | Muted pink (CC5C99) | Muted pink (CC5C99) | shrine | |
+| Shrine of the Woods | Makes a healing zone | Muted green (5CB35C) | Muted green (5CB35C) | shrine | |
+| Shrine of Shaping | Revives dead players for 30% health | Sand (B3A366) | Sand (B3A366) | shrine | |
+| Shrine of Rebirth | Stores an item for your next run | Muted teal (66B3A6) | Muted teal (66B3A6) | shrine | |
+| Shrine of Catastrophe | "Shrine of Descent". Adds a soul-binding trial to the teleporter | Muted blue (4D80D9) | Muted blue (4D80D9) | shrine | |
+| Shrine of Compulsion | Gives a Compulsion objective; reward is a page | Rust (A6553A) | Rust (A6553A) | shrine | |
+| Shrine of Death | "Shrine of Malice". Summons monsters with fallen survivors' items | Wine (8C4D73) | Wine (8C4D73) | shrine | |
+| Shrine of Dread | "N'Kuhana's Endowment". Stronger enemies, item if you survive | Muted periwinkle (7373BF) | Muted periwinkle (7373BF) | shrine | |
 | Cleansing pool | Trade a lunar item for a pearl | Royal blue (3366FF) | Royal blue (3366FF) | wrench (small, like the scrapper) | |
 | Halcyonite shrine | "Halcyon Shrine". Drains gold, summons a Halcyonite | Sand (D9B36C) | Sand (D9B36C) | shrine | |
-| Hallowed shrine | Appears after the teleporter if you hold hexes or pages; Hand of Life and Hand of Death | Pale yellow (FFFF99) | Pale yellow (FFFF99) | shrine | |
+| Hallowed shrine | Appears after the teleporter if you hold hexes or pages; Hand of Life and Hand of Death | Pale cream (E6E6B3) | Pale cream (E6E6B3) | shrine | |
 | Ancient Sepulcher | Drops a rare collectible and starts The Wake event | Lilac (CC99FF) | Lilac (CC99FF) | shrine | |
 | Altar of Gold | Opens a gold portal to Gilded Coast | Gold (FFD24D) | Gold (FFD24D) | portal | |
-| Other shrine | Shrines from other mods or not recognised | Salmon (FF8C8C) | Salmon (FF8C8C) | shrine | |
+| Other shrine | Shrines from other mods or not recognised | Muted salmon (CC8080) | Muted salmon (CC8080) | shrine | |
 
 ## World
 
@@ -145,6 +150,14 @@ You can write any of these names in "Your choice", or any other colour you like.
 | Yellow-green | CCFF66 | Light green | 80FF80 |
 | Pale cyan | 99FFFF | Royal blue | 3366FF |
 | Medium green | 33B333 | Cyan-blue | 00CCFF |
+| Dim gold | A68C40 | Dim magenta | A64DA6 |
+| Olive gold | CCD24D | Pale cream | E6E6B3 |
+| Muted red | B34D4D | Muted violet | 8066CC |
+| Muted cyan | 4DB8D9 | Muted pink | CC5C99 |
+| Muted green | 5CB35C | Sand | B3A366 |
+| Muted blue | 4D80D9 | Rust | A6553A |
+| Wine | 8C4D73 | Muted periwinkle | 7373BF |
+| Muted teal | 66B3A6 | Muted salmon | CC8080 |
 
 ## Available icons
 

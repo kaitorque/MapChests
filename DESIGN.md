@@ -208,17 +208,19 @@ Defaults:
 - Minimap colour starts as the highlight colour (owner decision; this replaced the old lighter map shades for blue and violet). The two stay separate settings. Categories that are never highlighted keep the owner's minimap colours.
 - When `kaitorque.MapChests.cfg` does not exist yet, the values are migrated from `Faust.QoLChests.cfg` and `MiniMap.cfg` (or the Phase 0 copies). Palette colour names become RGB colours. The old files are never changed.
 
+Colour system (owner decision): three levels of attention. **Gives items** (chests, lockboxes, shops, printers, scrappers, void and lunar item sources, equipment barrels, drones) are bright and fully saturated, one colour per family. **Shrines** are muted versions of their sigil colour in game (read from each prefab's `Symbol` material tint); shrines that give items are a little brighter. **Gold and coins only** (barrel A68C40, void stalk A64DA6) are dim.
+
 | Shrine | Colour | Shrine | Colour |
 |---|---|---|---|
-| Blood | FF3355 | Halcyonite | D9B36C |
-| Chance | FFD24D | Shaping (Colossus) | 01FF01 |
-| Combat | FF01FF | Rebirth | FF66CC |
-| Mountain | 80FF80 (cyan blended into its blue stone) | Catastrophe | 9933FF |
-| Order | CCFF33 | Compulsion | FF8001 |
-| Woods | 1AB3A6 | Death | FFFFFF |
-| Cleansing pool | 3366FF (lunar) | Dread | FFCC99 |
-| Altar of Gold | FFD24D | Hallowed | FFFF99 |
-| Ancient Sepulcher | CC99FF | Other | FF8C8C |
+| Blood | B34D4D | Halcyonite | D9B36C |
+| Chance | CCD24D | Shaping (Colossus) | B3A366 |
+| Combat | 8066CC | Rebirth | 66B3A6 |
+| Mountain | 4DB8D9 | Catastrophe | 4D80D9 (sigil is cyan like Mountain; bluer to differ) |
+| Order | CC5C99 | Compulsion | A6553A |
+| Woods | 5CB35C | Death | 8C4D73 (sigil is dark red like Compulsion; wine to differ) |
+| Cleansing pool | 3366FF (lunar) | Dread | 7373BF |
+| Altar of Gold | FFD24D | Hallowed | E6E6B3 |
+| Ancient Sepulcher | CC99FF | Other | CC8080 |
 
 Risk of Options shows the global hide and zoom settings and, per category, highlight on/off, highlight colour, hide when used, minimap on/off, minimap colour and used icon. Any change re-applies highlights and rebuilds the minimap mid-run.
 
