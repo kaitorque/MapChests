@@ -13,187 +13,35 @@ All credit for the original work goes to its authors.
 
 ---
 
-# Mini Map Mod
-Adds a contemporary Minimap to the game.
+## Features
 
-### Features
+- **Highlights** interactables in the world with a coloured outline, and hides or fades them a moment after they're used.
+- **Minimap** with an icon for every interactable, plus enemies, allies, players and dropped items. Used interactables turn gray or disappear.
+- **One category per kind of interactable** (small chest, Shrine of Chance, equipment multishop, and so on), shared by the highlight and the minimap, each with its own colour and icon.
+- **Colour system** that draws your eye to what gives items:
+    1. Item sources (chests, lockboxes, shops, printers, scrappers, void and lunar item sources, drones) are bright, one colour per family.
+    2. Shrines are muted versions of their sigil colour in game.
+    3. Barrels and void stalks (money or coins only) are dim.
 
-- Implements a Mini Map In-Game.
-- Show interactable items, shrines, teleporters, enemies and more.
-- Single and Multiplayer Compatible.
-- Every icon is configurable for color, size and can be toggled on/off.
+  The full list of colours and icons is in `Colors.md`.
+- Tracks objects that appear mid-stage: Mimics, the Hallowed shrine, Ancient Sepulcher, void potentials and more.
+- Works with Artifact of Parallel (private chests per player): you only see highlights and icons for your own and shared objects.
 
-#### Available Icons
-| Icon     |      Available     |  Configurable |
-|----------|:-------------:|------:|
-| Chests | ✔ | ✔ |
-| Equipment Barrels | ✔ | ✔ |
-| Shops | ✔ | ✔ |
-| Printers | ✔ | ✔ |
-| Barrels | ✔ | ✔ |
-| Teleporter | ✔ | ✔ |
-| Money Shrine | ✔ | ✔ |
-| Blood Shrine | ✔ | ✔ |
-| Mountain Shrine | ✔ | ✔ |
-| Tree Shrine | ✔ | ✔ |
-| Combat Shrine | ✔ | ✔ |
-| Enemies | ✔ | ✔ |
-| Void Enemies | ✔ | ✔ |
-| Lunar Enemies | ✔ | ✔ |
-| Neutral Objects/NPCs | ✔ | ✔ |
-| Players | ✔ | ✔ |
-| Drones (broken) | ✔ | ✔ |
-| Allies (drones) | ✔ | ✔ |
-| Fans/Special | ✔ | ✔ |
-| Portals | ✔ | ✔ |
-| Totems | ✔ | ✔ |
-| Dropped Items | ✔ | ✔ |
-| Newt Altar | ✔ | ✔ |
-| Timed Chests | ❌ | ❌ |
-| Stealth Chests | ❌ | ❌ |
+## Controls
 
-### Showcase
+- `M` shows or hides the minimap.
+- `=` and `-` zoom the minimap in and out. The zoom level is saved.
 
-![](https://i.imgur.com/f4VwvNF.jpg)
-	
-### Dependencies
-- BepInEx
+## Config
 
-### Manual Installation
-- Place MiniMapLibrary.dll into your BepInEx/plugins folder.
-- Place MiniMapMod.dll into your BepInEx/plugins folder.
+One file, `kaitorque.MapChests.cfg`, with one section per category: highlight on/off and colour, hide when used, minimap on/off, colour, used colour, used icon (gray or hidden), and the icon itself (a game sprite path), its size and elevation marker. Global sections cover hiding (time, fade, Drifter) and the minimap (keys, zoom).
 
-### How to Use
-- Use 'M' to hide or show the minimap. 
+With Risk of Options installed, most settings can be changed in game and apply immediately.
 
-### Troubleshooting
-- Toggle 'M' to hide and show minimap to force a refresh and/or a re-draw if something wonky is happening on the minimap.
+The first time it runs, MapChests copies your settings from `Faust.QoLChests.cfg` and `MiniMap.cfg` if you have them. Those files are never changed.
 
-### Config
-BepInEx Config. Each icon is individually configurable.
-- Enabled / Disabled
-- Active Color
-- Inactive Color
-- Icon Width
-- Icon Height
-- Elevation Marker Enabled / Disabled
-- Elevation Marker Color
-- Elevation Marker Width
-- Elevation Marker Height
-- Elevation Marker Offset
+## Installation
 
-### Upcoming Changes
-None - Final Release
+Import the zip in r2modman (Settings, then **Import local mod**). Disable MiniMapMod and QoLChests: MapChests replaces both and won't load alongside them.
 
-### Bug Reports
-If you have an issue, discover a bug, or have a recommendation please file an issue on my github page.
-
-### Collaborators
-Huge thanks to these awesome people who assisted in creating awesome features for this mod
-[Arcafanetiz](https://github.com/Arcafanetiz)
-
-### Change Log
-Release 4.0.0
-- Finally added newt altars to the search, since everyone has been begging for it for literally years
-
-Hotfix 3.1.2
-- fixed error that ignored icon's enabled options in config
-
-Minor 3.1.1
-- equipment drones no longer show up as equipment
-- fixed stack trace logging to be more meaningful
-- added elevation markers for all icons denoting where they are located vertically from player
-- added long over due zoom feature
-- added minimap key to config
-- added zoom keys to config
-- added minimap scale to config to save zoom level between sessions
-
-Major 3.3
-- performance major, limited min time between scans to 2 seconds, previous was unlimited, when in 2hr+ runs auto-enemy killing builds caused constant scene scanning
-- fixed bug where chosing wrong icon path in config would lag and crash game with MissingTextureExceptions thrown by `SpriteManager.GetOrCache`
-- added portals
-- added gold shrine
-- added neutral enemy/items/objects (excluding buttons)
-- changed some default sizes for icons
-- added new icons
-- changed player icon
-- changed Void Enemy icon
-- added pillars and totems
-- changed default colors for icons
-
-Major 3.2
-- Re-implemented entire scanning framework for performance to allow more dynamic types at runtime
-- Added Equipment Barrels
-- Added Shops
-- Added Void Enemies
-- Added Lunar Enemies
-- Added Players (non-client)
-- Added Allies (drones that have been bought)
-- Added Dropped Items / Lunar Coins
-- Fixed bug where the no meaningful stacktrace was being outputted to the log for user debugging
-
-Hotfix 3.1.6
-- fixed typo causing all objects on map being selected to be placed on minimap regardless if they were filtered out
-
-Hotfix 3.1.5
-- prevented mod from throwing exceptions within global events causing other mods to not have their events fired
-- added compatibility for mods that implement ChestBehaviour but not PurchaseInteraction
-- added debug options and logging
-
-Minor 3.1.4
-- removed stealth chests from being shown on the minimap
-- removed transport fans from chest icon to Icon.Special icons
-
-Minor 3.1.3
-- added ability to change minimap icon paths ( limited to streaming assets )
-- refactored sprite cache
-
-Minor 3.1.2
-- refactor of config code (github only update)
-
-Minor 3.1.1
-- fixed adapative chests not appearing on minimap(hopefully)
-- added descriptions to the config sections
-- removed Icon.None and Icon.Primary sections from config
-- added seperate lunar pod icons and config section
-
-Major 3.1
-- Added config toggle to enable or disable each individual icon
-- Added config option to choose color for each individual icon
-- Added config option to choose icon height and width for each individual icon
-
-Minor 3.0.1
-- un-spammed console
-
-Compatibility Patch 3.0.0  
-- Added compatability for Survivors of the Void
-- Updated to new Unity Reference packages
-- Updated to new BepInEx/RoR2 API
-
-Hotfix 2.04
-- enabled mini-map by default, making it so players dont need to remember to press 'M' to show it every time they start the game
-- performance minor
-
-Hotfixes 2.03
-- changed icon sizes
-- added support for colors
-- added compatibility for mods that destroy interactibles(that would have crashed the minimap)
-- performance fix for calculating minimap position
-- performance fix for scene scanning
-- added enemies to the minimap
-- added support for changing inactive or bought items/interactibles to a different color
-- changed teleporter icon size and color
-- added color(green) for teleporter icon when it is done charging
-- performance fix for runs in HAHA.. difficulty and enemy count becomes excessive
-- performance fix for runs with items that auto-kill enemies instantly(removes flashing minimap)
-- removed excessive logging from the console
-
-Hotfix 2.0.2
-- Fixed critical bug duplicating icons on the minimap when using interactables
-- Typo in change log
-
-Final Release 2.0.0
-- Completely Re-Implemented minimap  
-
-First Release 1.0.0
-- Implemented MiniMap
+Requires BepInExPack. Risk of Options and Artifact of Parallel are optional.

@@ -331,3 +331,6 @@ ASALocalRun/
 # MapChests packaging output
 *.zip
 MapChests/package/
+
+# Serena (coding assistant) project data
+.serena/

@@ -43,7 +43,7 @@ Both projects sit side by side, unchanged from upstream:
 | `MiniMapLibrary/` | Minimap scanning, settings and config abstractions. Built as a separate DLL. |
 | `QoLChests/` | Highlight/hide plugin. GUID `Faust.QoLChests`. Modern csproj using NuGet game libraries (`RiskOfRain2.GameLibs` 1.5.0-r.1, `MMHOOK.RoR2`). |
 | `Faust.Shared/` | Shared code QoLChests copies into its build (logging, Risk of Options and mod-compat helpers). |
-| `MiniMapMod.sln`, `post_build.ps1`, `manifest.json`, `4.0.0/` | Upstream minimap build and release files. `post_build.ps1` has the original author's paths and is not usable as is. |
+| `MiniMapMod.sln`, `post_build.ps1`, `manifest.json`, `4.0.0/` | Upstream minimap build and release files. `post_build.ps1` has the original author's paths and is not usable as is. (All removed during cleanup; the old QoLChests `TestCases.md` now sits at the repo root.) |
 
 ### How each mod classifies interactables today
 
@@ -97,7 +97,7 @@ Both projects sit side by side, unchanged from upstream:
 
 1. **Lag on some stages, especially Sky Meadow** (last seen after the Alloyed Collective release; not yet retested on the current version). Many flying stones appear to be tracked. Toggling the minimap off and on with M clears it. Likely causes in the current code:
     - Every rescan (every 5 s, and on every character death and interaction, with a 2 s cooldown) runs `FindObjectsOfType` for about 16 types, then destroys and recreates the icon of every dynamic object (each enemy, ally and dropped item).
-    - `ClearDynamicTrackedObjects` skips every other entry (`RemoveAt(i)` without `i--`), so about half the old dynamic icons survive each scan and duplicates pile up.
+    - `ClearDynamicTrackedObjects` skips every other entry (`RemoveAt(i)` without `i--`), so about half the old dynamic icons survive each scan and duplicates pile up. (Fixed in Phase 3.)
     - `CreateGenericInteractionScanner()` is registered as both a static and a dynamic scanner, so generic interactables get two icons.
     - If the stones carry a `TeamComponent` or are pickups, each one becomes an icon. Confirm in game what they are.
 2. **Minimap slowly zooms out until icons bunch together.** Still present on the current version. Toggling with M sometimes fixes it, sometimes not until the next stage. Likely cause:
@@ -204,8 +204,10 @@ There is one config file, `kaitorque.MapChests.cfg`, with one section per catego
 Global sections: `Hide` (time, fade, remove highlight when used, do not hide as Drifter) and `Minimap` (toggle key, zoom keys, zoom level, log level).
 
 Defaults:
-- Highlight colour starts from the owner's group colour in section 3 (chests yellow, shops cyan, and so on), so all subtypes of a group match for now. The exceptions: each shrine has its own colour so they can be told apart; the equipment multishop is dark cyan (0099CC); lunar things (pod, shop, newt altar) are royal blue (3366FF), brighter than pure blue for the dark minimap; the legendary chest is gold and the cloaked chest pale yellow; the pressure plate is white; the rusty lockbox is yellow and the encrusted lockbox magenta; the hollow chest is yellow-green; the temporary item shop pale cyan and the vending machine teal; the drone scrapper green, the drone station medium green and the turret mint green with highlight on; the void stalk magenta. Some categories also get their own icon: lock for lockboxes, loot bag for the scavenger bag and hollow chest, drone for the drone shop, shrine for the newt altar, wrench for the cleansing pool (a trade, like the scrapper; same small size, lunar blue). Icons are turned gray when loaded so colours tint cleanly; the game's wrench sprite is yellow. The full list with descriptions is in `Colors.md`.
-- Minimap colour starts as the highlight colour (owner decision; this replaced the old lighter map shades for blue and violet). The two stay separate settings. Categories that are never highlighted keep the owner's minimap colours.
+- Colours follow the colour system below. Each category starts from its group colour in section 3 (chests yellow, shops cyan, and so on); categories that need to stand out get their own: every shrine; legendary chest gold; cloaked chest pale yellow; rusty lockbox yellow and encrusted lockbox magenta; hollow chest yellow-green; equipment multishop dark cyan; temporary item shop pale cyan; vending machine teal; lunar things (pod, shop, newt altar, cleansing pool) royal blue; drone scrapper green, drone station medium green, turret mint green with highlight on; pressure plate white; barrel and void stalk dim.
+- Icons: most categories use their group's icon (the cloaked chest uses the chest icon). Own icons: lock for the rusty and encrusted lockboxes, loot bag for the scavenger bag and hollow chest, drone for the drone shop, shrine for the newt altar, small wrench for the cleansing pool (a trade, like the scrapper). Every sprite is turned gray when loaded so the colour tints it cleanly (the game's wrench and dice sprites are coloured).
+- The full list of colours and icons is in `Colors.md`.
+- Minimap colour starts as the highlight colour (owner decision: highlight and map use the same colour). The two stay separate settings. Categories that are never highlighted keep the owner's minimap colours.
 - When `kaitorque.MapChests.cfg` does not exist yet, the values are migrated from `Faust.QoLChests.cfg` and `MiniMap.cfg` (or the Phase 0 copies). Palette colour names become RGB colours. The old files are never changed.
 
 Colour system (owner decision): three levels of attention. **Gives items** (chests, lockboxes, shops, printers, scrappers, void and lunar item sources, equipment barrels, drones) are bright and fully saturated, one colour per family. **Shrines** are muted versions of their sigil colour in game (read from each prefab's `Symbol` material tint); shrines that give items are a little brighter. **Gold and coins only** (barrel A68C40, void stalk A64DA6) are dim.
@@ -239,7 +241,7 @@ MapChests/
   Config/                     the one config, Risk of Options registration
   Compat/                     Quality, Sandswept, Starstorm 2, Hunk, Risk of Options (from QoLChests + Faust.Shared)
   libs/RiskOfOptions.dll      Risk of Options reference (not on NuGet)
-  manifest.json               package manifest
+  manifest.json               package manifest (icon.png and README.md come from the repo root)
   package.ps1                 build, copy into the VP profile, zip (modelled on MonsoonLikeDrizzle)
 MapChests.sln, NuGet.Config   solution and package sources (the BepInEx feed is required)
 ```
@@ -280,11 +282,11 @@ Expected visible changes after Phase 1 (until Phase 2 gives each category its ow
 
 ### Phase 3 – Minimap fixes for the current game
 Verify each item in game, then fix it:
-- [ ] Missing icons: DLC shrines, lockboxes, cloaked chests (now its own category), drone scrapper, pressure plates.
+- [x] Missing icons: DLC shrines, lockboxes, cloaked chests (now its own category), drone scrapper, pressure plates. All have icons now (see 4.4 Defaults).
 - [ ] Objects spawned after the stage starts: static objects are scanned once per stage (`ScanStaticTypes`), so late spawns (Halcyonite shrines, trial chests) can be missed.
-- [ ] List-removal bug: `ClearDynamicTrackedObjects` and `UpdateIconPositions` call `RemoveAt(i)` inside a forward `for` loop without `i--`, which skips the next element.
-- [ ] Icons load through `LegacyResourcesAPI` paths (`Textures/MiscIcons/...`); confirm they still resolve in 1.5.0.
-- [ ] Zoom-out bug (3.2, item 2): take the map area per stage from the scene, never from enemies or items, and fix `Range1D` (port from section 3.1).
+- [x] List-removal bug: `ClearDynamicTrackedObjects` and `UpdateIconPositions` call `RemoveAt(i)` inside a forward `for` loop without `i--`, which skips the next element. Fixed with `i--` after each removal.
+- [x] Icons load through `LegacyResourcesAPI` paths (`Textures/MiscIcons/...`); confirmed they still resolve in 1.5.0.
+- [x] Zoom-out bug (3.2, item 2): fixed by the map shrinking item below. The map area comes from stage interactables, not the scene bounds from section 3.1, which were not ported.
 - [x] `Log.LogException` (`Minimap/Log.cs`) loops forever when an exception has no inner exception, because `head` is only advanced when `InnerException` is not null. Any exception caught in `ScanScene` would freeze the game.
 - [ ] `GlobalEventManager.onCharacterDeathGlobal` is obsolete in 1.5.0 (use `onCharacterDeathServer` or `onDeathProcServer`); check it still fires on clients.
 - [x] Map shrinking during a stage: enemies, items and portals widened the map's range, so icons got smaller over time. Now only stage interactables set the range, both axes share one scale, `Range1D.CheckValue` sets Min and Max correctly, and the default zoom is 1.5. The zoom keys save `Zoom level`, so it carries over between stages.
@@ -293,7 +295,7 @@ Verify each item in game, then fix it:
 ### Phase 4 – ArtifactOfParallel compatibility
 ArtifactOfParallel (`F:\Mod\RoR2\ArtifactOfParallel`, owner's mod, still in design; see its `DESIGN.md`) is an artifact that gives each player their own private chests, shrines of chance, multishops, etc. Only the owner can see and open them; whatever drops out is shared. Other players' private objects are never sent to a client, but the **host** has all of them. Objects can also become visible or hidden mid-stage: a dead or disconnected player's chests become shared, and go back to them on revival or reconnect.
 
-What breaks today:
+What broke before this phase (all handled by the tasks below):
 
 | Where | Situation | Result |
 |---|---|---|
@@ -338,5 +340,5 @@ Done in `Compat/ParallelCompat.cs`: finds `ArtifactOfParallel.ParallelApi` by re
 
 1. Minimap bugs: missing interactables, plus the two bugs in section 3.2.
 2. Used icons: gray or hidden, chosen per category in the config.
-3. Colours: every category, including each chest subtype, has its own dedicated colour for both highlight and minimap. Defaults come from the color mapping in section 3; categories without a minimap colour yet (void cradle, lockbox, cloaked chest, pressure plate) default to their highlight colour.
+3. Colours: every category, including each chest subtype, has its own dedicated colour for both highlight and minimap. Defaults follow the colour system in 4.4; every category that can be highlighted uses the same colour on the map.
 4. Turrets: own category, separate from drones. In general, split categories as finely as the game allows.

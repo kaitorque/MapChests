@@ -159,6 +159,7 @@ namespace MiniMapMod
                 if (item.gameObject == null)
                 {
                     TrackedObjects.RemoveAt(i);
+                    i--;
 
                     // if we still have a icon for the now discarded item destroy it
                     if (item.MinimapTransform != null)
@@ -439,6 +440,7 @@ namespace MiniMapMod
                 {
                     obj.Destroy();
                     TrackedObjects.RemoveAt(i);
+                    i--;
                 }
             }
         }
