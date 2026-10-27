@@ -182,6 +182,7 @@ public sealed class CategorySettings
     private static readonly Dictionary<MapCategory, string> DistinctIcons = new()
     {
         [MapCategory.ScavengerBag] = Settings.Icons.LootBag,
+        [MapCategory.HollowChest] = Settings.Icons.LootBag,
         [MapCategory.RustyLockbox] = Settings.Icons.Lock,
         [MapCategory.EncrustedLockbox] = Settings.Icons.Lock,
         [MapCategory.DroneShop] = Settings.Icons.Drone,

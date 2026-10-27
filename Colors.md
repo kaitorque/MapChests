@@ -20,7 +20,7 @@ The current values from `kaitorque.MapChests.cfg` (VP profile). Each colour show
 | Adaptive chest | Cycles through items; take the one shown | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
 | Cloaked chest | Invisible free chest | Pale yellow (FFFF99) | Pale yellow (FFFF99) | chest | |
 | Secret chest | Normal chests placed in hidden spots on some maps | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
-| Hollow chest | "Concept Reliquary". Free; a random Hex item | Yellow-green (CCFF66) | Yellow-green (CCFF66) | chest | |
+| Hollow chest | "Concept Reliquary". Free; a random Hex item | Yellow-green (CCFF66) | Yellow-green (CCFF66) | loot bag | |
 | Nkuhana chest | N'kuhana's chest from the newest DLC (no in-game name found in the files) | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
 | Trial chest | Free damage chests inside a Trial | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
 | Mimic | Enemy disguised as a chest; shows as an enemy once revealed | Yellow (FFFF01) | Yellow (FFFF01) | chest | |
