@@ -213,7 +213,7 @@ Defaults:
 | Blood | FF3355 | Halcyonite | D9B36C |
 | Chance | FFD24D | Shaping (Colossus) | 01FF01 |
 | Combat | FF01FF | Rebirth | FF66CC |
-| Mountain | 00CCFF | Catastrophe | 9933FF |
+| Mountain | 80FF80 (cyan blended into its blue stone) | Catastrophe | 9933FF |
 | Order | CCFF33 | Compulsion | FF8001 |
 | Woods | 1AB3A6 | Death | FFFFFF |
 | Cleansing pool | 3366FF (lunar) | Dread | FFCC99 |

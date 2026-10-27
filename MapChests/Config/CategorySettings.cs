@@ -161,7 +161,7 @@ public sealed class CategorySettings
         [MapCategory.BloodShrine] = Hex("FF3355"),
         [MapCategory.ChanceShrine] = Hex("FFD24D"),
         [MapCategory.CombatShrine] = Hex("FF01FF"),
-        [MapCategory.MountainShrine] = Hex("00CCFF"),
+        [MapCategory.MountainShrine] = Hex("80FF80"),
         [MapCategory.OrderShrine] = Hex("CCFF33"),
         [MapCategory.WoodsShrine] = Hex("1AB3A6"),
         [MapCategory.CleansingPool] = Hex("3366FF"),

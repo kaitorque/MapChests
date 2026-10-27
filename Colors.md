@@ -76,7 +76,7 @@ The current values from `kaitorque.MapChests.cfg` (VP profile). Each colour show
 | Shrine of Blood | Take health, get gold | Crimson (FF3355) | Crimson (FF3355) | shrine | |
 | Shrine of Chance | Pay gold for a chance at an item | Gold (FFD24D) | Gold (FFD24D) | shrine | |
 | Shrine of Combat | Spawns a group of enemies | Magenta (FF01FF) | Magenta (FF01FF) | shrine | |
-| Shrine of the Mountain | Harder teleporter boss, extra items | Cyan-blue (00CCFF) | Cyan-blue (00CCFF) | shrine | |
+| Shrine of the Mountain | Harder teleporter boss, extra items | Light green (80FF80) | Light green (80FF80) | shrine | |
 | Shrine of Order | Turns all items of a rarity into one item | Lime (CCFF33) | Lime (CCFF33) | shrine | |
 | Shrine of the Woods | Makes a healing zone | Teal (1AB3A6) | Teal (1AB3A6) | shrine | |
 | Shrine of Shaping | Revives dead players for 30% health | Green (01FF01) | Green (01FF01) | shrine | |
