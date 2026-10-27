@@ -285,6 +285,7 @@ Verify each item in game, then fix it:
 - [ ] Zoom-out bug (3.2, item 2): take the map area per stage from the scene, never from enemies or items, and fix `Range1D` (port from section 3.1).
 - [x] `Log.LogException` (`Minimap/Log.cs`) loops forever when an exception has no inner exception, because `head` is only advanced when `InnerException` is not null. Any exception caught in `ScanScene` would freeze the game.
 - [ ] `GlobalEventManager.onCharacterDeathGlobal` is obsolete in 1.5.0 (use `onCharacterDeathServer` or `onDeathProcServer`); check it still fires on clients.
+- [x] Map shrinking during a stage: enemies, items and portals widened the map's range, so icons got smaller over time. Now only stage interactables set the range, both axes share one scale, `Range1D.CheckValue` sets Min and Max correctly, and the default zoom is 1.5. The zoom keys save `Zoom level`, so it carries over between stages.
 - [ ] Lag bug (3.2, item 1): find out in game what the Sky Meadow stones are; stop rebuilding every dynamic icon each scan (the duplicate generic-interaction scanner was removed in Phase 1); consider registry-based tracking (section 3.1).
 
 ### Phase 4 – ArtifactOfParallel compatibility
