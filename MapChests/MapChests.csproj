@@ -8,12 +8,13 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>none</DebugType>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <Profile>$(APPDATA)\r2modmanPlus-local\RiskOfRain2\profiles\VP\BepInEx</Profile>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="libs\**;package\**" />
-    <EmbeddedResource Remove="libs\**;package\**" />
-    <None Remove="libs\**;package\**" />
+    <Compile Remove="package\**" />
+    <EmbeddedResource Remove="package\**" />
+    <None Remove="package\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,7 +27,7 @@
 
   <ItemGroup>
     <Reference Include="RiskOfOptions">
-      <HintPath>libs\RiskOfOptions.dll</HintPath>
+      <HintPath>$(Profile)\plugins\Rune580-Risk_Of_Options\RiskOfOptions\RiskOfOptions.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

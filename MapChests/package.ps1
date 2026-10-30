@@ -21,7 +21,7 @@ Write-Host "Installed $install\$name.dll"
 $package = Join-Path $dir "package"
 if (Test-Path $package) { Remove-Item $package -Recurse -Force }
 New-Item -ItemType Directory $package | Out-Null
-Copy-Item $dll, (Join-Path $dir "manifest.json"), (Join-Path $root "icon.png"), (Join-Path $root "README.md") $package
+Copy-Item $dll, (Join-Path $dir "manifest.json"), (Join-Path $root "icon.png"), (Join-Path $root "README.md"), (Join-Path $root "CHANGELOG.md") $package
 
 $version = (Get-Content (Join-Path $dir "manifest.json") -Raw | ConvertFrom-Json).version_number
 $zip = Join-Path (Split-Path $root -Parent) "Kaitorque-$name-$version.zip"

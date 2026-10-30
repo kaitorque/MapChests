@@ -25,7 +25,7 @@ namespace MapChests
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "kaitorque";
         public const string PluginName = "MapChests";
-        public const string PluginVersion = "0.1.0";
+        public const string PluginVersion = "1.0.0";
 
         protected void Awake()
         {
