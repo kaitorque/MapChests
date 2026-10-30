@@ -1,3 +1,4 @@
+using Faust.QoLChests.Components;
 using Faust.QoLChests.Handlers;
 using RoR2;
 
@@ -14,6 +15,7 @@ public static class StageEventHooks
         On.RoR2.CharacterBody.Start += CharacterBodyStart;
         On.EntityStates.Mimic.Chest.Opening.OnEnter += MimicOpeningOnEnter;
         On.RoR2.WakeController.Start += WakeControllerStart;
+        On.EntityStates.Wake.MissionBaseState.OnEnter += WakeMissionStateOnEnter;
         On.HallowingShrineSplitBase.Start += HallowingShrineStart;
         On.RoR2.DrainItemsAndDropMultiChoicePotentialController.OnEnable += DrainItemsOnEnable;
         On.RoR2.GrantHexesController.OnEnable += GrantHexesOnEnable;
@@ -36,6 +38,20 @@ public static class StageEventHooks
     {
         orig(self);
         InteractableStateHandler.TrackLateInteractable(self.gameObject);
+    }
+
+    /// <summary>
+    /// The Ancient Sepulcher can only be activated once: any mission state past Idle means it has been used.
+    /// The mission states run on the host and every client.
+    /// </summary>
+    private static void WakeMissionStateOnEnter(On.EntityStates.Wake.MissionBaseState.orig_OnEnter orig, EntityStates.Wake.MissionBaseState self)
+    {
+        orig(self);
+        var wake = WakeController.instance;
+        if (!wake || wake.missionStatus == WakeController.MissionStatus.Idle || wake.GetComponent<InteractableUsed>())
+            return;
+
+        InteractableUsedHandler.MarkUsed(wake.gameObject);
     }
 
     private static void HallowingShrineStart(On.HallowingShrineSplitBase.orig_Start orig, HallowingShrineSplitBase self)

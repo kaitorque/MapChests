@@ -78,12 +78,16 @@ namespace MiniMapLibrary
                 var source = sprite.texture;
                 var rect = sprite.textureRect;
                 int width = (int)rect.width, height = (int)rect.height;
+                // the atlas trims transparent padding; the copy must keep the full sprite size or the image stretches
+                int fullWidth = (int)sprite.rect.width, fullHeight = (int)sprite.rect.height;
+                int offsetX = (int)sprite.textureRectOffset.x, offsetY = (int)sprite.textureRectOffset.y;
 
                 target = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
                 Graphics.Blit(source, target);
                 RenderTexture.active = target;
-                var copy = new Texture2D(width, height, TextureFormat.RGBA32, false);
-                copy.ReadPixels(new Rect(rect.x, rect.y, width, height), 0, 0);
+                var copy = new Texture2D(fullWidth, fullHeight, TextureFormat.RGBA32, false);
+                copy.SetPixels32(new Color32[fullWidth * fullHeight]);
+                copy.ReadPixels(new Rect(rect.x, rect.y, width, height), offsetX, offsetY);
 
                 var pixels = copy.GetPixels32();
                 for (int i = 0; i < pixels.Length; i++)
@@ -95,8 +99,8 @@ namespace MiniMapLibrary
                 copy.SetPixels32(pixels);
                 copy.Apply();
 
-                var pivot = new Vector2(sprite.pivot.x / width, sprite.pivot.y / height);
-                return Sprite.Create(copy, new Rect(0, 0, width, height), pivot, sprite.pixelsPerUnit);
+                var pivot = new Vector2(sprite.pivot.x / fullWidth, sprite.pivot.y / fullHeight);
+                return Sprite.Create(copy, new Rect(0, 0, fullWidth, fullHeight), pivot, sprite.pixelsPerUnit);
             }
             catch (Exception e)
             {

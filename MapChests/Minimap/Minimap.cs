@@ -25,6 +25,8 @@ namespace MiniMapLibrary
 
         public static GameObject Container { get; private set; }
 
+        public Transform PlayerIcon { get; private set; }
+
         private RectTransform ContainerTransform;
 
         public bool Created { get; private set; } = false;
@@ -64,6 +66,7 @@ namespace MiniMapLibrary
             gameObject = null;
             Container = null;
             ContainerTransform = null;
+            PlayerIcon = null;
 
             Created = false;
         }
@@ -117,6 +120,8 @@ namespace MiniMapLibrary
             GameObject playerIcon = CreateIcon(MapCategory.Player, spriteManager.GetSprite(MapCategory.Player));
 
             SetParent(playerIcon, gameObject);
+
+            PlayerIcon = playerIcon.transform;
         }
 
         private GameObject CreateIcon(MapCategory category, Sprite iconTexture)

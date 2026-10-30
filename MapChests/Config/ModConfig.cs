@@ -28,7 +28,7 @@ public class ModConfig
     public ConfigEntry<float> HideTime;
 
     public ConfigEntry<KeyCode> MinimapKey, ZoomInKey, ZoomOutKey;
-    public ConfigEntry<float> ZoomLevel;
+    public ConfigEntry<float> ZoomLevel, IconScale;
     public ConfigEntry<LogLevel> MinimapLogLevel;
 
     private readonly Dictionary<MapCategory, CategorySettings> categories = [];
@@ -45,7 +45,8 @@ public class ModConfig
         MinimapKey = config.Bind("Minimap", "Toggle key", legacy.MinimapEnum("Settings.General", "EnableKey", KeyCode.M), "Key that shows or hides the minimap");
         ZoomInKey = config.Bind("Minimap", "Zoom in key", legacy.MinimapEnum("Settings.Zoom", "ZoomKey", KeyCode.Equals), "Zooms the minimap in");
         ZoomOutKey = config.Bind("Minimap", "Zoom out key", legacy.MinimapEnum("Settings.Zoom", "UnZoomKey", KeyCode.Minus), "Zooms the minimap out");
-        ZoomLevel = config.Bind("Minimap", "Zoom level", legacy.MinimapFloat("Settings.Zoom", "zoomLevel", 1.5f), "Zoom of the minimap; the zoom keys change it and it is kept between stages");
+        ZoomLevel = config.Bind("Minimap", "Zoom level", legacy.MinimapFloat("Settings.Zoom", "zoomLevel", 1f), "Zoom of the minimap; the zoom keys change it and it is kept between stages. Icons keep their size when zooming");
+        IconScale = config.Bind("Minimap", "Icon scale", 1f, "Size multiplier for every minimap icon, on top of each category's icon width and height");
         MinimapLogLevel = config.Bind("Minimap", "Log level", legacy.MinimapEnum("Settings.General", "LogLevel", LogLevel.info), "How much the minimap writes to the log");
 
         foreach (var definition in CategoryCatalog.All)
@@ -71,6 +72,7 @@ public class ModConfig
         RiskOfOptionsCompat.AddCheckboxOptions(false, FadeInsteadOfHide, RemoveHighlightFromUsed, DoNotHideAsDrifter);
         RiskOfOptionsCompat.AddSliderNumberOptions(false, 0.1f, 5f, HideTime);
         RiskOfOptionsCompat.AddSliderNumberOptions(false, 0.2f, 5f, ZoomLevel);
+        RiskOfOptionsCompat.AddSliderNumberOptions(false, 0.2f, 3f, IconScale);
 
         foreach (var settings in categories.Values)
         {

@@ -73,6 +73,8 @@ namespace MiniMapLibrary
 
         public static float MinimapScale => ModConfig.Instance.ZoomLevel.Value;
 
+        public static float IconScale => ModConfig.Instance.IconScale.Value;
+
         public static KeyCode MinimapKey => ModConfig.Instance.MinimapKey.Value;
 
         public static KeyCode MinimapIncreaseScaleKey => ModConfig.Instance.ZoomInKey.Value;

@@ -16,8 +16,8 @@ public static class GeneralHooks
 
         config.SettingChanged += (sender, args) =>
         {
-            // the minimap applies zoom itself; rebuilding everything on every zoom key press would stutter
-            if (args.ChangedSetting == ModConfig.Instance.ZoomLevel)
+            // the minimap applies zoom and icon scale itself; rebuilding everything on every zoom key press would stutter
+            if (args.ChangedSetting == ModConfig.Instance.ZoomLevel || args.ChangedSetting == ModConfig.Instance.IconScale)
                 return;
             InteractableStateHandler.Reset();
             resetMinimap();

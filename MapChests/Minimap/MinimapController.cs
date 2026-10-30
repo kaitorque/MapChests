@@ -151,6 +151,11 @@ namespace MiniMapMod
             // only perform this calculation once per frame
             Vector2 cameraPositionMinimap = GetPlayerPosition().ToMinimapPosition(TrackedDimensions);
 
+            // icons sit inside the zoomed container; dividing by the zoom keeps their on-screen size fixed
+            Vector3 iconScale = Vector3.one * (Settings.IconScale / Settings.MinimapScale);
+            if (Minimap.PlayerIcon)
+                Minimap.PlayerIcon.localScale = Vector3.one * Settings.IconScale;
+
             for (int i = 0; i < TrackedObjects.Count; i++)
             {
                 ITrackedObject item = TrackedObjects[i];
@@ -191,6 +196,8 @@ namespace MiniMapMod
                     // (they inherit their position from the minimap)
                     item.MinimapTransform.rotation = Quaternion.identity;
                 }
+
+                item.MinimapTransform.localScale = iconScale;
 
                 // check to see if its active and whether to change its color
                 // check the position to see if we should show arrow
