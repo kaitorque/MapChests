@@ -2,7 +2,7 @@
   "name": "MapChests",
   "version_number": "1.0.0",
   "website_url": "https://github.com/kaitorque/MapChests",
-  "description": "Unofficial merge of MiniMapMod (DekuDesu) and QoLChests (Faustvii): minimap and highlights with shared categories.",
+  "description": "Unofficial merge of MiniMapMod (DekuDesu) and QoLChests (Faustvii): minimap and highlights with shared categories. Made mainly for use with ArtifactOfParallel.",
   "dependencies": [
     "bbepis-BepInExPack-5.4.2122",
     "RiskofThunder-HookGenPatcher-1.2.9"

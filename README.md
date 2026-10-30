@@ -2,6 +2,8 @@
 
 A Risk of Rain 2 mod combining **MiniMapMod** and **QoLChests** into a single plugin: a minimap and interactable highlights that share one set of categories, colours and icons.
 
+It is made mainly to be used with my [ArtifactOfParallel](https://github.com/kaitorque/ArtifactOfParallel) mod, which gives each player their own private chests: the minimap and highlights only show your own and shared objects, never another player's. It also works fine without it.
+
 > **Disclaimer:** MapChests is an unofficial, fan-made merge. It is not affiliated with or endorsed by the original authors. It is made mainly for me and my friends to use together. Neither original mod has a license, so all rights to their code stay with their authors. **If you are the author of MiniMapMod or QoLChests and want this taken down, open an issue on [the GitHub page](https://github.com/kaitorque/MapChests/issues) and it will be removed.**
 >
 > Please report problems with MapChests to [MapChests](https://github.com/kaitorque/MapChests/issues), not to the original authors.
