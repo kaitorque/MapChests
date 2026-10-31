@@ -58,13 +58,13 @@ Requires BepInExPack and HookGenPatcher. Risk Of Options and ArtifactOfParallel 
 
 ## Building
 
-Requires the .NET SDK. Risk Of Options is referenced from the r2modman profile set in `MapChests/MapChests.csproj` (`Profile`).
+Requires the .NET SDK. Risk Of Options is referenced from the Gale mod profile set in `MapChests/MapChests.csproj` (`Profile`).
 
 ```powershell
 .\MapChests\package.ps1
 ```
 
-This builds the plugin, installs it into the r2modman profile and creates an r2modman-importable zip next to the repo folder. `tools/make_icon.py` rebuilds `icon.png` from the game's files (needs Python with UnityPy and Pillow).
+This builds the plugin, installs it into the Gale profile and creates an r2modman-importable zip next to the repo folder. `tools/make_icon.py` rebuilds `icon.png` from the game's files (needs Python with UnityPy and Pillow).
 
 ## License
 
