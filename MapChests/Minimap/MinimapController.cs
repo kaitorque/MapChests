@@ -34,8 +34,16 @@ namespace MiniMapMod
 
         private MiniMapLibrary.ILogger logger;
 
-        private ITrackedObjectScanner[] staticScanners;
+        private CategoryScanner staticScanner;
         private ITrackedObjectScanner[] dynamicScanners;
+
+        // objects whose category or visibility changed mid-stage, with the frame they changed on
+        private readonly Dictionary<GameObject, int> changedObjects = new();
+        private readonly List<GameObject> readyChanges = new();
+
+        private readonly List<ITrackedObject> scannedDynamic = new();
+        private readonly Dictionary<(GameObject, MapCategory), ITrackedObject> existingDynamic = new();
+        private readonly HashSet<ITrackedObject> keptDynamic = new();
 
         private readonly Timer dynamicScanTimer = new(5.0f);
         private readonly Timer cooldownTimer = new(2.0f, false) { Value = -1.0f };
@@ -78,6 +86,13 @@ namespace MiniMapMod
         /// <summary>Rebuilds the minimap on the next frame so config changes show up mid-stage.</summary>
         public void RequestReset() => resetRequested = true;
 
+        /// <summary>Updates one object's icon after its category or visibility changed mid-stage.</summary>
+        public void RefreshObject(GameObject gameObject)
+        {
+            if (gameObject)
+                changedObjects[gameObject] = Time.frameCount;
+        }
+
         private void Update()
         {
             if (resetRequested)
@@ -85,6 +100,8 @@ namespace MiniMapMod
                 resetRequested = false;
                 Reset();
             }
+
+            ApplyChangedObjects();
 
             if (UnityEngine.Input.GetKeyDown(Settings.MinimapKey))
             {
@@ -175,33 +192,91 @@ namespace MiniMapMod
                     continue;
                 }
 
-                // convert the world positions to minimap positions
-                // remember the minimap is calculated on a scale from 0d to 1d where 0d is the least most coord of any interactible and 1d is the largest coord of any interactible
-
-                Vector2 itemMinimapPosition = item.gameObject.transform.position.ToMinimapPosition(TrackedDimensions) - cameraPositionMinimap;
-
-                // there exists no icon when .MinimapTransform is null
-                if (item.MinimapTransform == null)
+                try
                 {
-                    // create one
-                    item.MinimapTransform = Minimap.CreateIcon(item.Category, itemMinimapPosition, this.SpriteManager);
+                    UpdateIcon(item, cameraPositionMinimap, iconScale);
                 }
-                else
+                catch (Exception e) when (e is NullReferenceException or MissingReferenceException)
                 {
-                    // since it was already created update the position
-                    item.MinimapTransform.localPosition = itemMinimapPosition;
+                    // the game or another mod destroyed part of this object; drop its icon rather than rebuilding the whole map
+                    logger.LogDebug($"Dropping minimap icon for {item.Category} after {e.GetType().Name}");
+                    item.Destroy();
+                    TrackedObjects.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
 
-                    // becuase we don't want the icons to spin WITH the minimap set their rotation
-                    // every frame so they're always facing right-side up
-                    // (they inherit their position from the minimap)
-                    item.MinimapTransform.rotation = Quaternion.identity;
+        private void UpdateIcon(ITrackedObject item, Vector2 cameraPositionMinimap, Vector3 iconScale)
+        {
+            // convert the world positions to minimap positions
+            // remember the minimap is calculated on a scale from 0d to 1d where 0d is the least most coord of any interactible and 1d is the largest coord of any interactible
+
+            Vector2 itemMinimapPosition = item.gameObject.transform.position.ToMinimapPosition(TrackedDimensions) - cameraPositionMinimap;
+
+            // there exists no icon when .MinimapTransform is null
+            if (item.MinimapTransform == null)
+            {
+                // create one
+                item.MinimapTransform = Minimap.CreateIcon(item.Category, itemMinimapPosition, this.SpriteManager);
+            }
+            else
+            {
+                // since it was already created update the position
+                item.MinimapTransform.localPosition = itemMinimapPosition;
+
+                // becuase we don't want the icons to spin WITH the minimap set their rotation
+                // every frame so they're always facing right-side up
+                // (they inherit their position from the minimap)
+                item.MinimapTransform.rotation = Quaternion.identity;
+            }
+
+            item.MinimapTransform.localScale = iconScale;
+
+            // check to see if its active and whether to change its color
+            // check the position to see if we should show arrow
+            item.CheckActive();
+        }
+
+        /// <summary>
+        /// Replaces the icons of objects that changed on an earlier frame. Waiting a frame lets a removed category
+        /// marker (a revealed Mimic) be destroyed first.
+        /// </summary>
+        private void ApplyChangedObjects()
+        {
+            if (changedObjects.Count == 0)
+                return;
+
+            // without a minimap the next full scan picks every change up
+            if (!Enable || !Minimap.Created || !ScannedStaticObjects)
+            {
+                changedObjects.Clear();
+                return;
+            }
+
+            readyChanges.Clear();
+            foreach (var change in changedObjects)
+            {
+                if (change.Value < Time.frameCount)
+                    readyChanges.Add(change.Key);
+            }
+
+            foreach (var gameObject in readyChanges)
+            {
+                changedObjects.Remove(gameObject);
+
+                for (int i = TrackedObjects.Count - 1; i >= 0; i--)
+                {
+                    var item = TrackedObjects[i];
+                    if (!item.DynamicObject && ReferenceEquals(item.gameObject, gameObject))
+                    {
+                        item.Destroy();
+                        TrackedObjects.RemoveAt(i);
+                    }
                 }
 
-                item.MinimapTransform.localScale = iconScale;
-
-                // check to see if its active and whether to change its color
-                // check the position to see if we should show arrow
-                item.CheckActive();
+                if (gameObject && IsStaticCandidate(gameObject))
+                    staticScanner.Track(gameObject, TrackedObjects);
             }
         }
 
@@ -237,6 +312,7 @@ namespace MiniMapMod
         {
             logger.LogDebug($"Clearing {nameof(TrackedObjects)}");
             TrackedObjects.Clear();
+            changedObjects.Clear();
 
             logger.LogDebug($"Clearing {nameof(TrackedDimensions)}");
             TrackedDimensions.Clear();
@@ -280,9 +356,6 @@ namespace MiniMapMod
 
                 logger.LogDebug("Scanning Scene");
 
-                logger.LogDebug("Clearing dynamically tracked objects");
-                ClearDynamicTrackedObjects();
-
                 logger.LogDebug("Scanning static types");
                 ScanStaticTypes();
 
@@ -300,21 +373,24 @@ namespace MiniMapMod
 
         private void CreateStaticScanners()
         {
-            staticScanners = new ITrackedObjectScanner[] {
-                new CategoryScanner(false, FindTaggedInteractables, TrackedDimensions, SpriteManager, () => GetPlayerPosition().y),
-            };
+            staticScanner = new CategoryScanner(false, FindTaggedInteractables, TrackedDimensions, SpriteManager, () => GetPlayerPosition().y);
         }
 
         private static IEnumerable<GameObject> FindTaggedInteractables()
         {
             CategoryClassifier.TagUntagged();
 
-            // generic interactions (portals) can spawn mid-stage, so the dynamic scan tracks them;
-            // the Hallowed shrine's hands sit on the shrine, which already has an icon
             return GameObject.FindObjectsOfType<CategoryMarker>()
                 .Select(marker => marker.gameObject)
-                .Where(gameObject => !gameObject.GetComponent<GenericInteraction>() && !gameObject.GetComponent<HallowingShrineSplitNode>());
+                .Where(IsStaticCandidate);
         }
+
+        // generic interactions (portals) can spawn mid-stage, so the dynamic scan tracks them;
+        // the Hallowed shrine's hands sit on the shrine, which already has an icon
+        private static bool IsStaticCandidate(GameObject gameObject) =>
+            gameObject.GetComponent<CategoryMarker>()
+            && !gameObject.GetComponent<GenericInteraction>()
+            && !gameObject.GetComponent<HallowingShrineSplitNode>();
 
         private ITrackedObjectScanner CreateGenericInteractionScanner()
         {
@@ -416,38 +492,51 @@ namespace MiniMapMod
                 return;
             }
 
-            for (int i = 0; i < staticScanners.Length; i++)
-            {
-                staticScanners[i].ScanScene(TrackedObjects);
-            }
+            staticScanner.ScanScene(TrackedObjects);
 
             ScannedStaticObjects = true;
         }
 
+        /// <summary>
+        /// Rescans enemies, allies, items and portals. Objects that are still there keep their icon; only icons of
+        /// objects that are gone or changed category are destroyed, so a rescan in a big fight doesn't rebuild hundreds of icons.
+        /// </summary>
         private void ScanDynamicTypes()
         {
+            scannedDynamic.Clear();
             for (int i = 0; i < dynamicScanners.Length; i++)
             {
-                dynamicScanners[i].ScanScene(TrackedObjects);
-            }
-        }
-
-        private void ClearDynamicTrackedObjects()
-        {
-            if (ScannedStaticObjects is false)
-            {
-                return;
+                dynamicScanners[i].ScanScene(scannedDynamic);
             }
 
-            for (int i = 0; i < TrackedObjects.Count; i++)
+            existingDynamic.Clear();
+            foreach (var item in TrackedObjects)
             {
-                var obj = TrackedObjects[i];
+                if (item.DynamicObject && item.gameObject)
+                    existingDynamic[(item.gameObject, item.Category)] = item;
+            }
 
-                if (obj.DynamicObject)
+            keptDynamic.Clear();
+            foreach (var item in scannedDynamic)
+            {
+                if (existingDynamic.TryGetValue((item.gameObject, item.Category), out var existing))
                 {
-                    obj.Destroy();
+                    keptDynamic.Add(existing);
+                }
+                else
+                {
+                    TrackedObjects.Add(item);
+                    keptDynamic.Add(item);
+                }
+            }
+
+            for (int i = TrackedObjects.Count - 1; i >= 0; i--)
+            {
+                var item = TrackedObjects[i];
+                if (item.DynamicObject && !keptDynamic.Contains(item))
+                {
+                    item.Destroy();
                     TrackedObjects.RemoveAt(i);
-                    i--;
                 }
             }
         }

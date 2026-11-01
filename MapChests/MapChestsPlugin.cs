@@ -25,7 +25,7 @@ namespace MapChests
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "kaitorque";
         public const string PluginName = "MapChests";
-        public const string PluginVersion = "1.0.0";
+        public const string PluginVersion = "1.0.1";
 
         protected void Awake()
         {
@@ -43,7 +43,7 @@ namespace MapChests
             minimap.Init(Logger);
 
             GeneralHooks.Register(config, minimap.RequestReset);
-            Faust.QoLChests.Handlers.InteractableStateHandler.LateInteractableChanged += _ => minimap.RequestReset();
+            Faust.QoLChests.Handlers.InteractableStateHandler.LateInteractableChanged += minimap.RefreshObject;
             ChestHooks.Register();
             ShopHooks.Register();
             SceneHooks.Register();

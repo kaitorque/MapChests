@@ -1,6 +1,6 @@
 {
   "name": "MapChests",
-  "version_number": "1.0.0",
+  "version_number": "1.0.1",
   "website_url": "https://github.com/kaitorque/MapChests",
   "description": "Unofficial merge of MiniMapMod (DekuDesu) and QoLChests (Faustvii): minimap and highlights with shared categories. Made mainly for use with ArtifactOfParallel.",
   "dependencies": [

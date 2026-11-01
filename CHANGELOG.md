@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1
+
+- Fixed stutter in multiplayer with ArtifactOfParallel: when an interactable appears, is revealed (Mimic) or changes visibility, only its own minimap icon is updated instead of rebuilding the whole minimap.
+- Fixed hitches in big fights: the regular rescan of enemies, allies and items keeps existing icons and only adds or removes the ones that changed, instead of recreating every icon.
+- A single broken icon is dropped instead of resetting the whole minimap.
+
 ## 1.0.0
 
 First public release. MapChests merges [MiniMapMod](https://thunderstore.io/package/DekuDesu/MiniMapMod/) 4.0.0 by DekuDesu and [QoLChests](https://thunderstore.io/package/Faustvii/QoLChests/) 1.3.6 by Faustvii into one plugin. Behaviour differs from both originals.

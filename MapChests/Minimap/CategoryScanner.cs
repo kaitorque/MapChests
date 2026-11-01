@@ -33,22 +33,26 @@ namespace MiniMapMod
         public void ScanScene(IList<ITrackedObject> list)
         {
             foreach (var gameObject in source())
+                Track(gameObject, list);
+        }
+
+        /// <summary>Adds one object to the list if it is visible, classified and its category is shown on the minimap.</summary>
+        public void Track(GameObject gameObject, IList<ITrackedObject> list)
+        {
+            if (!gameObject || !ParallelCompat.IsVisible(gameObject) || !CategoryClassifier.TryClassify(gameObject, out var category))
+                return;
+
+            if (!Settings.GetSetting(category).Minimap.Value)
+                return;
+
+            list.Add(new ElevationTrackedObject(new TrackedObject<GameObject>(category, gameObject, null)
             {
-                if (!gameObject || !ParallelCompat.IsVisible(gameObject) || !CategoryClassifier.TryClassify(gameObject, out var category))
-                    continue;
+                BackingObject = gameObject,
+                ActiveChecker = CreateActiveChecker(gameObject),
+                DynamicObject = dynamic
+            }, spriteManager, playerHeightRetriever));
 
-                if (!Settings.GetSetting(category).Minimap.Value)
-                    continue;
-
-                list.Add(new ElevationTrackedObject(new TrackedObject<GameObject>(category, gameObject, null)
-                {
-                    BackingObject = gameObject,
-                    ActiveChecker = CreateActiveChecker(gameObject),
-                    DynamicObject = dynamic
-                }, spriteManager, playerHeightRetriever));
-
-                range.CheckValue(gameObject.transform.position);
-            }
+            range.CheckValue(gameObject.transform.position);
         }
 
         private static Func<GameObject, bool> CreateActiveChecker(GameObject gameObject)
